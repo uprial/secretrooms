@@ -10,6 +10,7 @@ Increase minecart max speed and generate rail networks between popular structure
 
 ## Features
 
+* Increase minecart max speed by default and decrease it with a specific block below.
 
 ## Commands
 
@@ -27,7 +28,7 @@ Increase minecart max speed and generate rail networks between popular structure
 I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 
 ## Useful links
-* [Project on GitHub](TBD)
+* [Project on GitHub](https://github.com/uprial/railnet)
 * [Project on Bukkit Dev](TBD)
 * [Project on Spigot](TBD)
 
