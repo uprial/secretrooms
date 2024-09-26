@@ -1,0 +1,14 @@
+name: RailNet
+main: com.gmail.uprial.railnet.RailNet
+version: 0.1.0
+api-version: 1.14
+commands:
+  railnet:
+      description: Reload RailNet config
+      usage: /railnet help
+      permission:
+      permission-message:
+permissions:
+  railnet.reload:
+        description: Gives access to RailNet 'reload' command
+        default: op

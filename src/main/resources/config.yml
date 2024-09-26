@@ -1,0 +1,33 @@
+#
+# ==== General info ====
+#
+# * After editing of this file you need to check server logs to be
+# sure that no errors was appeared.
+#
+
+#
+# Show debug info. Possible values: true | false (default = false)
+#
+# This option can affect the performance.
+#
+debug: false
+
+# Minecart max speed, possible values: 0.0001 ... 1000
+minecart-max-speed: 4.0
+
+#
+# Material under rails that temporarily reduced minecart max speed.
+#
+# For options, see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+#
+minecart-slow-block: GRAVEL
+
+#
+# Minecart max speed above the slow block.
+#
+# According to https://minecraft.fandom.com/wiki/Minecart,
+# default minecart max speed is 0.4.
+#
+# Possible values: 0.0001 ... 1000
+#
+minecart-slow-speed: 0.4
