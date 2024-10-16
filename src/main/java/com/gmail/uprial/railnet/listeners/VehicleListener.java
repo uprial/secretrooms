@@ -10,6 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
+import static com.gmail.uprial.railnet.common.DoubleHelper.MIN_DOUBLE_VALUE;
+import static com.gmail.uprial.railnet.common.Formatter.format;
+
 public class VehicleListener implements Listener {
     private final RailNet plugin;
     private final CustomLogger customLogger;
@@ -22,8 +25,7 @@ public class VehicleListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVehicleCreate(VehicleCreateEvent event) {
         if(!event.isCancelled() && (event.getVehicle() instanceof Minecart)) {
-            final Minecart minecart = (Minecart)event.getVehicle();
-            minecart.setMaxSpeed(plugin.getRailNetConfig().getMinecartMaxSpeed());
+            update((Minecart)event.getVehicle(), plugin.getRailNetConfig().getMinecartMaxSpeed());
         }
     }
 
@@ -35,17 +37,25 @@ public class VehicleListener implements Listener {
             final Location location = minecart.getLocation();
             location.setY(location.getBlockY() - 1);
 
-            /*customLogger.debug(String.format("Speed of %s: %.2f - %.2f",
-                    minecart.getUniqueId().toString().substring(0, 4),
-                    minecart.getVelocity().getX(),
-                    minecart.getVelocity().getZ()));*/
             if(minecart.getWorld().getBlockAt(location).getType().equals(
                     plugin.getRailNetConfig().getMinecartSlowBlock()
             )) {
-                minecart.setMaxSpeed(plugin.getRailNetConfig().getMinecartSlowSpeed());
+                update(minecart, plugin.getRailNetConfig().getMinecartSlowSpeed());
             } else {
-                minecart.setMaxSpeed(plugin.getRailNetConfig().getMinecartMaxSpeed());
+                update(minecart, plugin.getRailNetConfig().getMinecartMaxSpeed());
             }
+        }
+    }
+
+    private void update(final Minecart minecart, final double newMaxSpeed) {
+        if(Math.abs(minecart.getMaxSpeed() - newMaxSpeed) > MIN_DOUBLE_VALUE) {
+            if(customLogger.isDebugMode()) {
+                customLogger.debug(String.format("%s %.2f > %.2f",
+                        format(minecart),
+                        minecart.getMaxSpeed(),
+                        newMaxSpeed));
+            }
+            minecart.setMaxSpeed(newMaxSpeed);
         }
     }
 }

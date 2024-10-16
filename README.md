@@ -11,15 +11,22 @@ Increase minecart max speed and generate rail networks between popular structure
 ## Features
 
 * Increase minecart max speed by default and decrease it with a specific block below.
+* Find hidden railways from a spawn location to a woodland mansion and an ocean monument.
 
 ## Commands
 
 `railnet reload` - reload config from disk
+`railnet forcibly-generate` - forcibly generate terrain
+`railnet generate-loaded` - generate loaded terrain
 
 ## Permissions
 
 * Access to 'reload' command:
 `railnet.reload` (default: op)
+* Access to 'forcibly-generate' command:
+`railnet.forcibly-generate` (default: op)
+* Access to 'generate-loaded' command:
+`railnet.generate-loaded` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)

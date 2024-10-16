@@ -20,7 +20,11 @@ minecart-max-speed: 4.0
 #
 # For options, see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 #
-minecart-slow-block: GRAVEL
+# WARNING: the mineshaft generation implemented in
+# src/main/java/com/gmail/uprial/railnet/generator/Structure.java
+# won't be affected by this option.
+#
+minecart-slow-block: SMOOTH_STONE
 
 #
 # Minecart max speed above the slow block.

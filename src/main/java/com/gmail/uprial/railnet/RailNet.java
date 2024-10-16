@@ -2,6 +2,8 @@ package com.gmail.uprial.railnet;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
+import com.gmail.uprial.railnet.generator.Generator;
+import com.gmail.uprial.railnet.listeners.ChunkListener;
 import com.gmail.uprial.railnet.listeners.VehicleListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +21,8 @@ public final class RailNet extends JavaPlugin {
     private CustomLogger consoleLogger = null;
     private RailNetConfig railNetConfig = null;
 
+    private Generator generator = null;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -26,7 +30,10 @@ public final class RailNet extends JavaPlugin {
         consoleLogger = new CustomLogger(getLogger());
         railNetConfig = loadConfig(getConfig(), consoleLogger);
 
+        generator = new Generator(this, consoleLogger);
+
         getServer().getPluginManager().registerEvents(new VehicleListener(this, consoleLogger), this);
+        getServer().getPluginManager().registerEvents(new ChunkListener(generator), this);
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
@@ -39,6 +46,14 @@ public final class RailNet extends JavaPlugin {
     void reloadConfig(CustomLogger userLogger) {
         reloadConfig();
         railNetConfig = loadConfig(getConfig(), userLogger, consoleLogger);
+    }
+
+    void forciblyGenerate() {
+        generator.forciblyGenerate();
+    }
+
+    void generateLoaded() {
+        generator.generateLoaded();
     }
 
     @Override

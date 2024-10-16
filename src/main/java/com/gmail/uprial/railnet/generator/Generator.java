@@ -1,0 +1,235 @@
+package com.gmail.uprial.railnet.generator;
+
+import com.gmail.uprial.railnet.RailNet;
+import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.map.ChunkMap;
+import com.gmail.uprial.railnet.map.InvalidMapException;
+import com.gmail.uprial.railnet.map.RailType;
+import com.google.common.collect.ImmutableList;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.generator.structure.StructureType;
+import org.bukkit.util.StructureSearchResult;
+
+import java.util.*;
+
+import static com.gmail.uprial.railnet.common.Formatter.format;
+
+public class Generator {
+    static class WayConfig {
+        final private String world;
+        final private RailType railType;
+        final private StructureType from;
+        final private StructureType to;
+
+        WayConfig(final String world, final RailType railType, final StructureType from, final StructureType to) {
+            this.world = world;
+            this.railType = railType;
+            this.from = from;
+            this.to = to;
+        }
+
+        final String getWorld() {
+            return world;
+        }
+
+        final RailType getRailType() {
+            return railType;
+        }
+
+        final StructureType getFrom() {
+            return from;
+        }
+
+        final StructureType getTo() {
+            return to;
+        }
+    }
+
+    private final RailNet plugin;
+    private final CustomLogger customLogger;
+
+    private final Map<World, ChunkMap> map = new HashMap<>();
+
+    public Generator(final RailNet plugin, final CustomLogger customLogger) {
+        this.plugin = plugin;
+        this.customLogger = customLogger;
+
+        try {
+            final List<WayConfig> connectionsConfig = ImmutableList.<WayConfig>builder()
+                    .add(new WayConfig("world", RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
+                    .add(new WayConfig("world", RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
+                    .build();
+
+            final Set<String> worldNames = new HashSet<>();
+            for(final WayConfig wayConfig : connectionsConfig) {
+                final World world = plugin.getServer().getWorld(wayConfig.getWorld());
+                if(world == null) {
+                    throw new InternalGeneratorError(
+                            String.format("Can't find a world '%s'", wayConfig.getWorld())
+                    );
+                }
+                final Location from = locate(world, world.getSpawnLocation(), wayConfig.getFrom());
+                final Location to = locate(world, from, wayConfig.getTo());
+
+                customLogger.info(String.format("Discovered a way in world '%s' from %s to %s",
+                        world.getName(),
+                        format(from),
+                        format(to)
+                ));
+
+                final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap());
+
+                final int modX = Integer.signum(to.getChunk().getX() - from.getChunk().getX());
+                final int modZ = Integer.signum(to.getChunk().getZ() - from.getChunk().getZ());
+
+                chunkMap.addWay(
+                        from.getChunk().getX() - modX,
+                        from.getChunk().getZ() - modZ,
+                        to.getChunk().getX() - 3 * modX,
+                        to.getChunk().getZ() - 3 * modZ,
+                        wayConfig.getRailType());
+
+                worldNames.add(world.getName());
+            }
+
+            // TOFIX: comment
+            // Test config
+
+            /*
+            final World world = plugin.getServer().getWorld("world");
+            final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap());
+            chunkMap.addWay(
+                    1, -2,
+                    1+3, -2-2,
+                    RailType.SURFACE);
+            chunkMap.addWay(
+                    -1, -2,
+                    -1-3, -2-2,
+                    RailType.SURFACE);
+            chunkMap.addWay(
+                    0, -5,
+                    0, -6,
+                    RailType.SURFACE);
+            chunkMap.addWay(
+                    2, -5,
+                    2, -4,
+                    RailType.SURFACE);
+            chunkMap.addWay(
+                    3, -7,
+                    4, -7,
+                    RailType.SURFACE);
+            chunkMap.addWay(
+                    3, -9,
+                    2, -9,
+                    RailType.SURFACE);
+             */
+
+            for(final String worldName : worldNames) {
+                onWorldInit(plugin.getServer().getWorld(worldName));
+            }
+        } catch (InvalidMapException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Location locate(final World world, final Location from, final StructureType structureType) throws InvalidMapException {
+        if(structureType == null) {
+            return from;
+        } else {
+            final StructureSearchResult structureSearchResult = world.locateNearestStructure(
+                from,
+                    structureType,
+                100_000,
+                false);
+            if(structureSearchResult == null) {
+                throw new InternalGeneratorError(
+                        String.format("Can't locate %s near %s", structureType.getKey(), format(from))
+                );
+            }
+
+            return structureSearchResult.getLocation();
+        }
+    }
+
+    /*
+        Plugins are enabled on server start.
+
+        But some chunks are already generated
+        before the first initiation of any plugin
+        unless the plugin is configured in bukkit.yml as a generator.
+
+        The following potential functions are buggy:
+            world.getChunkAt(x, y, generate = false)
+            world.isChunkGenerated(x, y)
+            etc.
+
+        So I check the chunks loaded on server start.
+     */
+    private void onWorldInit(final World world) {
+        final ChunkMap chunkMap = map.get(world);
+        if(chunkMap != null) {
+            for(final Chunk chunk : world.getLoadedChunks()) {
+                onChunkLoad(chunk);
+            }
+        }
+    }
+
+    /*
+        ChunkPopulateEvent and ChunkLoadEvent.isNewChunk() are buggy,
+        so I mark the checked chunks via specific secret block.
+
+        The best specific secret block is a block unavailable even in the creative code.
+        According to https://minecraft.wiki/w/Creative, I picked Barrier.
+     */
+    final Material secretMaterial = Material.BARRIER;
+
+    public void onChunkLoad(final Chunk chunk) {
+        final ChunkMap chunkMap = map.get(chunk.getWorld());
+        if(chunkMap != null) {
+            if(chunkMap.containsRailWays(chunk.getX(), chunk.getZ())) {
+                final Block block = chunk.getBlock(0, chunk.getWorld().getMinHeight(), 0);
+                if (!block.getType().equals(secretMaterial)) {
+                    block.setType(secretMaterial);
+
+                    chunkMap.forEach(chunk.getX(), chunk.getZ(), (final RailType railType, final BlockFace blockFace) -> {
+                        generate(chunkMap, chunk, railType, blockFace);
+                    });
+                }
+            }
+        }
+    }
+
+    public void forciblyGenerate() {
+        customLogger.debug("Forcibly generate...");
+        for(final World world : plugin.getServer().getWorlds()) {
+            final ChunkMap chunkMap = map.get(world);
+            if(chunkMap != null) {
+                chunkMap.forEach((final int x, final int z, final RailType railType, final BlockFace blockFace) -> {
+                    generate(chunkMap, world.getChunkAt(x, z), railType, blockFace);
+                });
+            }
+        }
+    }
+
+    public void generateLoaded() {
+        customLogger.debug("Generate loaded...");
+        for(final World world : plugin.getServer().getWorlds()) {
+            for(final Chunk chunk : world.getLoadedChunks()) {
+                onChunkLoad(chunk);
+            }
+        }
+    }
+
+    private void generate(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
+        new Structure(chunkMap, chunk, railType, blockFace).generate();
+
+        if(customLogger.isDebugMode()) {
+            customLogger.debug(String.format("Generated %d-%d with %s-%s", chunk.getX(), chunk.getZ(), railType, blockFace));
+        }
+    }
+}

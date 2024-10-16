@@ -4,11 +4,17 @@ version: 0.1.0
 api-version: 1.14
 commands:
   railnet:
-      description: Reload RailNet config
-      usage: /railnet help
-      permission:
-      permission-message:
+    description: Reload RailNet config
+    usage: /railnet help
+    permission:
+    permission-message:
 permissions:
   railnet.reload:
-        description: Gives access to RailNet 'reload' command
-        default: op
+    description: Gives access to RailNet 'reload' command
+    default: op
+  railnet.forcibly-generate:
+    description: Gives access to RailNet 'forcibly-generate' command
+    default: op
+  railnet.generate-loaded:
+    description: Gives access to RailNet 'generate-loaded' command
+    default: op
