@@ -13,6 +13,7 @@ import org.bukkit.block.data.Rail;
 import java.util.Map;
 
 public class VirtualChunk {
+    private final String title;
     private final Chunk chunk;
 
     private BlockFace vBlockFace;
@@ -26,7 +27,8 @@ public class VirtualChunk {
      */
     private boolean applyPhysicsOnce = false;
 
-    VirtualChunk(final Chunk chunk, final BlockFace blockFace) {
+    VirtualChunk(final String title, final Chunk chunk, final BlockFace blockFace) {
+        this.title = title;
         this.chunk = chunk;
         this.vBlockFace = blockFace;
     }
@@ -35,7 +37,7 @@ public class VirtualChunk {
         vx += x;
         if(vx < 0) {
             throw new InternalGeneratorError(
-                    String.format("Negative virtual X of %d-%d chunk: %d", chunk.getX(), chunk.getZ(), vx));
+                    String.format("Negative virtual X of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
 
         vy += y;
@@ -43,7 +45,7 @@ public class VirtualChunk {
         vz += z;
         if(vz < 0) {
             throw new InternalGeneratorError(
-                    String.format("Negative virtual Z of %d-%d chunk: %d", chunk.getX(), chunk.getZ(), vz));
+                    String.format("Negative virtual Z of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
     }
 
@@ -63,7 +65,7 @@ public class VirtualChunk {
         // With any X-positive move, getting access to this block will raise an exception
         if(vx > 0) {
             throw new InternalGeneratorError(
-                    String.format("Positive virtual X of %d-%d chunk: %d", chunk.getX(), chunk.getZ(), vx));
+                    String.format("Positive virtual X of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
         return 15;
     }
@@ -72,7 +74,7 @@ public class VirtualChunk {
         // With any Z-positive move, getting access to this block will raise an exception
         if(vz > 0) {
             throw new InternalGeneratorError(
-                    String.format("Positive virtual Z of %d-%d chunk: %d", chunk.getX(), chunk.getZ(), vz));
+                    String.format("Positive virtual Z of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
         return 15;
     }
@@ -97,7 +99,7 @@ public class VirtualChunk {
                 return chunk.getBlock(15 - z, y, x);
             default:
                 throw new InternalGeneratorError(
-                        String.format("Wrong block face %s", vBlockFace));
+                        String.format("Wrong block face %s in %s", vBlockFace, title));
         }
     }
 
@@ -143,7 +145,7 @@ public class VirtualChunk {
             ((Rail)blockData).setShape(blockFace2railShape.get(getBlockFacesSum(vBlockFace, blockFace)));
         } else {
             throw new InternalGeneratorError(
-                    String.format("Block %s at %d-%d-%d can't be rotated", material, x, y, z));
+                    String.format("Block %s at %d-%d-%d can't be rotated in %s", material, x, y, z, title));
         }
 
         // Power rails

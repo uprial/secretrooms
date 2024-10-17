@@ -8,7 +8,6 @@ import org.junit.rules.ExpectedException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.gmail.uprial.railnet.map.ChunkMap.getBlockFace;
 import static org.junit.Assert.*;
 
 public class ChunkMapTest {
@@ -36,71 +35,75 @@ public class ChunkMapTest {
 
     @Test
     public void testGetBlockFace() throws Exception {
-        assertEquals(BlockFace.EAST, getBlockFace(1, 0));
-        assertEquals(BlockFace.NORTH, getBlockFace(0, -1));
-        assertEquals(BlockFace.WEST, getBlockFace(-1, 0));
-        assertEquals(BlockFace.SOUTH, getBlockFace(0, 1));
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
+
+        assertEquals(BlockFace.EAST, chunkMap.getBlockFace(1, 0));
+        assertEquals(BlockFace.NORTH, chunkMap.getBlockFace(0, -1));
+        assertEquals(BlockFace.WEST, chunkMap.getBlockFace(-1, 0));
+        assertEquals(BlockFace.SOUTH, chunkMap.getBlockFace(0, 1));
     }
 
     @Test
     public void testGetWrongBlockFace() throws Exception {
-        e.expect(InternalConfigurationError.class);
-        e.expectMessage("Wrong block face mod 1-2");
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
 
-        getBlockFace(1, 2);
+        e.expect(InternalConfigurationError.class);
+        e.expectMessage("Wrong block face mod 1-2 in home2hell");
+
+        chunkMap.getBlockFace(1, 2);
     }
 
     @Test
     public void testEmpty() throws Exception {
         assertEquals(
-                "{}",
-                new ChunkMap().toString());
+                "home2hell{}",
+                new ChunkMap("home2hell").toString());
     }
 
     @Test
     public void testAddWayInsideChunk() throws Exception {
         e.expect(InvalidMapException.class);
-        e.expectMessage("Zero-length way from 0-0 to 0-0");
-        new ChunkMap().addWay(0, 0, 0, 0, RailType.UNDERGROUND);
+        e.expectMessage("Zero-length way from 0-0 to 0-0 in home2hell");
+        new ChunkMap("home2hell").addWay(0, 0, 0, 0, RailType.UNDERGROUND);
     }
 
     @Test
     public void testAddWayX() throws Exception {
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1]}",
-                new ChunkMap().addWay(0, 0, 1, 0, RailType.UNDERGROUND).toString());
+                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1]}",
+                new ChunkMap("home2hell").addWay(0, 0, 1, 0, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayZ() throws Exception {
         assertEquals(
-                "{0-0=[UNDERGROUND-SOUTH#1], 0-1=[UNDERGROUND-SOUTH#1]}",
-                new ChunkMap().addWay(0, 0, 0, 1, RailType.UNDERGROUND).toString());
+                "home2hell{0-0=[UNDERGROUND-SOUTH#1], 0-1=[UNDERGROUND-SOUTH#1]}",
+                new ChunkMap("home2hell").addWay(0, 0, 0, 1, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayXZ() throws Exception {
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 1-1=[UNDERGROUND-SOUTH#1]}",
-                new ChunkMap().addWay(0, 0, 1, 1, RailType.UNDERGROUND).toString());
+                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 1-1=[UNDERGROUND-SOUTH#1]}",
+                new ChunkMap("home2hell").addWay(0, 0, 1, 1, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayXZLong() throws Exception {
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
+                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
                         " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]}",
-                new ChunkMap().addWay(0, 0, 3, 1, RailType.UNDERGROUND).toString());
+                new ChunkMap("home2hell").addWay(0, 0, 3, 1, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddTwoWaysSameTypeSameWaySameId() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         final int initialWayId = chunkMap.wayId;
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND");
+        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND in home2hell");
 
         chunkMap.wayId = initialWayId;
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
@@ -108,22 +111,22 @@ public class ChunkMapTest {
 
     @Test
     public void testAddTwoWaysSameTypeSameWay() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND");
+        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
     }
 
     @Test
     public void testAddTwoWaysDifferentTypeSameWay() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 1-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                "home2hell{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 1-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
                         " 2-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 3-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
                         " 3-1=[UNDERGROUND-SOUTH#1, SURFACE-SOUTH#2]}",
                 chunkMap.addWay(0, 0, 3, 1, RailType.SURFACE).toString());
@@ -131,33 +134,33 @@ public class ChunkMapTest {
 
     @Test
     public void testAddTwoWaysSameTypeTooCloseInitially() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 1-1 is too close to another way 1-0 of the same type UNDERGROUND");
+        e.expectMessage("Chunk 1-1 is too close to another way 1-0 of the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(1, 1, 3, 1, RailType.UNDERGROUND);
     }
 
     @Test
     public void testAddTwoWaysSameTypeTooCloseFinally() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 3-2 is too close to another way 3-1 of the same type UNDERGROUND");
+        e.expectMessage("Chunk 3-2 is too close to another way 3-1 of the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(2, 2, 3, 1, RailType.UNDERGROUND);
     }
 
     @Test
     public void testAddTwoWaysSameTypeDifferentWay() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
+                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
                         " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]," +
                         " 0--2=[UNDERGROUND-EAST#2], 1--2=[UNDERGROUND-EAST#2], 2--2=[UNDERGROUND-EAST#2]," +
                         " 3--2=[UNDERGROUND-EAST#2], 3--3=[UNDERGROUND-NORTH#2]}",
@@ -166,11 +169,11 @@ public class ChunkMapTest {
 
     @Test
     public void testAddTwoWaysDifferentTypeDifferentWay() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
+                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
                         " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]," +
                         " 0--2=[SURFACE-EAST#2], 1--2=[SURFACE-EAST#2], 2--2=[SURFACE-EAST#2]," +
                         " 3--2=[SURFACE-EAST#2], 3--3=[SURFACE-NORTH#2]}",
@@ -179,11 +182,11 @@ public class ChunkMapTest {
 
     @Test
     public void testAddTwoWaysDifferentTypeSimilarWay() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                "home2hell{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
                         " 1-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
                         " 2-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
                         " 3-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
@@ -194,12 +197,12 @@ public class ChunkMapTest {
 
     @Test
     public void testDoesNoContainRailWays() throws Exception {
-        assertFalse(new ChunkMap().containsRailWays(0, 0));
+        assertFalse(new ChunkMap("home2hell").containsRailWays(0, 0));
     }
 
     @Test
     public void testGetRailWaysOne() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertFalse(chunkMap.containsRailWays(0, -1));
@@ -215,7 +218,7 @@ public class ChunkMapTest {
 
     @Test
     public void testGetRailWaysTwo() throws Exception {
-        final ChunkMap chunkMap = new ChunkMap();
+        final ChunkMap chunkMap = new ChunkMap("home2hell");
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
         chunkMap.addWay(0, 0, 3, -1, RailType.SURFACE);
 

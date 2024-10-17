@@ -36,14 +36,14 @@ class Structure {
         this.railType = railType;
         this.blockFace = blockFace;
 
-        this.vc = new VirtualChunk(chunk, blockFace);
+        this.vc = new VirtualChunk(chunkMap.getTitle(), chunk, blockFace);
 
         this.neighbors = getNeighbors();
     }
 
     /*
      The tunnel height is 6 blocks, so the offsets are multiple of 6.
-     Two additional blocks are to hide the tunnels underwater.
+     Two additional blocks are to hide surface tunnels underwater.
      */
     private final static Map<RailType,Integer> yOffsets = ImmutableMap.<RailType,Integer>builder()
             .put(RailType.UNDERGROUND, 14)
@@ -54,7 +54,7 @@ class Structure {
         final Integer yOffset = yOffsets.get(railType);
         if(yOffset == null) {
             throw new InternalGeneratorError(
-                    String.format("Unknown rail type %s", railType));
+                    String.format("Unknown rail type %s in %s", railType, chunkMap.getTitle()));
         }
 
         // Build under sea level.
@@ -64,6 +64,7 @@ class Structure {
         if (isBorderChunk()) {
             if(!neighbors.contains(blockFace)) {
                 vc.rotate180();
+                // Max ladder and tunnel width is 6.
                 vc.move(0, 0, vc.getMaxZ() - 6);
             }
             final int entranceX = ladder();
@@ -94,7 +95,7 @@ class Structure {
 
         if(!potentialNeighbors.contains(blockFace)) {
             throw new InternalGeneratorError(
-                    String.format("Wrong block face %s", blockFace));
+                    String.format("Wrong block face %s in %s", blockFace, chunkMap.getTitle()));
         }
 
         return neighbors;
@@ -130,58 +131,90 @@ class Structure {
     }
 
     private int ladder() {
-        final int minEntranceHeight = 3;
-        int entranceX = 2;
-        int entranceHeight = Math.max(minEntranceHeight, getEntranceHeight(entranceX, 1));
+        final int minEntranceY = 3;
+
+        final int entranceX;
+        final int entranceY;
+        final int entranceZ = 1;
         {
-            for (int x = 3; x <= 11; x++) {
-                int xEntranceHeight = Math.max(minEntranceHeight, getEntranceHeight(x, 1));
-                if (xEntranceHeight < entranceHeight) {
-                    entranceHeight = xEntranceHeight;
-                    entranceX = x;
+        /*
+            Start from x = 2 because one block is used for walls,
+            and one more block is needed for proper work of drawObservationBox
+            what checks the neighboring blocks.
+         */
+            int nonFinalEntranceX = 2;
+            int nonFinalEntranceY = Math.max(minEntranceY, getEntranceHeight(nonFinalEntranceX, 1));
+            {
+            /*
+                End at x = 11 because initialTunnel() requires at least 4 blocks
+                in the positive X direction.
+             */
+                for (int x = 3; x <= 11; x++) {
+                    int xEntranceY = Math.max(minEntranceY, getEntranceHeight(x, 1));
+                    if (xEntranceY < nonFinalEntranceY) {
+                        nonFinalEntranceY = xEntranceY;
+                        nonFinalEntranceX = x;
+                    }
                 }
             }
+            entranceX = nonFinalEntranceX;
+            entranceY = nonFinalEntranceY;
         }
 
         {
-            for(int y = 0; y <= entranceHeight; y++) {
+            for(int y = 0; y <= entranceY; y++) {
                 final int iy = y;
-                iterateNeighbors(entranceX, 1, (final int ix, final int iz) -> {
-                    set(ix, iy, iz, Material.STONE_BRICKS);
+                iterateNeighbors(entranceX, entranceZ, (final int ix, final int iz) -> {
+                    // I should've checked Z, but Z-1 isn't available in this chunk.
+                    observationBlock(
+                            Integer.signum(ix - entranceX) +  Integer.signum(iz - entranceZ), 0, 0,
+                            ix, iy, iz);
                 });
 
-                set(entranceX, iy, 1, Material.LADDER, BlockFace.SOUTH);
+                set(entranceX, iy, entranceZ, Material.LADDER, BlockFace.SOUTH);
 
                 // A torch in the wall
-                if ((iy % 10 == 0) && (iy < entranceHeight)) {
-                    set(entranceX + 1, iy, 1, Material.WALL_TORCH, BlockFace.SOUTH);
+                if ((iy % 10 == 0) && (iy < entranceY)) {
+                    set(entranceX + 1, iy, entranceZ, Material.WALL_TORCH, BlockFace.SOUTH);
 
-                    set(entranceX + 2, iy, 1, Material.STONE_BRICKS);
-                    set(entranceX + 1, iy, 0, Material.STONE_BRICKS);
-                    set(entranceX + 1, iy, 2, Material.STONE_BRICKS);
-                    set(entranceX + 1, iy - 1, 1, Material.STONE_BRICKS);
+                    observationBlock(
+                            +1, 0, 0,
+                            entranceX + 2, iy, entranceZ);
+
+                    // I should've checked 0 0 -1, but Z-1 isn't available in this chunk.
+                    observationBlock(
+                            +1, 0, 0,
+                            entranceX + 1, iy, entranceZ - 1);
+                    observationBlock(
+                                0, 0, +1,
+                            entranceX + 1, iy, entranceZ + 1);
+                    observationBlock(
+                            +1, 0, 0,
+                            entranceX + 1, iy - 1, entranceZ);
                 }
             }
 
             // A block under ladder, if not two ladders go through it
-            final Block block = vc.get(entranceX, - 1, 1);
+            final Block block = vc.get(entranceX, - 1, entranceZ);
             if(!block.getType().equals(Material.LADDER)) {
-                block.setType(Material.STONE_BRICKS);
+                observationBlock(
+                        0, -1, 0,
+                        entranceX, - 1, entranceZ);
             }
         }
 
         {
             // A hole upwards, if any blocks are above the entrance
-            int y = entranceHeight + 1;
-            while (!vc.get(entranceX, y, 1).isPassable()) {
-                set(entranceX, y, 1, Material.AIR);
+            int y = entranceY + 1;
+            while (!vc.get(entranceX, y, entranceZ).isPassable()) {
+                set(entranceX, y, entranceZ, Material.AIR);
                 y++;
             }
         }
 
         {
             // A ladder upwards, if any blocks are behind the entrance
-            int y = entranceHeight + 1;
+            int y = entranceY + 1;
             while (!vc.get(entranceX, y, 0).isPassable()) {
                 set(entranceX, y, 1, Material.LADDER, BlockFace.SOUTH);
                 y++;
@@ -199,18 +232,18 @@ class Structure {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            drawObservationBox(
+            observationBox(
                     0, Integer.signum(y), 0,
                     startX, y, 2,
                     vc.getMaxX(), y, 4);
         }
 
         // Side walls
-        drawObservationBox(
+        observationBox(
                 0, 0, -1,
                 startX, 0, 1,
                 vc.getMaxX(), 2, 1);
-        drawObservationBox(
+        observationBox(
                 0, 0, +1,
                 startX, 0, 5,
                 vc.getMaxX(), 2, 5);
@@ -252,7 +285,7 @@ class Structure {
         tunnel(startX);
 
         // Back wall
-        drawObservationBox(
+        observationBox(
                 -1, 0, 0,
                 startX, 0, 2,
                 startX, 2, 4);
@@ -291,31 +324,31 @@ class Structure {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            drawObservationBox(
+            observationBox(
                     0, Integer.signum(y), 0,
                     0, y, 1,
                     4, y, 4);
-            drawObservationBox(
+            observationBox(
                     0, Integer.signum(y), 0,
                     1, y, 0,
                     4, y, 0);
         }
 
         // Side walls
-        drawObservationBox(
+        observationBox(
                 0, 0, -1,
                 0, 0, 1,
                 0, 2, 1);
-        drawObservationBox(
+        observationBox(
                 -1, 0, 0,
                 1, 0, 0,
                 1, 2, 0);
 
-        drawObservationBox(
+        observationBox(
                 0, 0, +1,
                 0, 0, 5,
                 4, 2, 5);
-        drawObservationBox(
+        observationBox(
                 +1, 0, 0,
                 5, 0, 4,
                 5, 2, 0);
@@ -384,31 +417,31 @@ class Structure {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            drawObservationBox(
+            observationBox(
                     0, Integer.signum(y), 0,
                     0, y, 1,
                     vc.getMaxX() - 2, y, 4);
-            drawObservationBox(
+            observationBox(
                     0, Integer.signum(y), 0,
                     vc.getMaxX() - 2, y, 2,
                     vc.getMaxX() - 4, y, vc.getMaxZ());
         }
 
         // Side walls
-        drawObservationBox(
+        observationBox(
                 0, 0, -1,
                 0, 0, 1,
                 vc.getMaxX() - 2, 2, 1);
-        drawObservationBox(
+        observationBox(
                 +1, 0, 0,
                 vc.getMaxX() - 1, 0, 1,
                 vc.getMaxX() - 1, 2, vc.getMaxZ());
 
-        drawObservationBox(
+        observationBox(
                 0, 0, +1,
                 0, 0, 5,
                 vc.getMaxX() - 6, 2, 5);
-        drawObservationBox(
+        observationBox(
                 -1, 0, 0,
                 vc.getMaxX() - 5, 0, 6,
                 vc.getMaxX() - 5, 2, vc.getMaxZ());
@@ -509,20 +542,24 @@ class Structure {
         });
     }
 
-    private void drawObservationBox(final int dx, final int dy, final int dz,
-                                    final int x1, final int y1, final int z1,
-                                    final int x2, final int y2, final int z2) {
+    private void observationBox(final int dx, final int dy, final int dz,
+                                final int x1, final int y1, final int z1,
+                                final int x2, final int y2, final int z2) {
         iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-            final Material material;
-            if(!vc.get(x + dx, y + dy, z + dz).getType().isOccluding()) {
-                material = Material.GLASS;
-            } else {
-                material = Material.STONE_BRICKS;
-            }
-            set(x, y, z, material);
+            observationBlock(dx, dy, dz, x, y, z);
         });
     }
 
+    private void observationBlock(final int dx, final int dy, final int dz,
+                                  final int x, final int y, final int z) {
+        final Material material;
+        if(!vc.get(x + dx, y + dy, z + dz).getType().isOccluding()) {
+            material = Material.GLASS;
+        } else {
+            material = Material.STONE_BRICKS;
+        }
+        set(x, y, z, material);
+    }
 
     private void set(final int x, final int y, final int z,
                       final Material material) {

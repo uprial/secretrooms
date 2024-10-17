@@ -7,6 +7,7 @@ import org.bukkit.block.BlockFace;
 import java.util.*;
 
 public class ChunkMap {
+    private final String title;
 
     static class OrdinalRailWay {
         final private int wayId;
@@ -60,7 +61,12 @@ public class ChunkMap {
 
     final private Map<ChunkXZ, OrdinalRailWaySet> map = new LinkedHashMap<>();
 
-    public ChunkMap () {
+    public ChunkMap (final String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     int wayId = 0;
@@ -83,7 +89,7 @@ public class ChunkMap {
         for(final OrdinalRailWay _ordinalRailWay : ordinalRailWaySet) {
             if(_ordinalRailWay.getRailType() == ordinalRailWay.getRailType()) {
                 throw new InvalidMapException(
-                        String.format("Chunk %s already contains the same type %s", chunkXZ, ordinalRailWay.getRailType()));
+                        String.format("Chunk %s already contains the same type %s in %s", chunkXZ, ordinalRailWay.getRailType(), title));
             }
         }
 
@@ -93,8 +99,8 @@ public class ChunkMap {
                 for(final OrdinalRailWay _ordinalRailWay : map.get(offsettedChunkXZ)) {
                     if (_ordinalRailWay.isAnotherWayOfTheSameType(ordinalRailWay)) {
                         throw new InvalidMapException(
-                                String.format("Chunk %s is too close to another way %s of the same type %s",
-                                        chunkXZ, offsettedChunkXZ, railType));
+                                String.format("Chunk %s is too close to another way %s of the same type %s in %s",
+                                        chunkXZ, offsettedChunkXZ, railType, title));
                     }
                 }
             }
@@ -110,10 +116,10 @@ public class ChunkMap {
             .put(BlockFace.SOUTH.getModX() * 4 + BlockFace.SOUTH.getModZ(), BlockFace.SOUTH)
             .build();
 
-    static BlockFace getBlockFace(final int modX, final int modZ) {
+    BlockFace getBlockFace(final int modX, final int modZ) {
         final BlockFace blockFace = facing.get(modX * 4 + modZ);
         if(blockFace == null) {
-            throw new InternalConfigurationError(String.format("Wrong block face mod %d-%d", modX, modZ));
+            throw new InternalConfigurationError(String.format("Wrong block face mod %d-%d in %s", modX, modZ, title));
         }
 
         return blockFace;
@@ -128,8 +134,8 @@ public class ChunkMap {
 
         if((x1 == x2) && (z1 == z2)) {
             throw new InvalidMapException(
-                    String.format("Zero-length way from %s to %s",
-                            new ChunkXZ(x1, z1), new ChunkXZ(x2, z2)));
+                    String.format("Zero-length way from %s to %s in %s",
+                            new ChunkXZ(x1, z1), new ChunkXZ(x2, z2), title));
         }
 
         final int modX = getMod(x2 - x1);
@@ -191,6 +197,6 @@ public class ChunkMap {
 
     @Override
     public String toString() {
-        return map.toString();
+        return String.format("%s%s", title, map);
     }
 }

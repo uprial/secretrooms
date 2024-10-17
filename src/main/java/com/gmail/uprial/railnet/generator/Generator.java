@@ -21,16 +21,22 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class Generator {
     static class WayConfig {
+        final private String name;
         final private String world;
         final private RailType railType;
         final private StructureType from;
         final private StructureType to;
 
-        WayConfig(final String world, final RailType railType, final StructureType from, final StructureType to) {
+        WayConfig(final String name, final String world, final RailType railType, final StructureType from, final StructureType to) {
+            this.name = name;
             this.world = world;
             this.railType = railType;
             this.from = from;
             this.to = to;
+        }
+
+        final String getName() {
+            return name;
         }
 
         final String getWorld() {
@@ -61,28 +67,30 @@ public class Generator {
 
         try {
             final List<WayConfig> connectionsConfig = ImmutableList.<WayConfig>builder()
-                    .add(new WayConfig("world", RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
-                    .add(new WayConfig("world", RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
+                    .add(new WayConfig("base2mansion", "world", RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
+                    .add(new WayConfig("base2monument", "world", RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
                     .build();
 
             final Set<String> worldNames = new HashSet<>();
             for(final WayConfig wayConfig : connectionsConfig) {
+                final String title = String.format("'%s' way", wayConfig.getName());
                 final World world = plugin.getServer().getWorld(wayConfig.getWorld());
                 if(world == null) {
                     throw new InternalGeneratorError(
-                            String.format("Can't find a world '%s'", wayConfig.getWorld())
+                            String.format("Can't find a world '%s' for %s", wayConfig.getWorld(), title)
                     );
                 }
-                final Location from = locate(world, world.getSpawnLocation(), wayConfig.getFrom());
-                final Location to = locate(world, from, wayConfig.getTo());
+                final Location from = locate(title, world, world.getSpawnLocation(), wayConfig.getFrom());
+                final Location to = locate(title, world, from, wayConfig.getTo());
 
-                customLogger.info(String.format("Discovered a way in world '%s' from %s to %s",
+                customLogger.info(String.format("Discovered a way in world '%s' from %s to %s for %s",
                         world.getName(),
                         format(from),
-                        format(to)
+                        format(to),
+                        title
                 ));
 
-                final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap());
+                final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap(title));
 
                 final int modX = Integer.signum(to.getChunk().getX() - from.getChunk().getX());
                 final int modZ = Integer.signum(to.getChunk().getZ() - from.getChunk().getZ());
@@ -137,7 +145,7 @@ public class Generator {
         }
     }
 
-    private Location locate(final World world, final Location from, final StructureType structureType) throws InvalidMapException {
+    private Location locate(final String title, final World world, final Location from, final StructureType structureType) throws InvalidMapException {
         if(structureType == null) {
             return from;
         } else {
@@ -148,7 +156,8 @@ public class Generator {
                 false);
             if(structureSearchResult == null) {
                 throw new InternalGeneratorError(
-                        String.format("Can't locate %s near %s", structureType.getKey(), format(from))
+                        String.format("Can't locate %s near %s in world '%s' for %s",
+                                structureType.getKey(), format(from), world.getName(), title)
                 );
             }
 
@@ -196,12 +205,16 @@ public class Generator {
                 if (!block.getType().equals(secretMaterial)) {
                     block.setType(secretMaterial);
 
-                    chunkMap.forEach(chunk.getX(), chunk.getZ(), (final RailType railType, final BlockFace blockFace) -> {
-                        generate(chunkMap, chunk, railType, blockFace);
-                    });
+                    generateChunk(chunkMap, chunk);
                 }
             }
         }
+    }
+
+    private void generateChunk(final ChunkMap chunkMap, final Chunk chunk) {
+        chunkMap.forEach(chunk.getX(), chunk.getZ(), (final RailType railType, final BlockFace blockFace) -> {
+            generate(chunkMap, chunk, railType, blockFace);
+        });
     }
 
     public void forciblyGenerate() {
@@ -219,8 +232,11 @@ public class Generator {
     public void generateLoaded() {
         customLogger.debug("Generate loaded...");
         for(final World world : plugin.getServer().getWorlds()) {
-            for(final Chunk chunk : world.getLoadedChunks()) {
-                onChunkLoad(chunk);
+            final ChunkMap chunkMap = map.get(world);
+            if(chunkMap != null) {
+                for (final Chunk chunk : world.getLoadedChunks()) {
+                    generateChunk(chunkMap, chunk);
+                }
             }
         }
     }
