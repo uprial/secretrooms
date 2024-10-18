@@ -545,9 +545,27 @@ class Structure {
     private void observationBox(final int dx, final int dy, final int dz,
                                 final int x1, final int y1, final int z1,
                                 final int x2, final int y2, final int z2) {
+
+        // Count potentially transparent blocks in the box
+        final AtomicInteger transparent = new AtomicInteger(0);
         iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-            observationBlock(dx, dy, dz, x, y, z);
+            if(!vc.get(x + dx, y + dy, z + dz).getType().isOccluding()) {
+                transparent.incrementAndGet();
+            }
         });
+
+        final int all = (x2 - x1 + 1) * (y2 - y1 + 1) * (z2 - z1 + 1);
+
+        // If more than 10% of blocks in the box can be transparent
+        if(transparent.intValue() > all / 10) {
+            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
+                observationBlock(dx, dy, dz, x, y, z);
+            });
+        } else {
+            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
+                set(x, y, z, Material.STONE_BRICKS);
+            });
+        }
     }
 
     private void observationBlock(final int dx, final int dy, final int dz,
