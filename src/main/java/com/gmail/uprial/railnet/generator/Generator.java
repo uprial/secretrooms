@@ -5,6 +5,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.map.ChunkMap;
 import com.gmail.uprial.railnet.map.InvalidMapException;
 import com.gmail.uprial.railnet.map.RailType;
+import com.gmail.uprial.railnet.schema.SchemaDebug;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -20,6 +21,8 @@ import java.util.*;
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class Generator {
+    private static final int LOCATE_RADIUS = 10_000;
+
     static class WayConfig {
         final private String name;
         final private String world;
@@ -65,7 +68,31 @@ public class Generator {
         this.plugin = plugin;
         this.customLogger = customLogger;
 
+        // TOFIX: comment
+        // Heavy debug
+
+        if(customLogger.isDebugMode()) {
+            final SchemaDebug schemaDebug = new SchemaDebug(customLogger);
+            for (World world : plugin.getServer().getWorlds()) {
+                schemaDebug.info(world);
+            }
+        }
+
         try {
+            /*
+                Unfortunately, many biomes, structures, and structure types can't be located.
+
+                According to the heavy debug above, only the following can be located:
+                - mansion
+                - stronghold
+                - monument
+                - buried_treasure
+
+                The stronghold and buried treasure are required for vanilla progress,
+                and it'd be unfair to highlight them via a railway.
+
+                So, only two railways make sense.
+             */
             final List<WayConfig> connectionsConfig = ImmutableList.<WayConfig>builder()
                     .add(new WayConfig("base2mansion", "world", RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
                     .add(new WayConfig("base2monument", "world", RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
@@ -77,17 +104,17 @@ public class Generator {
                 final World world = plugin.getServer().getWorld(wayConfig.getWorld());
                 if(world == null) {
                     throw new InternalGeneratorError(
-                            String.format("Can't find a world '%s' for %s", wayConfig.getWorld(), title)
+                            String.format("Can't find world '%s' for %s", wayConfig.getWorld(), title)
                     );
                 }
                 final Location from = locate(title, world, world.getSpawnLocation(), wayConfig.getFrom());
                 final Location to = locate(title, world, from, wayConfig.getTo());
 
-                customLogger.info(String.format("Discovered a way in world '%s' from %s to %s for %s",
+                customLogger.info(String.format("Discovered %s in world '%s' from %s to %s",
+                        title,
                         world.getName(),
                         format(from),
-                        format(to),
-                        title
+                        format(to)
                 ));
 
                 final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap(title));
@@ -106,7 +133,7 @@ public class Generator {
             }
 
             // TOFIX: comment
-            // Test config
+            // Test ways
 
             /*
             final World world = plugin.getServer().getWorld("world");
@@ -145,14 +172,14 @@ public class Generator {
         }
     }
 
-    private Location locate(final String title, final World world, final Location from, final StructureType structureType) throws InvalidMapException {
+    private Location locate(final String title, final World world, final Location from, final StructureType structureType) {
         if(structureType == null) {
             return from;
         } else {
             final StructureSearchResult structureSearchResult = world.locateNearestStructure(
                 from,
                     structureType,
-                100_000,
+                    LOCATE_RADIUS,
                 false);
             if(structureSearchResult == null) {
                 throw new InternalGeneratorError(
@@ -242,7 +269,7 @@ public class Generator {
     }
 
     private void generate(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
-        new Structure(chunkMap, chunk, railType, blockFace).generate();
+        new StructureGenerator(chunkMap, chunk, railType, blockFace).generate();
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("Generated %d-%d with %s-%s", chunk.getX(), chunk.getZ(), railType, blockFace));

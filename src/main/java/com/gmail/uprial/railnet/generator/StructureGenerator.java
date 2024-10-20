@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Structure {
+class StructureGenerator {
     private final ChunkMap chunkMap;
     private final RailType railType;
     private final BlockFace blockFace;
@@ -31,7 +31,7 @@ class Structure {
     // WARNING: won't be affected by the "minecart-slow-block" option in config.yml
     private static final Material MINECART_SLOW_BLOCK = Material.SMOOTH_STONE;
 
-    Structure(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
+    StructureGenerator(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
         this.chunkMap = chunkMap;
         this.railType = railType;
         this.blockFace = blockFace;
