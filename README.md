@@ -16,7 +16,9 @@ Increase minecart max speed and generate rail networks between popular structure
 ## Commands
 
 `railnet reload` - reload config from disk
+
 `railnet forcibly-generate` - forcibly generate terrain
+
 `railnet generate-loaded` - generate loaded terrain
 
 ## Permissions
