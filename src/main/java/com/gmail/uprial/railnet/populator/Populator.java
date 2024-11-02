@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.generator;
+package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
@@ -20,7 +20,7 @@ import java.util.*;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
-public class Generator {
+public class Populator {
     private static final int LOCATE_RADIUS = 10_000;
 
     static class WayConfig {
@@ -64,7 +64,7 @@ public class Generator {
 
     private final Map<World, ChunkMap> map = new HashMap<>();
 
-    public Generator(final RailNet plugin, final CustomLogger customLogger) {
+    public Populator(final RailNet plugin, final CustomLogger customLogger) {
         this.plugin = plugin;
         this.customLogger = customLogger;
 
@@ -103,7 +103,7 @@ public class Generator {
                 final String title = String.format("'%s' way", wayConfig.getName());
                 final World world = plugin.getServer().getWorld(wayConfig.getWorld());
                 if(world == null) {
-                    throw new InternalGeneratorError(
+                    throw new InternalPopulatorError(
                             String.format("Can't find world '%s' for %s", wayConfig.getWorld(), title)
                     );
                 }
@@ -182,7 +182,7 @@ public class Generator {
                     LOCATE_RADIUS,
                 false);
             if(structureSearchResult == null) {
-                throw new InternalGeneratorError(
+                throw new InternalPopulatorError(
                         String.format("Can't locate %s near %s in world '%s' for %s",
                                 structureType.getKey(), format(from), world.getName(), title)
                 );
@@ -232,47 +232,47 @@ public class Generator {
                 if (!block.getType().equals(secretMaterial)) {
                     block.setType(secretMaterial);
 
-                    generateChunk(chunkMap, chunk);
+                    populateChunk(chunkMap, chunk);
                 }
             }
         }
     }
 
-    private void generateChunk(final ChunkMap chunkMap, final Chunk chunk) {
+    private void populateChunk(final ChunkMap chunkMap, final Chunk chunk) {
         chunkMap.forEach(chunk.getX(), chunk.getZ(), (final RailType railType, final BlockFace blockFace) -> {
-            generate(chunkMap, chunk, railType, blockFace);
+            populate(chunkMap, chunk, railType, blockFace);
         });
     }
 
-    public void forciblyGenerate() {
-        customLogger.debug("Forcibly generate...");
+    public void forciblyPopulate() {
+        customLogger.debug("Forcibly populate...");
         for(final World world : plugin.getServer().getWorlds()) {
             final ChunkMap chunkMap = map.get(world);
             if(chunkMap != null) {
                 chunkMap.forEach((final int x, final int z, final RailType railType, final BlockFace blockFace) -> {
-                    generate(chunkMap, world.getChunkAt(x, z), railType, blockFace);
+                    populate(chunkMap, world.getChunkAt(x, z), railType, blockFace);
                 });
             }
         }
     }
 
-    public void generateLoaded() {
-        customLogger.debug("Generate loaded...");
+    public void populateLoaded() {
+        customLogger.debug("Populate loaded...");
         for(final World world : plugin.getServer().getWorlds()) {
             final ChunkMap chunkMap = map.get(world);
             if(chunkMap != null) {
                 for (final Chunk chunk : world.getLoadedChunks()) {
-                    generateChunk(chunkMap, chunk);
+                    populateChunk(chunkMap, chunk);
                 }
             }
         }
     }
 
-    private void generate(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
-        new StructureGenerator(chunkMap, chunk, railType, blockFace).generate();
+    private void populate(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
+        new StructurePopulator(chunkMap, chunk, railType, blockFace).populate();
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("Generated %d-%d with %s-%s", chunk.getX(), chunk.getZ(), railType, blockFace));
+            customLogger.debug(String.format("Populated %d-%d with %s-%s", chunk.getX(), chunk.getZ(), railType, blockFace));
         }
     }
 }

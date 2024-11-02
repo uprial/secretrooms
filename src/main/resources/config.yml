@@ -21,7 +21,7 @@ minecart-max-speed: 4.0
 # For options, see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 #
 # WARNING: the mineshaft generation implemented in
-# src/main/java/com/gmail/uprial/railnet/generator/Structure.java
+# src/main/java/com/gmail/uprial/railnet/populator/Structure.java
 # won't be affected by this option.
 #
 minecart-slow-block: SMOOTH_STONE

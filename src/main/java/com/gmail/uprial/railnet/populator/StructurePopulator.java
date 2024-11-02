@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.generator;
+package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.map.ChunkMap;
 import com.gmail.uprial.railnet.map.RailType;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class StructureGenerator {
+class StructurePopulator {
     private final ChunkMap chunkMap;
     private final RailType railType;
     private final BlockFace blockFace;
@@ -31,7 +31,7 @@ class StructureGenerator {
     // WARNING: won't be affected by the "minecart-slow-block" option in config.yml
     private static final Material MINECART_SLOW_BLOCK = Material.SMOOTH_STONE;
 
-    StructureGenerator(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
+    StructurePopulator(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
         this.chunkMap = chunkMap;
         this.railType = railType;
         this.blockFace = blockFace;
@@ -50,10 +50,10 @@ class StructureGenerator {
             .put(RailType.SURFACE, 8)
             .build();
 
-    public void generate() {
+    public void populate() {
         final Integer yOffset = yOffsets.get(railType);
         if(yOffset == null) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Unknown rail type %s in %s", railType, chunkMap.getTitle()));
         }
 
@@ -94,7 +94,7 @@ class StructureGenerator {
         });
 
         if(!potentialNeighbors.contains(blockFace)) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Wrong block face %s in %s", blockFace, chunkMap.getTitle()));
         }
 
@@ -604,7 +604,7 @@ class StructureGenerator {
                                  final Material material, final BlockCallback callback) {
         final Vector vector = new Vector(x, y, z);
 
-        // Don't replace ladders and torches set in this generation with stone bricks
+        // Don't replace ladders and torches set in this population with stone bricks
         if(material == Material.GLASS || material == Material.STONE_BRICKS) {
             final Material alreadySetMaterial = alreadySet.get(vector);
             if((alreadySetMaterial != null)

@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.generator;
+package com.gmail.uprial.railnet.populator;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
@@ -36,7 +36,7 @@ public class VirtualChunk {
     void move(final int x, final int y, final int z) {
         vx += x;
         if(vx < 0) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Negative virtual X of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
 
@@ -44,7 +44,7 @@ public class VirtualChunk {
 
         vz += z;
         if(vz < 0) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Negative virtual Z of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
     }
@@ -64,7 +64,7 @@ public class VirtualChunk {
     int getMaxX() {
         // With any X-positive move, getting access to this block will raise an exception
         if(vx > 0) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Positive virtual X of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
         return 15;
@@ -73,7 +73,7 @@ public class VirtualChunk {
     int getMaxZ() {
         // With any Z-positive move, getting access to this block will raise an exception
         if(vz > 0) {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Positive virtual Z of %d-%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
         return 15;
@@ -98,7 +98,7 @@ public class VirtualChunk {
                 // 1:0 > 15:1
                 return chunk.getBlock(15 - z, y, x);
             default:
-                throw new InternalGeneratorError(
+                throw new InternalPopulatorError(
                         String.format("Wrong block face %s in %s", vBlockFace, title));
         }
     }
@@ -144,7 +144,7 @@ public class VirtualChunk {
             // Rotate rails
             ((Rail)blockData).setShape(blockFace2railShape.get(getBlockFacesSum(vBlockFace, blockFace)));
         } else {
-            throw new InternalGeneratorError(
+            throw new InternalPopulatorError(
                     String.format("Block %s at %d-%d-%d can't be rotated in %s", material, x, y, z, title));
         }
 

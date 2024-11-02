@@ -12,9 +12,9 @@ permissions:
   railnet.reload:
     description: Gives access to RailNet 'reload' command
     default: op
-  railnet.forcibly-generate:
-    description: Gives access to RailNet 'forcibly-generate' command
+  railnet.forcibly-populate:
+    description: Gives access to RailNet 'forcibly-populate' command
     default: op
-  railnet.generate-loaded:
-    description: Gives access to RailNet 'generate-loaded' command
+  railnet.populate-loaded:
+    description: Gives access to RailNet 'populate-loaded' command
     default: op
