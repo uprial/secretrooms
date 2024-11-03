@@ -4,6 +4,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
+import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.google.common.collect.Lists;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,7 +32,11 @@ public final class RailNet extends JavaPlugin {
         loadConfig(getConfig(), consoleLogger);
 
         populator = new Populator(this, consoleLogger,
-                Lists.newArrayList(new RailWayPopulator(this, consoleLogger)));
+                Lists.newArrayList(
+                        new RailWayPopulator(this, consoleLogger),
+                        new MineshaftPopulator(this, consoleLogger)
+                )
+        );
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
 
