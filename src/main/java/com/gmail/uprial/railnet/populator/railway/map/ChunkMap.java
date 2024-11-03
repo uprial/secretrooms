@@ -120,7 +120,7 @@ public class ChunkMap {
     BlockFace getBlockFace(final int modX, final int modZ) {
         final BlockFace blockFace = facing.get(modX * 4 + modZ);
         if(blockFace == null) {
-            throw new InternalConfigurationError(String.format("Wrong block face mod %d-%d in %s", modX, modZ, title));
+            throw new InternalConfigurationError(String.format("Wrong block face mod %d:%d in %s", modX, modZ, title));
         }
 
         return blockFace;

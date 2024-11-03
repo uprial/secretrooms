@@ -48,7 +48,7 @@ public class ChunkMapTest {
         final ChunkMap chunkMap = new ChunkMap("home2hell");
 
         e.expect(InternalConfigurationError.class);
-        e.expectMessage("Wrong block face mod 1-2 in home2hell");
+        e.expectMessage("Wrong block face mod 1:2 in home2hell");
 
         chunkMap.getBlockFace(1, 2);
     }
@@ -63,36 +63,36 @@ public class ChunkMapTest {
     @Test
     public void testAddWayInsideChunk() throws Exception {
         e.expect(InvalidMapException.class);
-        e.expectMessage("Zero-length way from 0-0 to 0-0 in home2hell");
+        e.expectMessage("Zero-length way from 0:0 to 0:0 in home2hell");
         new ChunkMap("home2hell").addWay(0, 0, 0, 0, RailType.UNDERGROUND);
     }
 
     @Test
     public void testAddWayX() throws Exception {
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1], 1:0=[UNDERGROUND-EAST#1]}",
                 new ChunkMap("home2hell").addWay(0, 0, 1, 0, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayZ() throws Exception {
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-SOUTH#1], 0-1=[UNDERGROUND-SOUTH#1]}",
+                "home2hell{0:0=[UNDERGROUND-SOUTH#1], 0:1=[UNDERGROUND-SOUTH#1]}",
                 new ChunkMap("home2hell").addWay(0, 0, 0, 1, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayXZ() throws Exception {
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 1-1=[UNDERGROUND-SOUTH#1]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1], 1:0=[UNDERGROUND-EAST#1], 1:1=[UNDERGROUND-SOUTH#1]}",
                 new ChunkMap("home2hell").addWay(0, 0, 1, 1, RailType.UNDERGROUND).toString());
     }
 
     @Test
     public void testAddWayXZLong() throws Exception {
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
-                        " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1], 1:0=[UNDERGROUND-EAST#1], 2:0=[UNDERGROUND-EAST#1]," +
+                        " 3:0=[UNDERGROUND-EAST#1], 3:1=[UNDERGROUND-SOUTH#1]}",
                 new ChunkMap("home2hell").addWay(0, 0, 3, 1, RailType.UNDERGROUND).toString());
     }
 
@@ -103,7 +103,7 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND in home2hell");
+        e.expectMessage("Chunk 0:0 already contains the same type UNDERGROUND in home2hell");
 
         chunkMap.wayId = initialWayId;
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
@@ -115,7 +115,7 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 0-0 already contains the same type UNDERGROUND in home2hell");
+        e.expectMessage("Chunk 0:0 already contains the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
     }
@@ -126,9 +126,9 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 1-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 2-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 3-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 3-1=[UNDERGROUND-SOUTH#1, SURFACE-SOUTH#2]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 1:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 2:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2], 3:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 3:1=[UNDERGROUND-SOUTH#1, SURFACE-SOUTH#2]}",
                 chunkMap.addWay(0, 0, 3, 1, RailType.SURFACE).toString());
     }
 
@@ -138,7 +138,7 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 1-1 is too close to another way 1-0 of the same type UNDERGROUND in home2hell");
+        e.expectMessage("Chunk 1:1 is too close to another way 1:0 of the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(1, 1, 3, 1, RailType.UNDERGROUND);
     }
@@ -149,7 +149,7 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         e.expect(InvalidMapException.class);
-        e.expectMessage("Chunk 3-2 is too close to another way 3-1 of the same type UNDERGROUND in home2hell");
+        e.expectMessage("Chunk 3:2 is too close to another way 3:1 of the same type UNDERGROUND in home2hell");
 
         chunkMap.addWay(2, 2, 3, 1, RailType.UNDERGROUND);
     }
@@ -160,10 +160,10 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
-                        " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]," +
-                        " 0--2=[UNDERGROUND-EAST#2], 1--2=[UNDERGROUND-EAST#2], 2--2=[UNDERGROUND-EAST#2]," +
-                        " 3--2=[UNDERGROUND-EAST#2], 3--3=[UNDERGROUND-NORTH#2]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1], 1:0=[UNDERGROUND-EAST#1], 2:0=[UNDERGROUND-EAST#1]," +
+                        " 3:0=[UNDERGROUND-EAST#1], 3:1=[UNDERGROUND-SOUTH#1]," +
+                        " 0:-2=[UNDERGROUND-EAST#2], 1:-2=[UNDERGROUND-EAST#2], 2:-2=[UNDERGROUND-EAST#2]," +
+                        " 3:-2=[UNDERGROUND-EAST#2], 3:-3=[UNDERGROUND-NORTH#2]}",
                 chunkMap.addWay(0, -2, 3, -3, RailType.UNDERGROUND).toString());
     }
 
@@ -173,10 +173,10 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1], 1-0=[UNDERGROUND-EAST#1], 2-0=[UNDERGROUND-EAST#1]," +
-                        " 3-0=[UNDERGROUND-EAST#1], 3-1=[UNDERGROUND-SOUTH#1]," +
-                        " 0--2=[SURFACE-EAST#2], 1--2=[SURFACE-EAST#2], 2--2=[SURFACE-EAST#2]," +
-                        " 3--2=[SURFACE-EAST#2], 3--3=[SURFACE-NORTH#2]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1], 1:0=[UNDERGROUND-EAST#1], 2:0=[UNDERGROUND-EAST#1]," +
+                        " 3:0=[UNDERGROUND-EAST#1], 3:1=[UNDERGROUND-SOUTH#1]," +
+                        " 0:-2=[SURFACE-EAST#2], 1:-2=[SURFACE-EAST#2], 2:-2=[SURFACE-EAST#2]," +
+                        " 3:-2=[SURFACE-EAST#2], 3:-3=[SURFACE-NORTH#2]}",
                 chunkMap.addWay(0, -2, 3, -3, RailType.SURFACE).toString());
     }
 
@@ -186,12 +186,12 @@ public class ChunkMapTest {
         chunkMap.addWay(0, 0, 3, 1, RailType.UNDERGROUND);
 
         assertEquals(
-                "home2hell{0-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 1-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 2-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 3-0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
-                        " 3-1=[UNDERGROUND-SOUTH#1]," +
-                        " 3--1=[SURFACE-NORTH#2]}",
+                "home2hell{0:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 1:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 2:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 3:0=[UNDERGROUND-EAST#1, SURFACE-EAST#2]," +
+                        " 3:1=[UNDERGROUND-SOUTH#1]," +
+                        " 3:-1=[SURFACE-NORTH#2]}",
                 chunkMap.addWay(0, 0, 3, -1, RailType.SURFACE).toString());
     }
 

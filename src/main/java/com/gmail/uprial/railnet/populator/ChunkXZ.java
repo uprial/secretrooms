@@ -38,6 +38,6 @@ public class ChunkXZ {
 
     @Override
     public String toString() {
-        return String.format("%d-%d", x, z);
+        return String.format("%d:%d", x, z);
     }
 }

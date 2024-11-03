@@ -17,8 +17,6 @@ import org.bukkit.util.StructureSearchResult;
 
 import java.util.*;
 
-import static com.gmail.uprial.railnet.common.Formatter.format;
-
 public class RailWayPopulator implements ChunkPopulator {
     private static final int LOCATE_RADIUS = 10_000;
 
@@ -190,9 +188,16 @@ public class RailWayPopulator implements ChunkPopulator {
                 new RailWayChunk(chunkMap, chunk, railType, blockFace).populate();
 
                 if(customLogger.isDebugMode()) {
-                    customLogger.debug(String.format("Populated %d-%d with %s-%s", chunk.getX(), chunk.getZ(), railType, blockFace));
+                    customLogger.debug(String.format("RailWay %s:%d:%d populated with %s-%s",
+                            chunk.getWorld().getName(), chunk.getX(), chunk.getZ(), railType, blockFace));
                 }
             });
         }
+    }
+
+    private static String format(Location location) {
+        return String.format("%s:%.0f:%.0f:%.0f",
+                location.getWorld(),
+                location.getX(), location.getY(), location.getZ());
     }
 }

@@ -10,12 +10,12 @@ public class ChunkXZTest {
     public void testAll() throws Exception {
         final ChunkXZ chunkXZ = new ChunkXZ(1, 2);
 
-        assertEquals("1-2", chunkXZ.toString());
+        assertEquals("1:2", chunkXZ.toString());
 
         assertEquals(1, chunkXZ.getX());
         assertEquals(2, chunkXZ.getZ());
 
-        assertEquals("3-0", chunkXZ.getSum(new ChunkXZ(2, -2)).toString());
+        assertEquals("3:0", chunkXZ.getSum(new ChunkXZ(2, -2)).toString());
 
         assertEquals(1002, chunkXZ.hashCode());
 
