@@ -207,11 +207,8 @@ public class Populator {
         So I check the chunks loaded on server start.
      */
     private void onWorldInit(final World world) {
-        final ChunkMap chunkMap = map.get(world);
-        if(chunkMap != null) {
-            for(final Chunk chunk : world.getLoadedChunks()) {
-                onChunkLoad(chunk);
-            }
+        for(final Chunk chunk : world.getLoadedChunks()) {
+            onChunkLoad(chunk);
         }
     }
 

@@ -11,27 +11,3 @@
 # This option can affect the performance.
 #
 debug: false
-
-# Minecart max speed, possible values: 0.0001 ... 1000
-minecart-max-speed: 4.0
-
-#
-# Material under rails that temporarily reduced minecart max speed.
-#
-# For options, see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-#
-# WARNING: the mineshaft generation implemented in
-# src/main/java/com/gmail/uprial/railnet/populator/Structure.java
-# won't be affected by this option.
-#
-minecart-slow-block: SMOOTH_STONE
-
-#
-# Minecart max speed above the slow block.
-#
-# According to https://minecraft.fandom.com/wiki/Minecart,
-# default minecart max speed is 0.4.
-#
-# Possible values: 0.0001 ... 1000
-#
-minecart-slow-speed: 0.4

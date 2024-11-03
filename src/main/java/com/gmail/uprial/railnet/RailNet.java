@@ -4,7 +4,6 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
-import com.gmail.uprial.railnet.listeners.VehicleListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
@@ -19,7 +18,6 @@ public final class RailNet extends JavaPlugin {
     private final File configFile = new File(getDataFolder(), CONFIG_FILE_NAME);
 
     private CustomLogger consoleLogger = null;
-    private RailNetConfig railNetConfig = null;
 
     private Populator populator = null;
 
@@ -28,24 +26,19 @@ public final class RailNet extends JavaPlugin {
         saveDefaultConfig();
 
         consoleLogger = new CustomLogger(getLogger());
-        railNetConfig = loadConfig(getConfig(), consoleLogger);
+        loadConfig(getConfig(), consoleLogger);
 
         populator = new Populator(this, consoleLogger);
 
-        getServer().getPluginManager().registerEvents(new VehicleListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
     }
 
-    public RailNetConfig getRailNetConfig() {
-        return railNetConfig;
-    }
-
     void reloadConfig(CustomLogger userLogger) {
         reloadConfig();
-        railNetConfig = loadConfig(getConfig(), userLogger, consoleLogger);
+        loadConfig(getConfig(), userLogger, consoleLogger);
     }
 
     void forciblyPopulate() {
@@ -74,24 +67,19 @@ public final class RailNet extends JavaPlugin {
         return YamlConfiguration.loadConfiguration(configFile);
     }
 
-    static RailNetConfig loadConfig(FileConfiguration config, CustomLogger customLogger) {
-        return loadConfig(config, customLogger, null);
+    static void loadConfig(FileConfiguration config, CustomLogger customLogger) {
+        loadConfig(config, customLogger, null);
     }
 
-    private static RailNetConfig loadConfig(FileConfiguration config, CustomLogger mainLogger, CustomLogger secondLogger) {
-        RailNetConfig railNetConfig = null;
+    private static void loadConfig(FileConfiguration config, CustomLogger mainLogger, CustomLogger secondLogger) {
         try {
             final boolean isDebugMode = RailNetConfig.isDebugMode(config, mainLogger);
             mainLogger.setDebugMode(isDebugMode);
             if(secondLogger != null) {
                 secondLogger.setDebugMode(isDebugMode);
             }
-
-            railNetConfig = RailNetConfig.getFromConfig(config, mainLogger);
         } catch (InvalidConfigException e) {
             mainLogger.error(e.getMessage());
         }
-
-        return railNetConfig;
     }
 }
