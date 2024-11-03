@@ -1,5 +1,6 @@
-package com.gmail.uprial.railnet.map;
+package com.gmail.uprial.railnet.populator.railway.map;
 
+import com.gmail.uprial.railnet.populator.ChunkXZ;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.block.BlockFace;
@@ -162,7 +163,7 @@ public class ChunkMap {
         return this;
     }
 
-    public boolean containsRailWays(final int x, final int z) {
+    boolean containsRailWays(final int x, final int z) {
         return map.containsKey(new ChunkXZ(x, z));
     }
 

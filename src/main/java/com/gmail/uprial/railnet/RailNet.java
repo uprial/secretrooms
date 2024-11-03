@@ -4,6 +4,8 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
+import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
+import com.google.common.collect.Lists;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
@@ -28,7 +30,8 @@ public final class RailNet extends JavaPlugin {
         consoleLogger = new CustomLogger(getLogger());
         loadConfig(getConfig(), consoleLogger);
 
-        populator = new Populator(this, consoleLogger);
+        populator = new Populator(this, consoleLogger,
+                Lists.newArrayList(new RailWayPopulator(this, consoleLogger)));
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
 
@@ -41,12 +44,8 @@ public final class RailNet extends JavaPlugin {
         loadConfig(getConfig(), userLogger, consoleLogger);
     }
 
-    void forciblyPopulate() {
-        populator.forciblyPopulate();
-    }
-
-    void populateLoaded() {
-        populator.populateLoaded();
+    void repopulateLoaded() {
+        populator.repopulateLoaded();
     }
 
     @Override

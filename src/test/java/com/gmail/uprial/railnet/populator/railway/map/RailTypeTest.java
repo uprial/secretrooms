@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.map;
+package com.gmail.uprial.railnet.populator.railway.map;
 
 import org.junit.Test;
 

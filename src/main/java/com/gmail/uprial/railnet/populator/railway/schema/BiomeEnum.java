@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.schema;
+package com.gmail.uprial.railnet.populator.railway.schema;
 
 import org.bukkit.block.Biome;
 

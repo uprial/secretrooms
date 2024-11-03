@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.map;
+package com.gmail.uprial.railnet.populator;
 
 public class ChunkXZ {
     final private int x;
@@ -9,15 +9,15 @@ public class ChunkXZ {
         this.z = z;
     }
 
-    int getX() {
+    public int getX() {
         return x;
     }
 
-    int getZ() {
+    public int getZ() {
         return z;
     }
 
-    ChunkXZ getSum(final ChunkXZ chunkXZ) {
+    public ChunkXZ getSum(final ChunkXZ chunkXZ) {
         return new ChunkXZ(this.x + chunkXZ.x, this.z + chunkXZ.z);
     }
 

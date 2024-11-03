@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.schema;
+package com.gmail.uprial.railnet.populator.railway.schema;
 
 import com.gmail.uprial.railnet.helpers.TestConfigBase;
 import org.bukkit.generator.structure.Structure;

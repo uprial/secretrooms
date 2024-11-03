@@ -1,7 +1,7 @@
-package com.gmail.uprial.railnet.populator;
+package com.gmail.uprial.railnet.populator.railway;
 
-import com.gmail.uprial.railnet.map.ChunkMap;
-import com.gmail.uprial.railnet.map.RailType;
+import com.gmail.uprial.railnet.populator.railway.map.ChunkMap;
+import com.gmail.uprial.railnet.populator.railway.map.RailType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class StructurePopulator {
+class RailWayChunk {
     private final ChunkMap chunkMap;
     private final RailType railType;
     private final BlockFace blockFace;
@@ -28,10 +28,7 @@ class StructurePopulator {
 
     private final VirtualChunk vc;
 
-    // WARNING: won't be affected by the "minecart-slow-block" option in config.yml
-    private static final Material MINECART_SLOW_BLOCK = Material.SMOOTH_STONE;
-
-    StructurePopulator(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
+    RailWayChunk(final ChunkMap chunkMap, final Chunk chunk, final RailType railType, final BlockFace blockFace) {
         this.chunkMap = chunkMap;
         this.railType = railType;
         this.blockFace = blockFace;
@@ -53,7 +50,7 @@ class StructurePopulator {
     public void populate() {
         final Integer yOffset = yOffsets.get(railType);
         if(yOffset == null) {
-            throw new InternalPopulatorError(
+            throw new RailWayPopulatorError(
                     String.format("Unknown rail type %s in %s", railType, chunkMap.getTitle()));
         }
 
@@ -94,7 +91,7 @@ class StructurePopulator {
         });
 
         if(!potentialNeighbors.contains(blockFace)) {
-            throw new InternalPopulatorError(
+            throw new RailWayPopulatorError(
                     String.format("Wrong block face %s in %s", blockFace, chunkMap.getTitle()));
         }
 
@@ -380,14 +377,6 @@ class StructurePopulator {
         vc.applyPhysicsOnce();
         set(4, 0, 4, Material.RAIL);
 
-        // Slow blocks
-        drawBox(MINECART_SLOW_BLOCK,
-                2, -1, 4,
-                4, -1, 4);
-        drawBox(MINECART_SLOW_BLOCK,
-                2, -1, 2,
-                2, -1, 0);
-
         /*
             Powered rails.
             CAUTION: REDSTONE_TORCH must be placed before POWERED_RAIL.
@@ -478,14 +467,6 @@ class StructurePopulator {
         // CAUTION: corner rail must be placed after straight two
         vc.applyPhysicsOnce();
         set(vc.getMaxX() - 4, 0, 4, Material.RAIL);
-
-        // Slow blocks
-        drawBox(MINECART_SLOW_BLOCK,
-                vc.getMaxX() - 4, -1, 4,
-                vc.getMaxX() - 6, -1, 4);
-        drawBox(MINECART_SLOW_BLOCK,
-                vc.getMaxX() - 2, -1, 2,
-                vc.getMaxX() - 2, -1, 4);
 
         /*
             Powered rails.

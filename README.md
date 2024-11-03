@@ -17,18 +17,14 @@ Increase minecart max speed and generate rail networks between popular structure
 
 `railnet reload` - reload config from disk
 
-`railnet forcibly-populate` - forcibly populate terrain
-
-`railnet populate-loaded` - populate loaded terrain
+`railnet repopulate-loaded` - repopulate loaded terrain
 
 ## Permissions
 
 * Access to 'reload' command:
 `railnet.reload` (default: op)
-* Access to 'forcibly-populate' command:
-`railnet.forcibly-populate` (default: op)
-* Access to 'populate-loaded' command:
-`railnet.populate-loaded` (default: op)
+* Access to 'repopulate-loaded' command:
+`railnet.repopulate-loaded` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)
