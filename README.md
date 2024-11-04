@@ -6,12 +6,12 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Increase minecart max speed and generate rail networks between popular structures.
+Generate rail networks between popular structures and loot in chests and furnaces.
 
 ## Features
 
-* Increase minecart max speed by default and decrease it with a specific block below.
 * Find hidden railways from a spawn location to a woodland mansion and an ocean monument.
+* Find uncommon and rare loot in chests and fuel and ingots in furnaces.
 
 ## Commands
 

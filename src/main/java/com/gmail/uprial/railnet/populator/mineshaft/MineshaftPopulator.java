@@ -4,17 +4,24 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
@@ -40,11 +47,18 @@ public class MineshaftPopulator implements ChunkPopulator {
                 }
             }
         }
+
+        for(final Entity entity : chunk.getEntities()) {
+            if(entity instanceof StorageMinecart) {
+                populateStorageMinecart((StorageMinecart)entity);
+            }
+        }
     }
 
     private interface BlockPopulator {
         void populate(final Block block);
     }
+
     private final Map<Material, BlockPopulator> blockPopulators = ImmutableMap.<Material, BlockPopulator>builder()
             .put(Material.CHEST, this::populateChest)
             .put(Material.FURNACE, this::populateFurnace)
@@ -60,156 +74,253 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     // Ideated from https://minecraft.wiki/w/Rarity
     // Material -> probability to drop
-    private final Map<Material, Integer> chestLootTable = ImmutableMap.<Material, Integer>builder()
-            .put(Material.IRON_INGOT, 50)
+    private final Map<Material, Double> chestLootTable = ImmutableMap.<Material, Double>builder()
+            .put(Material.IRON_INGOT, 50.0D)
 
-            .put(Material.GOLD_INGOT, 33)
-            .put(Material.LAPIS_LAZULI, 33)
-            .put(Material.REDSTONE, 33)
+            .put(Material.GOLD_INGOT, 33.0D)
+            .put(Material.LAPIS_LAZULI, 33.0D)
+            .put(Material.REDSTONE, 33.0D)
 
-            .put(Material.EMERALD, 20)
-            .put(Material.DIAMOND, 20)
+            .put(Material.ENDER_PEARL, 20.0D)
+            .put(Material.TNT, 20.0D)
 
-            .put(Material.GOLDEN_APPLE, 10)
-            .put(Material.EXPERIENCE_BOTTLE, 10)
+            .put(Material.DIAMOND, 10.0D)
+            .put(Material.END_CRYSTAL, 10.0D)
+            .put(Material.GOLDEN_APPLE, 10.0D)
+            .put(Material.GOLDEN_CARROT, 10.0D)
 
-            .put(Material.TOTEM_OF_UNDYING, 5)
-            .put(Material.ENCHANTED_GOLDEN_APPLE, 5)
+            .put(Material.ENCHANTED_GOLDEN_APPLE, 5.0D)
+            .put(Material.NETHERITE_SCRAP, 5.0D)
+            .put(Material.TOTEM_OF_UNDYING, 5.0D)
+            .put(Material.WITHER_SKELETON_SKULL, 5.0D)
 
-            .put(Material.WITHER_SKELETON_SKULL, 3)
-            .put(Material.NETHERITE_SCRAP, 3)
+            .put(Material.NETHERITE_HELMET, 2.0D)
+            .put(Material.NETHERITE_CHESTPLATE, 2.0D)
+            .put(Material.NETHERITE_LEGGINGS, 2.0D)
+            .put(Material.NETHERITE_BOOTS, 2.0D)
 
-            .put(Material.PLAYER_HEAD, 1)
-            .put(Material.ZOMBIE_HEAD, 1)
-            .put(Material.CREEPER_HEAD, 1)
-            .put(Material.SKELETON_SKULL, 1)
-            .put(Material.PIGLIN_HEAD, 1)
+            .put(Material.SKELETON_SKULL, 1.0D)
+            .put(Material.CREEPER_HEAD, 1.0D)
+            .put(Material.PIGLIN_HEAD, 1.0D)
+            .put(Material.PLAYER_HEAD, 1.0D)
+            .put(Material.ZOMBIE_HEAD, 1.0D)
 
             .build();
 
-    private void populateChest(final Block block) {
-        final Chest chest = (Chest)block.getState();
+    private final Set<Material> cloths = ImmutableSet.<Material>builder()
+            .add(Material.NETHERITE_HELMET)
+            .add(Material.NETHERITE_CHESTPLATE)
+            .add(Material.NETHERITE_LEGGINGS)
+            .add(Material.NETHERITE_BOOTS)
+            .build();
 
+    private void stackInventoryOnce(final String title, final Inventory inventory) {
+        final Map<Material,Integer> map = new HashMap<>();
+
+        for(int i = 0; i < inventory.getSize(); i++) {
+            ItemStack itemStack = inventory.getItem(i);
+            if(itemStack != null) {
+                if(map.containsKey(itemStack.getType())) {
+                    final int existingI = map.get(itemStack.getType());
+                    final ItemStack existingItemStack = inventory.getItem(existingI);
+                    if(existingItemStack.getAmount() < existingItemStack.getMaxStackSize()) {
+                        final int diff = Math.min(
+                                existingItemStack.getMaxStackSize() - existingItemStack.getAmount(),
+                                itemStack.getAmount()
+                        );
+
+                        if (customLogger.isDebugMode()) {
+                            customLogger.debug(String.format("%s merged: %d %s from item #%d moved to item #%d",
+                                    title, diff, itemStack.getType(), i, existingI));
+                        }
+
+                        existingItemStack.setAmount(existingItemStack.getAmount() + diff);
+                        if(itemStack.getAmount() > diff) {
+                            itemStack.setAmount(itemStack.getAmount() - diff);
+                        } else {
+                            inventory.setItem(i, null);
+                            return;
+                        }
+                    }
+                }
+
+                map.put(itemStack.getType(), i);
+            }
+        }
+
+        if (customLogger.isDebugMode()) {
+            customLogger.debug(String.format("%s doesn't have space", title));
+        }
+    }
+
+    private void populateInventory(final String title, final Inventory inventory) {
         /*
             getContents() returns a list of nulls
             even when the content isn't actually null,
             so I iterate the content by id.
          */
-        final Inventory inventory = chest.getBlockInventory();
-
-        final BiFunction<Block,Integer,String> format
-                = (final Block b, final Integer i)
-                -> String.format("%s %s item #%d", b.getType(), format(b), i);
-
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
-            if((itemStack != null) && (pass(10))) {
-                setAmount(format.apply(block, i), itemStack.getAmount(), itemStack, MAX_POWER);
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(10.0D))) {
+                setAmount(String.format("%s item #%d", title, i),
+                        itemStack.getAmount(), itemStack, 1, MAX_POWER);
             }
         }
 
-        for(Map.Entry<Material, Integer> entry : chestLootTable.entrySet()) {
+        for(Map.Entry<Material, Double> entry : chestLootTable.entrySet()) {
             if(pass(entry.getValue())) {
-                final int i = inventory.firstEmpty();
+                int i = inventory.firstEmpty();
                 if(i == -1) {
-                    // no empty slots
-                    break;
+                    // There are no empty slots.
+                    stackInventoryOnce(title, inventory);
+                    i = inventory.firstEmpty();
+                    if(i == -1) {
+                        /*
+                            There are no empty slots even after the stack.
+                            Potentially, other random items may be added, but it isn't interesting.
+                         */
+                        break;
+                    }
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                setAmount(format.apply(block, i),
-                        // The sequence is needed to properly update the amount
-                        0, inventory.getItem(i), entry.getValue() / 10);
+                if(cloths.contains(entry.getKey())) {
+                    final ItemStack itemStack = inventory.getItem(i);
+                    itemStack.addUnsafeEnchantment(Enchantment.PROTECTION, 4);
+
+                    final ArmorMeta armorMeta = (ArmorMeta)itemStack.getItemMeta();
+                    armorMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.RIB));
+                    itemStack.setItemMeta(armorMeta);
+                }
+
+                setAmount(String.format("%s item #%d", title, i),
+                        // The fresh getItem() is needed to properly update the amount
+                        0, inventory.getItem(i), 0, (int)Math.round(entry.getValue() / 10.0D));
             }
         }
+    }
+
+    private void populateChest(final Block block) {
+        populateInventory(format(block), ((Chest)block.getState()).getBlockInventory());
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("Chest %s populated", format(block)));
+            customLogger.debug(String.format("%s populated", format(block)));
+        }
+    }
+
+    private void populateStorageMinecart(final StorageMinecart storageMinecart) {
+        populateInventory(format(storageMinecart), storageMinecart.getInventory());
+
+        if(customLogger.isDebugMode()) {
+            customLogger.debug(String.format("%s populated", format(storageMinecart)));
         }
     }
 
     // Ideated from https://minecraft.wiki/w/Smelting
     // Material -> max power of drop
-    private final Map<Material,Integer> furnaceLootTable = ImmutableMap.<Material,Integer>builder()
+    private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
             .put(Material.COPPER_INGOT, MAX_POWER)
             .put(Material.COOKED_BEEF, MAX_POWER - 1)
             .put(Material.IRON_INGOT, MAX_POWER - 2)
             .put(Material.GOLD_INGOT, MAX_POWER - 3)
             .build();
 
+    private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
+            .put(Material.COAL, MAX_POWER)
+            .put(Material.COAL_BLOCK, MAX_POWER - 2)
+            .put(Material.LAVA_BUCKET, 0)
+            .build();
+
+
+    private interface ItemStackGetter {
+        ItemStack get();
+    }
+
+    private interface ItemStackSetter {
+        void set(final ItemStack itemStack);
+    }
+
+    private void updateItemStack(final String title,
+                                 final ItemStackGetter itemStackGetter,
+                                 final ItemStackSetter itemStackSetter,
+                                 final Map<Material,Integer> lootTable) {
+        ItemStack itemStack = itemStackGetter.get();
+        final int oldAmount;
+        final int maxPower;
+        if (itemStack == null) {
+            oldAmount = 0;
+            final Material material = getRandomSetItem(lootTable.keySet());
+            itemStackSetter.set(new ItemStack(material, 1));
+            // The sequence is needed to properly update the amount
+            itemStack = itemStackGetter.get();
+            maxPower = lootTable.get(material);
+        } else {
+            oldAmount = itemStack.getAmount();
+            maxPower = MAX_POWER - 1;
+        }
+
+        setAmount(title, oldAmount, itemStack, 0, maxPower);
+    }
+
     private void populateFurnace(final Block block) {
         final Furnace furnace = (Furnace)block.getState();
 
         final FurnaceInventory inventory = furnace.getInventory();
 
-        {
-            ItemStack fuel = inventory.getFuel();
-            final int oldAmount;
-            if (fuel == null) {
-                oldAmount = 0;
-                inventory.setFuel(new ItemStack(Material.COAL, 1));
-                // The sequence is needed to properly update the amount
-                fuel = inventory.getFuel();
-            } else {
-                oldAmount = fuel.getAmount();
-            }
+        updateItemStack(String.format("%s fuel", format(block)),
+                inventory::getFuel,
+                inventory::setFuel,
+                furnaceFuelTable);
 
-            setAmount(String.format("Furnace %s fuel", format(block)),
-                    oldAmount, fuel, MAX_POWER);
-        }
-
-        {
-            ItemStack result = inventory.getResult();
-            final int oldAmount;
-            final int maxPower;
-            if (result == null) {
-                oldAmount = 0;
-                final Material material = (new ArrayList<>(furnaceLootTable.keySet()))
-                        .get(random.nextInt(furnaceLootTable.size()));
-                inventory.setResult(new ItemStack(material, 1));
-                // The sequence is needed to properly update the amount
-                result = inventory.getResult();
-                maxPower = furnaceLootTable.get(material);
-            } else {
-                oldAmount = result.getAmount();
-                maxPower = MAX_POWER - 1;
-            }
-
-            setAmount(String.format("Furnace %s result", format(block)),
-                    oldAmount, result, maxPower);
-
-        }
+        updateItemStack(String.format("%s result", format(block)),
+                inventory::getResult,
+                inventory::setResult,
+                furnaceResultTable);
     }
 
     private String format(final Block block) {
-        return String.format("%s:%d:%d:%d",
+        return String.format("%s[%s:%d:%d:%d]",
+                block.getType(),
                 block.getWorld().getName(),
                 block.getX(), block.getY(), block.getZ());
     }
 
-    private void setAmount(final String title, final int oldAmount, final ItemStack itemStack, final int maxPower) {
+    private String format(final Entity entity) {
+        return String.format("%s[%s:%.0f:%.0f:%.0f]",
+                entity.getType(),
+                entity.getWorld().getName(),
+                entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ());
+    }
+
+    private void setAmount(final String title, final int oldAmount, final ItemStack itemStack,
+                           final int minPower, final int maxPower) {
         final int newAmount =
                 Math.min(
                         itemStack.getMaxStackSize(),
-                        itemStack.getAmount() * (int)Math.pow(2.0, random.nextInt(maxPower + 1))
+                        itemStack.getAmount() * (int)Math.pow(2.0, random.nextInt(minPower, maxPower + 1))
                 );
 
-        if(newAmount > itemStack.getAmount()) {
-            itemStack.setAmount(newAmount);
+        itemStack.setAmount(newAmount);
 
-            if (customLogger.isDebugMode()) {
-                if(oldAmount == 0) {
-                    customLogger.debug(String.format("%s %s set to %d",
-                            title, itemStack.getType(), newAmount));
-                } else {
-                    customLogger.debug(String.format("%s %s updated from %d to %d",
-                            title, itemStack.getType(), oldAmount, newAmount));
-                }
+        if (customLogger.isDebugMode()) {
+            if(oldAmount == 0) {
+                customLogger.debug(String.format("%s %s set to %d",
+                        title, itemStack.getType(), newAmount));
+            } else if(newAmount > oldAmount) {
+                customLogger.debug(String.format("%s %s updated from %d to %d",
+                        title, itemStack.getType(), oldAmount, newAmount));
+            } else {
+                customLogger.warning(String.format("%s %s kept as %d",
+                        title, itemStack.getType(), newAmount));
             }
         }
     }
 
-    private boolean pass(final int probability) {
-        return (random.nextInt(100) < probability);
+    private boolean pass(final double probability) {
+        return (random.nextDouble() * 100.0D) < probability;
+    }
+
+    private <T> T getRandomSetItem(final Set<T> set) {
+        return  (new ArrayList<>(set)).get(random.nextInt(set.size()));
     }
 }

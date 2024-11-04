@@ -34,6 +34,7 @@ public final class RailNet extends JavaPlugin {
         populator = new Populator(this, consoleLogger,
                 Lists.newArrayList(
                         new RailWayPopulator(this, consoleLogger),
+                        // Order does matter: RailWay is a type of Mineshaft to be populated.
                         new MineshaftPopulator(this, consoleLogger)
                 )
         );
