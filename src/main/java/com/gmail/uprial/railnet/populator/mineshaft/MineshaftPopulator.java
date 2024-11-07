@@ -4,7 +4,6 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,11 +24,14 @@ import java.util.*;
 
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
+    //private final RailNet plugin;
 
     private final Random random = new Random();
 
     // 2 ^ 6 = 64
     private final int MAX_POWER = 6;
+
+    private final double MAX_PERCENT = 100.0D;
 
     public MineshaftPopulator(final RailNet plugin, final CustomLogger customLogger) {
         //this.plugin = plugin;
@@ -72,57 +74,98 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
+    // ChestLootConfig
+    private static class CLT {
+        private final double probability;
+        private final int maxPower;
+        private final boolean isCloth;
+
+        CLT(final double probability) {
+            this(probability, (int)Math.round(probability / 10.0D), false);
+        }
+
+        CLT(final double probability, final int maxPower, final boolean isCloth) {
+            this.probability = probability;
+            this.maxPower = maxPower;
+            this.isCloth = isCloth;
+        }
+
+        double getProbability() {
+            return probability;
+        }
+
+        int getMaxPower() {
+            return maxPower;
+        }
+
+        boolean isCloth() {
+            return isCloth;
+        }
+    }
+
+    /*
+        According to https://minecraft.wiki/w/Food,
+        food with good saturation, which can't be found in chests.
+     */
+    private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
+
     // Ideated from https://minecraft.wiki/w/Rarity
-    // Material -> probability to drop
-    private final Map<Material, Double> chestLootTable = ImmutableMap.<Material, Double>builder()
-            .put(Material.IRON_INGOT, 50.0D)
+    private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
+            .put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0, false))
 
-            .put(Material.GOLD_INGOT, 33.0D)
-            .put(Material.LAPIS_LAZULI, 33.0D)
-            .put(Material.REDSTONE, 33.0D)
+            .put(Material.LAPIS_LAZULI, new CLT(33.0D))
+            .put(Material.REDSTONE, new CLT(33.0D))
 
-            .put(Material.ENDER_PEARL, 20.0D)
-            .put(Material.TNT, 20.0D)
+            .put(Material.ENDER_PEARL, new CLT(20.0D))
+            .put(Material.TNT, new CLT(20.0D))
 
-            .put(Material.DIAMOND, 10.0D)
-            .put(Material.END_CRYSTAL, 10.0D)
-            .put(Material.GOLDEN_APPLE, 10.0D)
-            .put(Material.GOLDEN_CARROT, 10.0D)
+            .put(Material.DIAMOND, new CLT(10.0D))
+            .put(Material.END_CRYSTAL, new CLT(10.0D))
+            .put(Material.GOLDEN_APPLE, new CLT(10.0D))
+            .put(Material.GOLDEN_CARROT, new CLT(10.0D))
 
-            .put(Material.ENCHANTED_GOLDEN_APPLE, 5.0D)
-            .put(Material.NETHERITE_SCRAP, 5.0D)
-            .put(Material.TOTEM_OF_UNDYING, 5.0D)
-            .put(Material.WITHER_SKELETON_SKULL, 5.0D)
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(5.0D))
+            .put(Material.NETHERITE_SCRAP, new CLT(5.0D))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(5.0D))
 
-            .put(Material.NETHERITE_HELMET, 2.0D)
-            .put(Material.NETHERITE_CHESTPLATE, 2.0D)
-            .put(Material.NETHERITE_LEGGINGS, 2.0D)
-            .put(Material.NETHERITE_BOOTS, 2.0D)
+            .put(Material.NETHERITE_HELMET, new CLT(2.0D, 0, true))
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, 0, true))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, 0, true))
+            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, 0, true))
 
-            .put(Material.SKELETON_SKULL, 1.0D)
-            .put(Material.CREEPER_HEAD, 1.0D)
-            .put(Material.PIGLIN_HEAD, 1.0D)
-            .put(Material.PLAYER_HEAD, 1.0D)
-            .put(Material.ZOMBIE_HEAD, 1.0D)
+            .put(Material.SKELETON_SKULL, new CLT(1.0D))
+            .put(Material.CREEPER_HEAD, new CLT(1.0D))
+            .put(Material.PIGLIN_HEAD, new CLT(1.0D))
+            .put(Material.PLAYER_HEAD, new CLT(1.0D))
+            .put(Material.ZOMBIE_HEAD, new CLT(1.0D))
 
-            .build();
-
-    private final Set<Material> cloths = ImmutableSet.<Material>builder()
-            .add(Material.NETHERITE_HELMET)
-            .add(Material.NETHERITE_CHESTPLATE)
-            .add(Material.NETHERITE_LEGGINGS)
-            .add(Material.NETHERITE_BOOTS)
             .build();
 
     private void stackInventoryOnce(final String title, final Inventory inventory) {
         final Map<Material,Integer> map = new HashMap<>();
 
+        /*
+            getContents() returns a list of nulls
+            even when the content isn't actually null,
+            so I iterate the content by id.
+         */
         for(int i = 0; i < inventory.getSize(); i++) {
             ItemStack itemStack = inventory.getItem(i);
+            /*
+                The current use case of calling stackInventoryOnce()
+                when inventory.firstEmpty() didn't give a result
+                makes itemStack not null,
+                but the check is for further safety.
+             */
             if(itemStack != null) {
                 if(map.containsKey(itemStack.getType())) {
                     final int existingI = map.get(itemStack.getType());
                     final ItemStack existingItemStack = inventory.getItem(existingI);
+                    /*
+                        Even assuming itemStack might be null in the future,
+                        existingItemStack can't be null
+                        because we put existingI in the map after checking for null.
+                     */
                     if(existingItemStack.getAmount() < existingItemStack.getMaxStackSize()) {
                         final int diff = Math.min(
                                 existingItemStack.getMaxStackSize() - existingItemStack.getAmount(),
@@ -159,6 +202,17 @@ public class MineshaftPopulator implements ChunkPopulator {
             even when the content isn't actually null,
             so I iterate the content by id.
          */
+
+        for(int i = 0; i < inventory.getSize(); i++) {
+            final ItemStack itemStack = inventory.getItem(i);
+            if((itemStack != null) && (itemStack.getType().equals(chestIdempotencyMarker))) {
+                if(customLogger.isDebugMode()) {
+                    customLogger.debug(String.format("%s item #%d already has an idempotency marker", title, i));
+                }
+                return;
+            }
+        }
+
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
             if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(10.0D))) {
@@ -167,8 +221,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             }
         }
 
-        for(Map.Entry<Material, Double> entry : chestLootTable.entrySet()) {
-            if(pass(entry.getValue())) {
+        for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
+            if(pass(entry.getValue().getProbability())) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -184,7 +238,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                if(cloths.contains(entry.getKey())) {
+                if(entry.getValue().isCloth()) {
                     final ItemStack itemStack = inventory.getItem(i);
                     itemStack.addUnsafeEnchantment(Enchantment.PROTECTION, 4);
 
@@ -195,7 +249,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
                 setAmount(String.format("%s item #%d", title, i),
                         // The fresh getItem() is needed to properly update the amount
-                        0, inventory.getItem(i), 0, (int)Math.round(entry.getValue() / 10.0D));
+                        0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
             }
         }
     }
@@ -220,9 +274,10 @@ public class MineshaftPopulator implements ChunkPopulator {
     // Material -> max power of drop
     private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
             .put(Material.COPPER_INGOT, MAX_POWER)
-            .put(Material.COOKED_BEEF, MAX_POWER - 1)
-            .put(Material.IRON_INGOT, MAX_POWER - 2)
+            .put(Material.IRON_INGOT, MAX_POWER - 1)
+            .put(chestIdempotencyMarker, MAX_POWER - 2)
             .put(Material.GOLD_INGOT, MAX_POWER - 3)
+            .put(Material.WITHER_SKELETON_SKULL, 0)
             .build();
 
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
@@ -245,21 +300,18 @@ public class MineshaftPopulator implements ChunkPopulator {
                                  final ItemStackSetter itemStackSetter,
                                  final Map<Material,Integer> lootTable) {
         ItemStack itemStack = itemStackGetter.get();
-        final int oldAmount;
-        final int maxPower;
-        if (itemStack == null) {
-            oldAmount = 0;
-            final Material material = getRandomSetItem(lootTable.keySet());
-            itemStackSetter.set(new ItemStack(material, 1));
-            // The sequence is needed to properly update the amount
-            itemStack = itemStackGetter.get();
-            maxPower = lootTable.get(material);
-        } else {
-            oldAmount = itemStack.getAmount();
-            maxPower = MAX_POWER - 1;
+        if(itemStack != null) {
+            if(customLogger.isDebugMode()) {
+                customLogger.debug(String.format("%s already has an idempotency marker", title));
+            }
+            return;
         }
 
-        setAmount(title, oldAmount, itemStack, 0, maxPower);
+        final Material material = getRandomSetItem(lootTable.keySet());
+        itemStackSetter.set(new ItemStack(material, 1));
+        // The sequence is needed to properly update the amount
+        itemStack = itemStackGetter.get();
+        setAmount(title, 0, itemStack, 0, lootTable.get(material));
     }
 
     private void populateFurnace(final Block block) {
@@ -317,7 +369,7 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private boolean pass(final double probability) {
-        return (random.nextDouble() * 100.0D) < probability;
+        return (random.nextDouble() * MAX_PERCENT) < probability;
     }
 
     private <T> T getRandomSetItem(final Set<T> set) {
