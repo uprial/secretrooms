@@ -1,4 +1,4 @@
-package com.gmail.uprial.railnet.populator.railway;
+package com.gmail.uprial.railnet.populator;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
@@ -27,16 +27,22 @@ public class VirtualChunk {
      */
     private boolean applyPhysicsOnce = false;
 
-    VirtualChunk(final String title, final Chunk chunk, final BlockFace blockFace) {
+    private static class VirtualChunkError extends RuntimeException {
+        VirtualChunkError(String message) {
+            super(message);
+        }
+    }
+
+    public VirtualChunk(final String title, final Chunk chunk, final BlockFace blockFace) {
         this.title = title;
         this.chunk = chunk;
         this.vBlockFace = blockFace;
     }
 
-    void move(final int x, final int y, final int z) {
+    public void move(final int x, final int y, final int z) {
         vx += x;
         if(vx < 0) {
-            throw new RailWayPopulatorError(
+            throw new VirtualChunkError(
                     String.format("Negative virtual X of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
 
@@ -44,36 +50,36 @@ public class VirtualChunk {
 
         vz += z;
         if(vz < 0) {
-            throw new RailWayPopulatorError(
+            throw new VirtualChunkError(
                     String.format("Negative virtual Z of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
     }
 
-    void rotate180() {
+    public void rotate180() {
         vBlockFace = getBlockFacesSum(vBlockFace, BlockFace.WEST);
     }
 
-    BlockFace getBlockFaceRotatedLeft() {
+    public BlockFace getBlockFaceRotatedLeft() {
         return getBlockFacesSum(vBlockFace, BlockFace.NORTH);
     }
 
-    void applyPhysicsOnce() {
+    public void applyPhysicsOnce() {
         this.applyPhysicsOnce = true;
     }
 
-    int getMaxX() {
+    public int getMaxX() {
         // With any X-positive move, getting access to this block will raise an exception
         if(vx > 0) {
-            throw new RailWayPopulatorError(
+            throw new VirtualChunkError(
                     String.format("Positive virtual X of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
         }
         return 15;
     }
 
-    int getMaxZ() {
+    public int getMaxZ() {
         // With any Z-positive move, getting access to this block will raise an exception
         if(vz > 0) {
-            throw new RailWayPopulatorError(
+            throw new VirtualChunkError(
                     String.format("Positive virtual Z of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
         }
         return 15;
@@ -98,7 +104,7 @@ public class VirtualChunk {
                 // 1:0 > 15:1
                 return chunk.getBlock(15 - z, y, x);
             default:
-                throw new RailWayPopulatorError(
+                throw new VirtualChunkError(
                         String.format("Wrong block face %s in %s", vBlockFace, title));
         }
     }
@@ -107,11 +113,11 @@ public class VirtualChunk {
         return getRotated(vx + x, vy + y, vz + z);
     }
 
-    Block get(final int x, final int y, final int z) {
+    public Block get(final int x, final int y, final int z) {
         return getMovedAndRotated(x, y, z);
     }
 
-    Block set(final int x, final int y, final int z, final Material material) {
+    public Block set(final int x, final int y, final int z, final Material material) {
         final Block block = get(x, y, z);
 
         block.setType(material, applyPhysicsOnce);
@@ -128,7 +134,7 @@ public class VirtualChunk {
             .put(BlockFace.SOUTH, Rail.Shape.NORTH_SOUTH)
             .build();
 
-    Block set(final int x, final int y, final int z,
+    public Block set(final int x, final int y, final int z,
              final Material material, final BlockFace blockFace) {
         // Can't use set() due to applyPhysicsOnce limitations
         // final Block block = set(x, y, z, material);
@@ -144,7 +150,7 @@ public class VirtualChunk {
             // Rotate rails
             ((Rail)blockData).setShape(blockFace2railShape.get(getBlockFacesSum(vBlockFace, blockFace)));
         } else {
-            throw new RailWayPopulatorError(
+            throw new VirtualChunkError(
                     String.format("Block %s at %d:%d:%d can't be rotated in %s", material, x, y, z, title));
         }
 
@@ -160,19 +166,23 @@ public class VirtualChunk {
         return block;
     }
 
-    int getMaxHeight() {
+    public int getMaxHeight() {
         return chunk.getWorld().getMaxHeight() - vy;
     }
 
-    int getSeaLevel() {
+    public int getMinHeight() {
+        return chunk.getWorld().getMinHeight() - vy;
+    }
+
+    public int getSeaLevel() {
         return chunk.getWorld().getSeaLevel() - vy;
     }
 
-    int getChunkX() {
+    public int getChunkX() {
         return chunk.getX();
     }
 
-    int getChunkZ() {
+    public int getChunkZ() {
         return chunk.getZ();
     }
 

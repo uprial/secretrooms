@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.railway;
 
+import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.railway.map.ChunkMap;
 import com.gmail.uprial.railnet.populator.railway.map.RailType;
 import com.google.common.collect.ImmutableMap;
@@ -55,9 +56,7 @@ class RailWayChunk {
         }
 
         // Build under sea level.
-        final int floorHeight = vc.getSeaLevel() - yOffset;
-
-        vc.move(0, floorHeight, 0);
+        vc.move(0, vc.getSeaLevel() - yOffset, 0);
         if (isBorderChunk()) {
             if(!neighbors.contains(blockFace)) {
                 vc.rotate180();

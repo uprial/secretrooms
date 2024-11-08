@@ -6,6 +6,7 @@ import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
+import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
 import com.google.common.collect.Lists;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +34,9 @@ public final class RailNet extends JavaPlugin {
 
         populator = new Populator(this, consoleLogger,
                 Lists.newArrayList(
+                        // Order does matter: RailWay is top priority
                         new RailWayPopulator(this, consoleLogger),
+                        new WhirlpoolPopulator(this, consoleLogger),
                         // Order does matter: RailWay is a type of Mineshaft to be populated.
                         new MineshaftPopulator(this, consoleLogger)
                 )
