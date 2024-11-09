@@ -57,7 +57,6 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                 return;
             }
 
-            // 10 blocks above the bottom
             for(int dx = -1; dx <= 1; dx++) {
                 for(int dz = -1; dz <= 1; dz++) {
                     int y = minY;
@@ -115,7 +114,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
             }
         }
         return true;
-    };
+    }
 
     final static String world = "world";
     final static int xRate = 4;
