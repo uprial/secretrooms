@@ -37,7 +37,7 @@ public final class RailNet extends JavaPlugin {
                         // Order does matter: RailWay is top priority
                         new RailWayPopulator(this, consoleLogger),
                         new WhirlpoolPopulator(this, consoleLogger),
-                        // Order does matter: RailWay is a type of Mineshaft to be populated.
+                        // Order does matter: populate chests in RailWay and Whirlpool.
                         new MineshaftPopulator(this, consoleLogger)
                 )
         );
