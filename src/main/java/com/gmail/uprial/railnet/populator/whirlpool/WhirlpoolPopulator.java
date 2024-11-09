@@ -4,6 +4,7 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
+import com.gmail.uprial.railnet.populator.VirtualItem;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,13 +14,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
-
 public class WhirlpoolPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
     //private final RailNet plugin;
-
-    private final Random random = new Random();
 
     VirtualChunk vc;
 
@@ -89,10 +86,11 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
                         inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
 
-                        final ItemStack itemStack = inventory.getItem(i);
-                        itemStack.addUnsafeEnchantment(Enchantment.LUCK_OF_THE_SEA, random.nextInt(4));
-                        itemStack.addUnsafeEnchantment(Enchantment.LURE, random.nextInt(4));
-                        itemStack.addUnsafeEnchantment(Enchantment.UNBREAKING, random.nextInt(4));
+                        // The fresh getItem() is needed to properly update the amount
+                        new VirtualItem(inventory.getItem(i))
+                                .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
+                                .ench(Enchantment.LURE, 0, 3)
+                                .ench(Enchantment.UNBREAKING, 0, 3);
                     }
                 }
             }

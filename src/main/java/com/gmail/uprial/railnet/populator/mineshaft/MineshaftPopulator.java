@@ -3,6 +3,7 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
+import com.gmail.uprial.railnet.populator.VirtualItem;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -15,8 +16,6 @@ import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
@@ -239,12 +238,10 @@ public class MineshaftPopulator implements ChunkPopulator {
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
                 if(entry.getValue().isCloth()) {
-                    final ItemStack itemStack = inventory.getItem(i);
-                    itemStack.addUnsafeEnchantment(Enchantment.PROTECTION, 4);
-
-                    final ArmorMeta armorMeta = (ArmorMeta)itemStack.getItemMeta();
-                    armorMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.RIB));
-                    itemStack.setItemMeta(armorMeta);
+                    // The fresh getItem() is needed to properly update the amount
+                    new VirtualItem(inventory.getItem(i))
+                            .ench(Enchantment.PROTECTION, 4)
+                            .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
                 }
 
                 setAmount(String.format("%s item #%d", title, i),
