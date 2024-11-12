@@ -3,7 +3,7 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
-import com.gmail.uprial.railnet.populator.VirtualItem;
+import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -77,16 +77,18 @@ public class MineshaftPopulator implements ChunkPopulator {
     private static class CLT {
         private final double probability;
         private final int maxPower;
-        private final boolean isCloth;
+        private final ItemConfig itemConfig;
 
-        CLT(final double probability) {
-            this(probability, (int)Math.round(probability / 10.0D), false);
-        }
-
-        CLT(final double probability, final int maxPower, final boolean isCloth) {
+        CLT(final double probability, final int maxPower) {
             this.probability = probability;
             this.maxPower = maxPower;
-            this.isCloth = isCloth;
+            this.itemConfig = null;
+        }
+
+        CLT(final double probability, final ItemConfig itemConfig) {
+            this.probability = probability;
+            this.maxPower = 0;
+            this.itemConfig = itemConfig;
         }
 
         double getProbability() {
@@ -97,8 +99,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             return maxPower;
         }
 
-        boolean isCloth() {
-            return isCloth;
+        ItemConfig getItemConfig() {
+            return itemConfig;
         }
     }
 
@@ -108,35 +110,57 @@ public class MineshaftPopulator implements ChunkPopulator {
      */
     private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
 
-    // Ideated from https://minecraft.wiki/w/Rarity
+    private final ItemConfig netheriteItemConfig =  new ItemConfig()
+            .ench(Enchantment.PROTECTION, 4)
+            .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
+
+    private final ItemConfig goldenItemConfig =  new ItemConfig()
+            .ench(Enchantment.PROTECTION, 4)
+            .ench(Enchantment.THORNS, 3)
+            .trim(TrimMaterial.GOLD, TrimPattern.RIB);
+
+    /*
+        Ideated from:
+            https://minecraft.wiki/w/Rarity
+            https://minecraft.wiki/w/Spawn_Egg
+     */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
-            .put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0, false))
+            .put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
 
-            .put(Material.LAPIS_LAZULI, new CLT(33.0D))
-            .put(Material.REDSTONE, new CLT(33.0D))
+            .put(Material.ENDER_PEARL, new CLT(33.0D, 3))
+            .put(Material.TNT, new CLT(33.0D, 3))
+            .put(Material.OBSIDIAN, new CLT(33.0D, 3))
 
-            .put(Material.ENDER_PEARL, new CLT(20.0D))
-            .put(Material.TNT, new CLT(20.0D))
+            .put(Material.DIAMOND, new CLT(20.0D, 2))
+            .put(Material.END_CRYSTAL, new CLT(20.0D, 2))
+            .put(Material.GOLDEN_APPLE, new CLT(20.0D, 2))
+            .put(Material.GOLDEN_CARROT, new CLT(20.0D, 2))
 
-            .put(Material.DIAMOND, new CLT(10.0D))
-            .put(Material.END_CRYSTAL, new CLT(10.0D))
-            .put(Material.GOLDEN_APPLE, new CLT(10.0D))
-            .put(Material.GOLDEN_CARROT, new CLT(10.0D))
+            .put(Material.GOLDEN_HELMET, new CLT(10.0D, goldenItemConfig))
+            .put(Material.GOLDEN_CHESTPLATE, new CLT(10.0D, goldenItemConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(10.0D, goldenItemConfig))
+            .put(Material.GOLDEN_BOOTS, new CLT(10.0D, goldenItemConfig))
 
-            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(5.0D))
-            .put(Material.NETHERITE_SCRAP, new CLT(5.0D))
-            .put(Material.TOTEM_OF_UNDYING, new CLT(5.0D))
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(5.0D, 0))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(5.0D, 0))
+            .put(Material.BEDROCK, new CLT(5.0D, 0))
+            .put(Material.SPAWNER, new CLT(5.0D,0))
 
-            .put(Material.NETHERITE_HELMET, new CLT(2.0D, 0, true))
-            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, 0, true))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, 0, true))
-            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, 0, true))
+            .put(Material.NETHERITE_HELMET, new CLT(3.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(3.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(3.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_BOOTS, new CLT(3.0D, netheriteItemConfig))
 
-            .put(Material.SKELETON_SKULL, new CLT(1.0D))
-            .put(Material.CREEPER_HEAD, new CLT(1.0D))
-            .put(Material.PIGLIN_HEAD, new CLT(1.0D))
-            .put(Material.PLAYER_HEAD, new CLT(1.0D))
-            .put(Material.ZOMBIE_HEAD, new CLT(1.0D))
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
+
+            .put(Material.SKELETON_SKULL, new CLT(1.0D, 0))
+            .put(Material.CREEPER_HEAD, new CLT(1.0D, 0))
+            .put(Material.PIGLIN_HEAD, new CLT(1.0D, 0))
+            .put(Material.PLAYER_HEAD, new CLT(1.0D, 0))
+            .put(Material.ZOMBIE_HEAD, new CLT(1.0D, 0))
 
             .build();
 
@@ -237,11 +261,9 @@ public class MineshaftPopulator implements ChunkPopulator {
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                if(entry.getValue().isCloth()) {
+                if(entry.getValue().getItemConfig() != null) {
                     // The fresh getItem() is needed to properly update the amount
-                    new VirtualItem(inventory.getItem(i))
-                            .ench(Enchantment.PROTECTION, 4)
-                            .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
+                    entry.getValue().getItemConfig().apply(inventory.getItem(i));
                 }
 
                 setAmount(String.format("%s item #%d", title, i),
@@ -270,11 +292,17 @@ public class MineshaftPopulator implements ChunkPopulator {
     // Ideated from https://minecraft.wiki/w/Smelting
     // Material -> max power of drop
     private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            .put(Material.COPPER_INGOT, MAX_POWER)
+            .put(Material.GOLD_NUGGET, MAX_POWER)
+            .put(Material.IRON_NUGGET, MAX_POWER)
+
             .put(Material.IRON_INGOT, MAX_POWER - 1)
-            .put(chestIdempotencyMarker, MAX_POWER - 2)
-            .put(Material.GOLD_INGOT, MAX_POWER - 3)
-            .put(Material.WITHER_SKELETON_SKULL, 0)
+            .put(Material.GOLD_INGOT, MAX_POWER - 1)
+
+            .put(Material.REDSTONE, MAX_POWER - 2)
+            .put(Material.LAPIS_LAZULI, MAX_POWER - 2)
+
+            .put(Material.NETHERITE_SCRAP, 0)
+            .put(Material.SPONGE, 0)
             .build();
 
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()

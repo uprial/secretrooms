@@ -4,7 +4,7 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
-import com.gmail.uprial.railnet.populator.VirtualItem;
+import com.gmail.uprial.railnet.populator.ItemConfig;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,6 +24,11 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         //this.plugin = plugin;
         this.customLogger = customLogger;
     }
+
+    private final ItemConfig fishingRodItemConfig = new ItemConfig()
+            .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
+            .ench(Enchantment.LURE, 0, 3)
+            .ench(Enchantment.UNBREAKING, 0, 3);
 
     @Override
     public void populate(final Chunk chunk) {
@@ -86,10 +91,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                         inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
 
                         // The fresh getItem() is needed to properly update the amount
-                        new VirtualItem(inventory.getItem(i))
-                                .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
-                                .ench(Enchantment.LURE, 0, 3)
-                                .ench(Enchantment.UNBREAKING, 0, 3);
+                        fishingRodItemConfig.apply(inventory.getItem(i));
                     }
                 }
             }
