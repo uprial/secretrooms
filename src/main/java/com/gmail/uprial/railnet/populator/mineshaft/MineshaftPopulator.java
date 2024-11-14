@@ -28,9 +28,9 @@ public class MineshaftPopulator implements ChunkPopulator {
     private final Random random = new Random();
 
     // 2 ^ 6 = 64
-    private final int MAX_POWER = 6;
+    private final static int MAX_POWER = 6;
 
-    private final double MAX_PERCENT = 100.0D;
+    private final static double MAX_PERCENT = 100.0D;
 
     public MineshaftPopulator(final RailNet plugin, final CustomLogger customLogger) {
         //this.plugin = plugin;
@@ -127,40 +127,40 @@ public class MineshaftPopulator implements ChunkPopulator {
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             .put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
 
-            .put(Material.ENDER_PEARL, new CLT(33.0D, 3))
-            .put(Material.TNT, new CLT(33.0D, 3))
-            .put(Material.OBSIDIAN, new CLT(33.0D, 3))
+            .put(Material.ENDER_PEARL, new CLT(20.0D, 2))
+            .put(Material.TNT, new CLT(20.0D, 2))
+            .put(Material.OBSIDIAN, new CLT(20.0D, 2))
 
-            .put(Material.DIAMOND, new CLT(20.0D, 2))
-            .put(Material.END_CRYSTAL, new CLT(20.0D, 2))
-            .put(Material.GOLDEN_APPLE, new CLT(20.0D, 2))
-            .put(Material.GOLDEN_CARROT, new CLT(20.0D, 2))
+            .put(Material.DIAMOND, new CLT(10.0D, 1))
+            .put(Material.END_CRYSTAL, new CLT(10.0D, 1))
+            .put(Material.GOLDEN_APPLE, new CLT(10.0D, 1))
+            .put(Material.GOLDEN_CARROT, new CLT(10.0D, 1))
 
-            .put(Material.GOLDEN_HELMET, new CLT(10.0D, goldenItemConfig))
-            .put(Material.GOLDEN_CHESTPLATE, new CLT(10.0D, goldenItemConfig))
-            .put(Material.GOLDEN_LEGGINGS, new CLT(10.0D, goldenItemConfig))
-            .put(Material.GOLDEN_BOOTS, new CLT(10.0D, goldenItemConfig))
+            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenItemConfig))
+            .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenItemConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenItemConfig))
+            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenItemConfig))
 
-            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(5.0D, 0))
-            .put(Material.TOTEM_OF_UNDYING, new CLT(5.0D, 0))
-            .put(Material.BEDROCK, new CLT(5.0D, 0))
-            .put(Material.SPAWNER, new CLT(5.0D,0))
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
+            .put(Material.BEDROCK, new CLT(3.0D, 0))
+            .put(Material.SPAWNER, new CLT(3.0D,0))
 
-            .put(Material.NETHERITE_HELMET, new CLT(3.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_CHESTPLATE, new CLT(3.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(3.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_BOOTS, new CLT(3.0D, netheriteItemConfig))
-
-            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.WITHER_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteItemConfig))
 
             .put(Material.SKELETON_SKULL, new CLT(1.0D, 0))
             .put(Material.CREEPER_HEAD, new CLT(1.0D, 0))
             .put(Material.PIGLIN_HEAD, new CLT(1.0D, 0))
             .put(Material.PLAYER_HEAD, new CLT(1.0D, 0))
             .put(Material.ZOMBIE_HEAD, new CLT(1.0D, 0))
+
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.5D, 0))
 
             .build();
 

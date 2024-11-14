@@ -10,6 +10,7 @@ import com.gmail.uprial.railnet.populator.railway.schema.SchemaDebug;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.structure.StructureType;
@@ -193,6 +194,10 @@ public class RailWayPopulator implements ChunkPopulator {
                 }
             });
         }
+    }
+
+    public static boolean isBorderBlock(final Material material) {
+        return RailWayChunk.isBorderBlock(material);
     }
 
     private static String format(Location location) {

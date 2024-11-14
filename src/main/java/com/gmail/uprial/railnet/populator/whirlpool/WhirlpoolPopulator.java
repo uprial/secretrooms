@@ -5,6 +5,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.ItemConfig;
+import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,6 +46,9 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                     while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
                         y--;
                     }
+                    while((y < vc.getSeaLevel()) && (isConflicting(x, y, z))) {
+                        y++;
+                    }
                     if(y < minY) {
                         minX = x;
                         minY = y;
@@ -69,29 +73,34 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                     while((y > vc.getMinHeight() + 1) && isWater(minX + dx, y,  minZ + dz)) {
                         y--;
                     }
-
-                    if(vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
-                        if(customLogger.isDebugMode()) {
-                            // Idempotency marker
-                            customLogger.debug(String.format("Whirlpool %s:%d:%d is already populated",
-                                    chunk.getWorld().getName(), chunk.getX(), chunk.getZ()));
-                        }
-                        return;
+                    while((y < vc.getSeaLevel()) && (isConflicting(minX + dx, y,  minZ + dz))) {
+                        y++;
                     }
 
-                    vc.applyPhysicsOnce();
-                    vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
+                    if(y < vc.getSeaLevel()) {
+                        if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
+                            if (customLogger.isDebugMode()) {
+                                // Idempotency marker
+                                customLogger.debug(String.format("Whirlpool %s:%d:%d is already populated",
+                                        chunk.getWorld().getName(), chunk.getX(), chunk.getZ()));
+                            }
+                            return;
+                        }
 
-                    if((dx == 0) && (dz == 0)) {
-                        final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
+                        vc.applyPhysicsOnce();
+                        vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
 
-                        final Inventory inventory = ((Chest)block.getState()).getBlockInventory();
-                        final int i = 0;
+                        if ((dx == 0) && (dz == 0) && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
+                            final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
 
-                        inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
+                            final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
+                            final int i = 0;
 
-                        // The fresh getItem() is needed to properly update the amount
-                        fishingRodItemConfig.apply(inventory.getItem(i));
+                            inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
+
+                            // The fresh getItem() is needed to properly update the amount
+                            fishingRodItemConfig.apply(inventory.getItem(i));
+                        }
                     }
                 }
             }
@@ -118,9 +127,13 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         return true;
     }
 
+    private boolean isConflicting(final int x, final int y, final int z) {
+        return RailWayPopulator.isBorderBlock(vc.get(x, y, z).getType());
+    }
+
     final static String world = "world";
-    final static int xRate = 4;
-    final static int zRate = 3;
+    final static int xRate = 13;
+    final static int zRate = 7;
 
     private boolean isAppropriate(final Chunk chunk) {
         return (chunk.getWorld().getName().equalsIgnoreCase(world))

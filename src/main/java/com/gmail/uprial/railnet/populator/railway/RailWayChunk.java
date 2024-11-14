@@ -162,7 +162,7 @@ class RailWayChunk {
                 final int iy = y;
                 iterateNeighbors(entranceX, entranceZ, (final int ix, final int iz) -> {
                     // I should've checked Z, but Z-1 isn't available in this chunk.
-                    observationBlock(
+                    borderBlock(
                             Integer.signum(ix - entranceX) +  Integer.signum(iz - entranceZ), 0, 0,
                             ix, iy, iz);
                 });
@@ -173,18 +173,18 @@ class RailWayChunk {
                 if ((iy % 10 == 0) && (iy < entranceY)) {
                     set(entranceX + 1, iy, entranceZ, Material.WALL_TORCH, BlockFace.SOUTH);
 
-                    observationBlock(
+                    borderBlock(
                             +1, 0, 0,
                             entranceX + 2, iy, entranceZ);
 
                     // I should've checked 0 0 -1, but Z-1 isn't available in this chunk.
-                    observationBlock(
+                    borderBlock(
                             +1, 0, 0,
                             entranceX + 1, iy, entranceZ - 1);
-                    observationBlock(
+                    borderBlock(
                                 0, 0, +1,
                             entranceX + 1, iy, entranceZ + 1);
-                    observationBlock(
+                    borderBlock(
                             +1, 0, 0,
                             entranceX + 1, iy - 1, entranceZ);
                 }
@@ -193,7 +193,7 @@ class RailWayChunk {
             // A block under ladder, if not two ladders go through it
             final Block block = vc.get(entranceX, - 1, entranceZ);
             if(!block.getType().equals(Material.LADDER)) {
-                observationBlock(
+                borderBlock(
                         0, -1, 0,
                         entranceX, - 1, entranceZ);
             }
@@ -228,18 +228,18 @@ class RailWayChunk {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            observationBox(
+            borderBox(
                     0, Integer.signum(y), 0,
                     startX, y, 2,
                     vc.getMaxX(), y, 4);
         }
 
         // Side walls
-        observationBox(
+        borderBox(
                 0, 0, -1,
                 startX, 0, 1,
                 vc.getMaxX(), 2, 1);
-        observationBox(
+        borderBox(
                 0, 0, +1,
                 startX, 0, 5,
                 vc.getMaxX(), 2, 5);
@@ -281,7 +281,7 @@ class RailWayChunk {
         tunnel(startX);
 
         // Back wall
-        observationBox(
+        borderBox(
                 -1, 0, 0,
                 startX, 0, 2,
                 startX, 2, 4);
@@ -320,31 +320,31 @@ class RailWayChunk {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            observationBox(
+            borderBox(
                     0, Integer.signum(y), 0,
                     0, y, 1,
                     4, y, 4);
-            observationBox(
+            borderBox(
                     0, Integer.signum(y), 0,
                     1, y, 0,
                     4, y, 0);
         }
 
         // Side walls
-        observationBox(
+        borderBox(
                 0, 0, -1,
                 0, 0, 1,
                 0, 2, 1);
-        observationBox(
+        borderBox(
                 -1, 0, 0,
                 1, 0, 0,
                 1, 2, 0);
 
-        observationBox(
+        borderBox(
                 0, 0, +1,
                 0, 0, 5,
                 4, 2, 5);
-        observationBox(
+        borderBox(
                 +1, 0, 0,
                 5, 0, 4,
                 5, 2, 0);
@@ -405,31 +405,31 @@ class RailWayChunk {
 
         // Roof and floor
         for(int y = -1; y <= 3; y += 4) {
-            observationBox(
+            borderBox(
                     0, Integer.signum(y), 0,
                     0, y, 1,
                     vc.getMaxX() - 2, y, 4);
-            observationBox(
+            borderBox(
                     0, Integer.signum(y), 0,
                     vc.getMaxX() - 2, y, 2,
                     vc.getMaxX() - 4, y, vc.getMaxZ());
         }
 
         // Side walls
-        observationBox(
+        borderBox(
                 0, 0, -1,
                 0, 0, 1,
                 vc.getMaxX() - 2, 2, 1);
-        observationBox(
+        borderBox(
                 +1, 0, 0,
                 vc.getMaxX() - 1, 0, 1,
                 vc.getMaxX() - 1, 2, vc.getMaxZ());
 
-        observationBox(
+        borderBox(
                 0, 0, +1,
                 0, 0, 5,
                 vc.getMaxX() - 6, 2, 5);
-        observationBox(
+        borderBox(
                 -1, 0, 0,
                 vc.getMaxX() - 5, 0, 6,
                 vc.getMaxX() - 5, 2, vc.getMaxZ());
@@ -522,9 +522,9 @@ class RailWayChunk {
         });
     }
 
-    private void observationBox(final int dx, final int dy, final int dz,
-                                final int x1, final int y1, final int z1,
-                                final int x2, final int y2, final int z2) {
+    private void borderBox(final int dx, final int dy, final int dz,
+                           final int x1, final int y1, final int z1,
+                           final int x2, final int y2, final int z2) {
 
         // Count potentially transparent blocks in the box
         final AtomicInteger transparent = new AtomicInteger(0);
@@ -539,7 +539,7 @@ class RailWayChunk {
         // If more than 10% of blocks in the box can be transparent
         if(transparent.intValue() > all / 10) {
             iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-                observationBlock(dx, dy, dz, x, y, z);
+                borderBlock(dx, dy, dz, x, y, z);
             });
         } else {
             iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
@@ -548,8 +548,8 @@ class RailWayChunk {
         }
     }
 
-    private void observationBlock(final int dx, final int dy, final int dz,
-                                  final int x, final int y, final int z) {
+    private void borderBlock(final int dx, final int dy, final int dz,
+                             final int x, final int y, final int z) {
         final Material material;
         if(!vc.get(x + dx, y + dy, z + dz).getType().isOccluding()) {
             material = Material.GLASS;
@@ -580,12 +580,16 @@ class RailWayChunk {
         Block call();
     }
 
+    static boolean isBorderBlock(final Material material) {
+        return material == Material.GLASS || material == Material.STONE_BRICKS;
+    }
+
     private Block checkOverrides(final int x, final int y, final int z,
                                  final Material material, final BlockCallback callback) {
         final Vector vector = new Vector(x, y, z);
 
         // Don't replace ladders and torches set in this population with stone bricks
-        if(material == Material.GLASS || material == Material.STONE_BRICKS) {
+        if(isBorderBlock(material)) {
             final Material alreadySetMaterial = alreadySet.get(vector);
             if((alreadySetMaterial != null)
                 && importantMaterials.contains(alreadySetMaterial)) {
