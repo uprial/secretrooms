@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.railway;
 
+import com.gmail.uprial.railnet.populator.ChunkXZ;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.railway.map.ChunkMap;
 import com.gmail.uprial.railnet.populator.railway.map.RailType;
@@ -106,9 +107,10 @@ class RailWayChunk {
     }
 
     private int getEntranceHeight(final int x, final int z) {
+        final int minEntranceY = 3;
         final AtomicInteger height = new AtomicInteger(vc.getMaxHeight());
 
-        while(height.intValue() > 0) {
+        while(height.intValue() > minEntranceY) {
             final AtomicInteger passableBlocks = new AtomicInteger(0);
             iterateNeighbors(x, z, (final int ix, final int iz) -> {
                 if (vc.get(ix, height.intValue(), iz).isPassable()) {
@@ -126,36 +128,38 @@ class RailWayChunk {
         return height.intValue();
     }
 
-    private int ladder() {
-        final int minEntranceY = 3;
+    // For a very specific case when two ladders are in the same chunk
+    private static final Map<ChunkXZ,Integer> EXISTING_LADDER_ENTRANCE_X = new HashMap<>();
 
+    private int ladder() {
         final int entranceX;
         final int entranceY;
         final int entranceZ = 1;
-        {
-        /*
-            Start from x = 2 because one block is used for walls,
-            and one more block is needed for proper work of drawObservationBox
-            what checks the neighboring blocks.
-         */
-            int nonFinalEntranceX = 2;
-            int nonFinalEntranceY = Math.max(minEntranceY, getEntranceHeight(nonFinalEntranceX, 1));
-            {
+
+        entranceX = EXISTING_LADDER_ENTRANCE_X.computeIfAbsent(new ChunkXZ(vc.getChunkX(), vc.getChunkZ()), k -> {
             /*
-                End at x = 11 because initialTunnel() requires at least 4 blocks
-                in the positive X direction.
+                Start from x = 2 because one block is used for walls,
+                and one more block is needed for proper work of drawObservationBox
+                what checks the neighboring blocks.
              */
+            int bestEntranceX = 2;
+            int bestEntranceY = getEntranceHeight(bestEntranceX, entranceZ);
+            {
+                /*
+                    End at x = 11 because initialTunnel() requires at least 4 blocks
+                    in the positive X direction.
+                 */
                 for (int x = 3; x <= 11; x++) {
-                    int xEntranceY = Math.max(minEntranceY, getEntranceHeight(x, 1));
-                    if (xEntranceY < nonFinalEntranceY) {
-                        nonFinalEntranceY = xEntranceY;
-                        nonFinalEntranceX = x;
+                    int xEntranceY = getEntranceHeight(x, entranceZ);
+                    if (xEntranceY < bestEntranceY) {
+                        bestEntranceX = x;
+                        bestEntranceY = xEntranceY;
                     }
                 }
             }
-            entranceX = nonFinalEntranceX;
-            entranceY = nonFinalEntranceY;
-        }
+            return bestEntranceX;
+        });
+        entranceY = getEntranceHeight(entranceX, entranceZ);
 
         {
             for(int y = 0; y <= entranceY; y++) {
@@ -211,8 +215,8 @@ class RailWayChunk {
         {
             // A ladder upwards, if any blocks are behind the entrance
             int y = entranceY + 1;
-            while (!vc.get(entranceX, y, 0).isPassable()) {
-                set(entranceX, y, 1, Material.LADDER, BlockFace.SOUTH);
+            while (!vc.get(entranceX, y, entranceZ - 1).isPassable()) {
+                set(entranceX, y, entranceZ, Material.LADDER, BlockFace.SOUTH);
                 y++;
             }
         }
