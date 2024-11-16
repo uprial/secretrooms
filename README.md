@@ -6,12 +6,13 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Generate rail networks between popular structures and loot in chests and furnaces.
+Generate rail from spawn to mansion and monument and rare loot in chests and furnaces.
 
 ## Features
 
-* Find hidden railways from a spawn location to a woodland mansion and an ocean monument.
-* Find uncommon and rare loot in chests and fuel and ingots in furnaces.
+* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
+* Uncommon and rare loot in chests and fuel and ingots in furnaces
+* Whirlpools in water with loot chests under magma blocks
 
 ## Commands
 
