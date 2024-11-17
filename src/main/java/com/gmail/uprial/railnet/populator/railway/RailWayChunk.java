@@ -41,11 +41,11 @@ class RailWayChunk {
     }
 
     /*
-     The tunnel height is 6 blocks, so the offsets are multiple of 6.
+     The tunnel height is 5 blocks, so the offsets are multiple of 5-1, without one border.
      Two additional blocks are to hide surface tunnels underwater.
      */
     private final static Map<RailType,Integer> yOffsets = ImmutableMap.<RailType,Integer>builder()
-            .put(RailType.UNDERGROUND, 14)
+            .put(RailType.UNDERGROUND, 12)
             .put(RailType.SURFACE, 8)
             .build();
 
@@ -131,26 +131,22 @@ class RailWayChunk {
     // For a very specific case when two ladders are in the same chunk
     private static final Map<ChunkXZ,Integer> EXISTING_LADDER_ENTRANCE_X = new HashMap<>();
 
-    private int ladder() {
-        final int entranceX;
-        final int entranceY;
-        final int entranceZ = 1;
-
-        entranceX = EXISTING_LADDER_ENTRANCE_X.computeIfAbsent(new ChunkXZ(vc.getChunkX(), vc.getChunkZ()), k -> {
+    private int getEntranceX(final int z) {
+        return EXISTING_LADDER_ENTRANCE_X.computeIfAbsent(new ChunkXZ(vc.getChunkX(), vc.getChunkZ()), k -> {
             /*
                 Start from x = 2 because one block is used for walls,
                 and one more block is needed for proper work of drawObservationBox
                 what checks the neighboring blocks.
              */
             int bestEntranceX = 2;
-            int bestEntranceY = getEntranceHeight(bestEntranceX, entranceZ);
+            int bestEntranceY = getEntranceHeight(bestEntranceX, z);
             {
                 /*
                     End at x = 11 because initialTunnel() requires at least 4 blocks
                     in the positive X direction.
                  */
                 for (int x = 3; x <= 11; x++) {
-                    int xEntranceY = getEntranceHeight(x, entranceZ);
+                    int xEntranceY = getEntranceHeight(x, z);
                     if (xEntranceY < bestEntranceY) {
                         bestEntranceX = x;
                         bestEntranceY = xEntranceY;
@@ -159,22 +155,32 @@ class RailWayChunk {
             }
             return bestEntranceX;
         });
-        entranceY = getEntranceHeight(entranceX, entranceZ);
+    }
+
+    private int ladder() {
+        final int entranceZ = 1;
+        final int entranceX = getEntranceX(entranceZ);
+        final int entranceY = getEntranceHeight(entranceX, entranceZ);
 
         {
+            final int secrecyY = 3;
+
             for(int y = 0; y <= entranceY; y++) {
                 final int iy = y;
                 iterateNeighbors(entranceX, entranceZ, (final int ix, final int iz) -> {
-                    // I should've checked Z, but Z-1 isn't available in this chunk.
-                    borderBlock(
-                            Integer.signum(ix - entranceX) +  Integer.signum(iz - entranceZ), 0, 0,
-                            ix, iy, iz);
+                    // Don't replace not passable iy > entranceY - secrecyY for entrance secrecy
+                    if((iy <= entranceY - secrecyY) || vc.get(ix, iy, iz).isPassable()) {
+                        // I should've checked Z, but Z-1 isn't available in this chunk.
+                        borderBlock(
+                                Integer.signum(ix - entranceX) + Integer.signum(iz - entranceZ), 0, 0,
+                                ix, iy, iz);
+                    }
                 });
 
                 set(entranceX, iy, entranceZ, Material.LADDER, BlockFace.SOUTH);
 
                 // A torch in the wall
-                if ((iy % 10 == 0) && (iy < entranceY)) {
+                if ((iy % 10 == 0) && (iy <= entranceY - secrecyY)) {
                     set(entranceX + 1, iy, entranceZ, Material.WALL_TORCH, BlockFace.SOUTH);
 
                     borderBlock(
@@ -212,6 +218,8 @@ class RailWayChunk {
             }
         }
 
+        /*
+        Removed for entrance secrecy
         {
             // A ladder upwards, if any blocks are behind the entrance
             int y = entranceY + 1;
@@ -220,6 +228,7 @@ class RailWayChunk {
                 y++;
             }
         }
+        */
 
         return entranceX;
     }

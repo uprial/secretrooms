@@ -116,7 +116,7 @@ public class RailWayPopulator implements ChunkPopulator {
 
                 final int modX = Integer.signum(to.getChunk().getX() - from.getChunk().getX());
                 final int modZ = Integer.signum(to.getChunk().getZ() - from.getChunk().getZ());
-                final int fromDistance = 0;
+                final int fromDistance = 1;
                 final int toDistance = 3;
 
                 chunkMap.addWay(
