@@ -46,6 +46,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                     while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
                         y--;
                     }
+                    // Don't overlap with other structures
                     while((y < vc.getSeaLevel()) && (isConflicting(x, y, z))) {
                         y++;
                     }
@@ -73,6 +74,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                     while((y > vc.getMinHeight() + 1) && isWater(minX + dx, y,  minZ + dz)) {
                         y--;
                     }
+                    // Don't overlap with other structures
                     while((y < vc.getSeaLevel()) && (isConflicting(minX + dx, y,  minZ + dz))) {
                         y++;
                     }
@@ -90,7 +92,9 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                         vc.applyPhysicsOnce();
                         vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
 
-                        if ((dx == 0) && (dz == 0) && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
+                        if ((dx == 0) && (dz == 0)
+                                // Sacrifice a chest when overlaps with other structures
+                                && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
                             final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
 
                             final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
