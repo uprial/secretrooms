@@ -1,10 +1,10 @@
 package com.gmail.uprial.railnet.populator.whirlpool;
 
-import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.ItemConfig;
+import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -17,12 +17,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class WhirlpoolPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
-    //private final RailNet plugin;
 
     VirtualChunk vc;
 
-    public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger) {
-        //this.plugin = plugin;
+    public WhirlpoolPopulator(final CustomLogger customLogger) {
         this.customLogger = customLogger;
     }
 
@@ -104,6 +102,14 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
                             // The fresh getItem() is needed to properly update the amount
                             fishingRodItemConfig.apply(inventory.getItem(i));
+
+                            /*
+                                The deepest water the more loot in the chest.
+
+                                One more population will happen if no idempotency marker is set.
+                             */
+                            int density = (int)Math.floor((vc.getSeaLevel() - y) / 10.0D);
+                            new MineshaftPopulator(customLogger).populateChest(block, density);
                         }
                     }
                 }

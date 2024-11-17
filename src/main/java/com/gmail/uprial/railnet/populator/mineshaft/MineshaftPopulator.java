@@ -1,12 +1,12 @@
 package com.gmail.uprial.railnet.populator.mineshaft;
 
-import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
@@ -23,7 +23,6 @@ import java.util.*;
 
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
-    //private final RailNet plugin;
 
     private final Random random = new Random();
 
@@ -32,8 +31,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     private final static double MAX_PERCENT = 100.0D;
 
-    public MineshaftPopulator(final RailNet plugin, final CustomLogger customLogger) {
-        //this.plugin = plugin;
+    public MineshaftPopulator(final CustomLogger customLogger) {
         this.customLogger = customLogger;
     }
 
@@ -66,11 +64,20 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.BLAST_FURNACE, this::populateFurnace)
             .build();
 
-    public void populateBlock(final Block block) {
+    private void populateBlock(final Block block) {
         final BlockPopulator blockPopulator = blockPopulators.get(block.getType());
         if(blockPopulator != null) {
             blockPopulator.populate(block);
         }
+    }
+
+    private final Map<String,Integer> worldDensity = ImmutableMap.<String,Integer>builder()
+            .put("world_nether", 1)
+            .put("world_the_end", 2)
+            .build();
+
+    private int getWorldDensity(final World world) {
+        return worldDensity.getOrDefault(world.getName().toLowerCase(Locale.ROOT), 0);
     }
 
     // ChestLootConfig
@@ -108,10 +115,11 @@ public class MineshaftPopulator implements ChunkPopulator {
         According to https://minecraft.wiki/w/Food,
         food with good saturation, which can't be found in chests.
      */
-    private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
+    //private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
 
     private final ItemConfig netheriteItemConfig =  new ItemConfig()
             .ench(Enchantment.PROTECTION, 4)
+            .ench(Enchantment.VANISHING_CURSE, 1)
             .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
 
     private final ItemConfig goldenItemConfig =  new ItemConfig()
@@ -125,16 +133,16 @@ public class MineshaftPopulator implements ChunkPopulator {
             https://minecraft.wiki/w/Spawn_Egg
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
-            .put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
+            //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
 
-            .put(Material.ENDER_PEARL, new CLT(20.0D, 2))
-            .put(Material.TNT, new CLT(20.0D, 2))
-            .put(Material.OBSIDIAN, new CLT(20.0D, 2))
+            .put(Material.ENDER_PEARL, new CLT(10.0D, 2))
+            .put(Material.TNT, new CLT(10.0D, 2))
+            .put(Material.OBSIDIAN, new CLT(10.0D, 2))
 
-            .put(Material.DIAMOND, new CLT(10.0D, 1))
-            .put(Material.END_CRYSTAL, new CLT(10.0D, 1))
-            .put(Material.GOLDEN_APPLE, new CLT(10.0D, 1))
-            .put(Material.GOLDEN_CARROT, new CLT(10.0D, 1))
+            .put(Material.DIAMOND, new CLT(7.5D, 1))
+            .put(Material.END_CRYSTAL, new CLT(7.5D, 1))
+            .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
+            .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
 
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenItemConfig))
             .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenItemConfig))
@@ -151,16 +159,17 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteItemConfig))
             .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteItemConfig))
 
-            .put(Material.SKELETON_SKULL, new CLT(1.0D, 0))
-            .put(Material.CREEPER_HEAD, new CLT(1.0D, 0))
-            .put(Material.PIGLIN_HEAD, new CLT(1.0D, 0))
-            .put(Material.PLAYER_HEAD, new CLT(1.0D, 0))
-            .put(Material.ZOMBIE_HEAD, new CLT(1.0D, 0))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
 
             .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.5D, 0))
             .put(Material.WITHER_SPAWN_EGG, new CLT(0.5D, 0))
-            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D, 0))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.5D, 0))
+
+            .put(Material.SKELETON_SKULL, new CLT(0.25D, 0))
+            .put(Material.CREEPER_HEAD, new CLT(0.25D, 0))
+            .put(Material.PIGLIN_HEAD, new CLT(0.25D, 0))
+            .put(Material.PLAYER_HEAD, new CLT(0.25D, 0))
+            .put(Material.ZOMBIE_HEAD, new CLT(0.25D, 0))
 
             .build();
 
@@ -219,13 +228,14 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    private void populateInventory(final String title, final Inventory inventory) {
+    private void populateInventory(final String title, final Inventory inventory, final int density) {
         /*
             getContents() returns a list of nulls
             even when the content isn't actually null,
             so I iterate the content by id.
          */
 
+        /*
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
             if((itemStack != null) && (itemStack.getType().equals(chestIdempotencyMarker))) {
@@ -235,17 +245,18 @@ public class MineshaftPopulator implements ChunkPopulator {
                 return;
             }
         }
+        */
 
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
-            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(10.0D))) {
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(10.0D, density))) {
                 setAmount(String.format("%s item #%d", title, i),
                         itemStack.getAmount(), itemStack, 1, MAX_POWER);
             }
         }
 
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-            if(pass(entry.getValue().getProbability())) {
+            if(pass(entry.getValue().getProbability(), density)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -274,18 +285,24 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private void populateChest(final Block block) {
-        populateInventory(format(block), ((Chest)block.getState()).getBlockInventory());
+        populateChest(block, getWorldDensity(block.getWorld()));
+    }
+
+    public void populateChest(final Block block, final int density) {
+        populateInventory(format(block), ((Chest)block.getState()).getBlockInventory(), density);
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("%s populated", format(block)));
+            customLogger.debug(String.format("%s populated with density %d", format(block), density));
         }
     }
 
     private void populateStorageMinecart(final StorageMinecart storageMinecart) {
-        populateInventory(format(storageMinecart), storageMinecart.getInventory());
+        final int density = getWorldDensity(storageMinecart.getWorld());
+
+        populateInventory(format(storageMinecart), storageMinecart.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("%s populated", format(storageMinecart)));
+            customLogger.debug(String.format("%s populated with density %d", format(storageMinecart), density));
         }
     }
 
@@ -393,8 +410,8 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    private boolean pass(final double probability) {
-        return (random.nextDouble() * MAX_PERCENT) < probability;
+    private boolean pass(final double probability, final int density) {
+        return (random.nextDouble() * MAX_PERCENT) < (probability * (1.0D + density));
     }
 
     private <T> T getRandomSetItem(final Set<T> set) {

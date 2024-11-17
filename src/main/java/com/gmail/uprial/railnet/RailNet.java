@@ -36,9 +36,9 @@ public final class RailNet extends JavaPlugin {
                 Lists.newArrayList(
                         // Order does matter: RailWay is top priority
                         new RailWayPopulator(this, consoleLogger),
-                        new WhirlpoolPopulator(this, consoleLogger),
+                        new WhirlpoolPopulator(consoleLogger),
                         // Order does matter: populate chests in RailWay and Whirlpool.
-                        new MineshaftPopulator(this, consoleLogger)
+                        new MineshaftPopulator(consoleLogger)
                 )
         );
 
