@@ -54,7 +54,7 @@ public class Populator {
         final ChunkXZ chunkXZ = new ChunkXZ(chunk.getX(), chunk.getZ());
         if(!alreadyLoadedInWorld.contains(chunkXZ)) {
             try {
-                onChunkLoadOncePerServetSession(chunk);
+                onChunkLoadOncePerServerSession(chunk);
             } finally {
                 alreadyLoadedInWorld.add(chunkXZ);
             }
@@ -70,7 +70,7 @@ public class Populator {
      */
     final Material secretMaterial = Material.BARRIER;
 
-    public void onChunkLoadOncePerServetSession(final Chunk chunk) {
+    public void onChunkLoadOncePerServerSession(final Chunk chunk) {
         final Block block = chunk.getBlock(0, chunk.getWorld().getMinHeight(), 0);
         if (!block.getType().equals(secretMaterial)) {
             try {

@@ -74,6 +74,10 @@ public class ItemConfig {
     public ItemConfig() {
     }
 
+    public ItemConfig ench(final Enchantment enchantment) {
+        return ench(enchantment, 1);
+    }
+
     public ItemConfig ench(final Enchantment enchantment, final int level) {
         configs.add(new ench1(enchantment, level));
         return this;

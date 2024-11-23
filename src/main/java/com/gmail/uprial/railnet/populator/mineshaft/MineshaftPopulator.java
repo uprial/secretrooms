@@ -117,15 +117,25 @@ public class MineshaftPopulator implements ChunkPopulator {
      */
     //private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
 
-    private final ItemConfig netheriteItemConfig =  new ItemConfig()
-            .ench(Enchantment.PROTECTION, 4)
-            .ench(Enchantment.VANISHING_CURSE, 1)
+    private final ItemConfig netheriteClothConfig =  new ItemConfig()
+            // Survival maximum level is 4, here it's 5
+            .ench(Enchantment.PROTECTION, 5)
+            .ench(Enchantment.VANISHING_CURSE)
             .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
 
-    private final ItemConfig goldenItemConfig =  new ItemConfig()
+    private final ItemConfig goldenClothConfig =  new ItemConfig()
             .ench(Enchantment.PROTECTION, 4)
             .ench(Enchantment.THORNS, 3)
             .trim(TrimMaterial.GOLD, TrimPattern.RIB);
+
+    private final ItemConfig netheriteToolConfig =  new ItemConfig()
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.EFFICIENCY, 10)
+            .ench(Enchantment.VANISHING_CURSE);
+
+    private final ItemConfig goldenToolConfig =  new ItemConfig()
+            .ench(Enchantment.EFFICIENCY, 5)
+            .ench(Enchantment.FORTUNE, 3);
 
     /*
         Ideated from:
@@ -144,20 +154,24 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
             .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
 
-            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenItemConfig))
-            .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenItemConfig))
-            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenItemConfig))
-            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenItemConfig))
+            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig))
+            .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenClothConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenClothConfig))
+            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenClothConfig))
+
+            .put(Material.GOLDEN_PICKAXE, new CLT(5.0D, goldenToolConfig))
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
             .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
             .put(Material.BEDROCK, new CLT(3.0D, 0))
             .put(Material.SPAWNER, new CLT(3.0D,0))
 
-            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteItemConfig))
-            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteItemConfig))
+            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteClothConfig))
+
+            .put(Material.NETHERITE_PICKAXE, new CLT(2.0D, netheriteToolConfig))
 
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(1.0D, 0))
             .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
