@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet.populator.mineshaft;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
@@ -24,12 +25,10 @@ import java.util.*;
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
 
-    private final Random random = new Random();
+    private final static Random RANDOM = new Random();
 
     // 2 ^ 6 = 64
     private final static int MAX_POWER = 6;
-
-    private final static double MAX_PERCENT = 100.0D;
 
     public MineshaftPopulator(final CustomLogger customLogger) {
         this.customLogger = customLogger;
@@ -243,6 +242,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
+    private final static double MULTIPLY_PROBABILITY = 10.0D;
     private void populateInventory(final String title, final Inventory inventory, final int density) {
         /*
             getContents() returns a list of nulls
@@ -264,7 +264,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
-            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(10.0D, density))) {
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(MULTIPLY_PROBABILITY, density))) {
                 setAmount(String.format("%s item #%d", title, i),
                         itemStack.getAmount(), itemStack, 1, MAX_POWER);
             }
@@ -406,7 +406,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         final int newAmount =
                 Math.min(
                         itemStack.getMaxStackSize(),
-                        itemStack.getAmount() * (int)Math.pow(2.0, random.nextInt(minPower, maxPower + 1))
+                        itemStack.getAmount() * (int)Math.pow(2.0, RANDOM.nextInt(minPower, maxPower + 1))
                 );
 
         itemStack.setAmount(newAmount);
@@ -426,10 +426,10 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private boolean pass(final double probability, final int density) {
-        return (random.nextDouble() * MAX_PERCENT) < (probability * (1.0D + density));
+        return Probability.PASS(probability * (1.0D + density));
     }
 
     private <T> T getRandomSetItem(final Set<T> set) {
-        return  (new ArrayList<>(set)).get(random.nextInt(set.size()));
+        return  (new ArrayList<>(set)).get(RANDOM.nextInt(set.size()));
     }
 }

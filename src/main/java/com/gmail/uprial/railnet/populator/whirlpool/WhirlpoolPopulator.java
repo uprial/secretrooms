@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet.populator.whirlpool;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.ItemConfig;
@@ -24,6 +25,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         this.customLogger = customLogger;
     }
 
+    private final static double FISHING_ROD_PROBABILITY = 10.0D;
     private final ItemConfig fishingRodItemConfig = new ItemConfig()
             .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
             .ench(Enchantment.LURE, 0, 3)
@@ -98,10 +100,12 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
                             final int i = 0;
 
-                            inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
+                            if(Probability.PASS(FISHING_ROD_PROBABILITY)) {
+                                inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
 
-                            // The fresh getItem() is needed to properly update the amount
-                            fishingRodItemConfig.apply(inventory.getItem(i));
+                                // The fresh getItem() is needed to properly update the amount
+                                fishingRodItemConfig.apply(inventory.getItem(i));
+                            }
 
                             /*
                                 The deepest water the more loot in the chest.

@@ -315,7 +315,7 @@ class RailWayChunk {
         final Chest chest = (Chest)block.getState();
         final Inventory inventory = chest.getBlockInventory();
         for(int i = 0; i < 10; i++) {
-            inventory.addItem(new ItemStack(Material.MINECART));
+            inventory.addItem(new ItemStack(Material.MINECART, 1));
         }
     }
 

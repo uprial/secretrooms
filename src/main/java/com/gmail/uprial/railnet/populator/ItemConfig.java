@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Random;
 
 public class ItemConfig {
+    private final static Random RANDOM = new Random();
+
     private interface VirtualItemConfig {
         void apply(final ItemStack itemStack);
     }
@@ -38,8 +40,6 @@ public class ItemConfig {
         final int level1;
         final int level2;
 
-        private final Random random = new Random();
-
         ench2(final Enchantment enchantment, final int level1, final int level2) {
             this.enchantment = enchantment;
             this.level1 = level1;
@@ -48,15 +48,13 @@ public class ItemConfig {
 
         @Override
         public void apply(final ItemStack itemStack) {
-            itemStack.addUnsafeEnchantment(enchantment, random.nextInt(level1, level2 + 1));
+            itemStack.addUnsafeEnchantment(enchantment, RANDOM.nextInt(level1, level2 + 1));
         }
     }
 
     private static class trim implements VirtualItemConfig {
         final TrimMaterial material;
         final TrimPattern pattern;
-
-        private final Random random = new Random();
 
         trim(final TrimMaterial material, final TrimPattern pattern) {
             this.material = material;
@@ -75,11 +73,7 @@ public class ItemConfig {
     }
 
     public ItemConfig ench(final Enchantment enchantment) {
-        return ench(enchantment, 1);
-    }
-
-    public ItemConfig ench(final Enchantment enchantment, final int level) {
-        configs.add(new ench1(enchantment, level));
+        configs.add(new ench1(enchantment, 1));
         return this;
     }
 
