@@ -153,10 +153,15 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
             .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
 
-            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig))
+            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig
+                    .ench(Enchantment.RESPIRATION, 0, 3)
+                    .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
             .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenClothConfig))
-            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenClothConfig))
-            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenClothConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenClothConfig
+                    .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
+            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenClothConfig
+                    .ench(Enchantment.FEATHER_FALLING, 0, 4)
+                    .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
             .put(Material.GOLDEN_PICKAXE, new CLT(5.0D, goldenToolConfig))
 
@@ -165,10 +170,15 @@ public class MineshaftPopulator implements ChunkPopulator {
             //.put(Material.BEDROCK, new CLT(3.0D, 0))
             .put(Material.SPAWNER, new CLT(3.0D,0))
 
-            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig
+                    .ench(Enchantment.RESPIRATION, 0, 3)
+                    .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
             .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, netheriteClothConfig))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteClothConfig))
-            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteClothConfig
+                    .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
+            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteClothConfig
+                    .ench(Enchantment.FEATHER_FALLING, 0, 4)
+                    .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
             .put(Material.NETHERITE_PICKAXE, new CLT(2.0D, netheriteToolConfig))
 
