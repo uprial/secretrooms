@@ -7,6 +7,7 @@ import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
+import com.google.common.hash.Hashing;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -145,13 +146,19 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         return RailWayPopulator.isBorderBlock(vc.get(x, y, z).getType());
     }
 
+    static long getHash(final long l) {
+        return Hashing.sha256().hashLong(l).asLong();
+    }
+
+    static boolean isAppropriate(final int x, final int z, final long seed, final long density) {
+        return (getHash(seed * x * z) % density) == 0;
+    }
+
     final static String world = "world";
-    final static int xRate = 13;
-    final static int zRate = 7;
+    final static int density = 100;
 
     private boolean isAppropriate(final Chunk chunk) {
         return (chunk.getWorld().getName().equalsIgnoreCase(world))
-                && (Math.abs(chunk.getWorld().getSeed()) % xRate == Math.abs(chunk.getX()) % xRate)
-                && (Math.abs(chunk.getWorld().getSeed()) % zRate == Math.abs(chunk.getZ()) % zRate);
+                && isAppropriate(chunk.getX(), chunk.getZ(), chunk.getWorld().getSeed(), density);
     }
 }
