@@ -163,7 +163,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
             .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
-            .put(Material.BEDROCK, new CLT(3.0D, 0))
+            //.put(Material.BEDROCK, new CLT(3.0D, 0))
             .put(Material.SPAWNER, new CLT(3.0D,0))
 
             .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig))
@@ -178,6 +178,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.5D, 0))
             .put(Material.WITHER_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.WARDEN_SPAWN_EGG, new CLT(0.5D, 0))
 
             .put(Material.SKELETON_SKULL, new CLT(0.25D, 0))
             .put(Material.CREEPER_HEAD, new CLT(0.25D, 0))
