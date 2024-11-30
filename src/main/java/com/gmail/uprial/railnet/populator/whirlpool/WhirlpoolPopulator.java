@@ -2,11 +2,13 @@ package com.gmail.uprial.railnet.populator.whirlpool;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.Hashing;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -17,6 +19,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+import java.util.Random;
+
 public class WhirlpoolPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
 
@@ -26,11 +31,28 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         this.customLogger = customLogger;
     }
 
-    private final static double FISHING_ROD_PROBABILITY = 10.0D;
     private final ItemConfig fishingRodItemConfig = new ItemConfig()
             .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
             .ench(Enchantment.LURE, 0, 3)
             .ench(Enchantment.UNBREAKING, 0, 3);
+
+    /*
+        Ideated from:
+            https://minecraft.wiki/w/Fishing
+     */
+    private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
+            // 60%/2=30% for up to 2^(6-2)=16
+            .put(Material.COD, new CLT(30.0D, CLT.MAX_POWER - 2))
+            // 25%/2=12.5% for up to 16
+            .put(Material.SALMON, new CLT(12.5D, CLT.MAX_POWER - 2))
+
+            // 13% for 1-4
+            .put(Material.PUFFERFISH, new CLT(13.0D, 2))
+            // 2*2=4% for 1-4
+            .put(Material.TROPICAL_FISH, new CLT(4.0D, 2))
+
+            .put(Material.FISHING_ROD, new CLT(10.0D, fishingRodItemConfig))
+            .build();
 
     @Override
     public void populate(final Chunk chunk) {
@@ -99,13 +121,25 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
 
                             final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
-                            final int i = 0;
+                            int i = 0;
 
-                            if(Probability.PASS(FISHING_ROD_PROBABILITY)) {
-                                inventory.setItem(i, new ItemStack(Material.FISHING_ROD, 1));
+                            for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
+                                if(Probability.PASS(entry.getValue().getProbability())) {
+                                    final int amount = entry.getValue().getRandomAmount();
 
-                                // The fresh getItem() is needed to properly update the amount
-                                fishingRodItemConfig.apply(inventory.getItem(i));
+                                    inventory.setItem(i, new ItemStack(entry.getKey(), amount));
+
+                                    if (entry.getValue().getItemConfig() != null) {
+                                        // The fresh getItem() is needed to properly update the amount
+                                        entry.getValue().getItemConfig().apply(inventory.getItem(i));
+                                    }
+
+                                    if (customLogger.isDebugMode()) {
+                                        customLogger.debug(String.format("%s item #%d %s set to %d",
+                                                format(block), i, entry.getKey(), amount));
+                                    }
+                                    i++;
+                                }
                             }
 
                             /*
@@ -152,6 +186,13 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
     static boolean isAppropriate(final int x, final int z, final long seed, final long density) {
         return (getHash(seed * x * z) % density) == 0;
+    }
+
+    private String format(final Block block) {
+        return String.format("%s[%s:%d:%d:%d]",
+                block.getType(),
+                block.getWorld().getName(),
+                block.getX(), block.getY(), block.getZ());
     }
 
     final static String world = "world";

@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
@@ -26,9 +27,6 @@ public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
 
     private final static Random RANDOM = new Random();
-
-    // 2 ^ 6 = 64
-    private final static int MAX_POWER = 6;
 
     public MineshaftPopulator(final CustomLogger customLogger) {
         this.customLogger = customLogger;
@@ -59,6 +57,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     private final Map<Material, BlockPopulator> blockPopulators = ImmutableMap.<Material, BlockPopulator>builder()
             .put(Material.CHEST, this::populateChest)
+            .put(Material.TRAPPED_CHEST, this::populateChest)
             .put(Material.FURNACE, this::populateFurnace)
             .put(Material.BLAST_FURNACE, this::populateFurnace)
             .build();
@@ -77,37 +76,6 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     private int getWorldDensity(final World world) {
         return worldDensity.getOrDefault(world.getName().toLowerCase(Locale.ROOT), 0);
-    }
-
-    // ChestLootConfig
-    private static class CLT {
-        private final double probability;
-        private final int maxPower;
-        private final ItemConfig itemConfig;
-
-        CLT(final double probability, final int maxPower) {
-            this.probability = probability;
-            this.maxPower = maxPower;
-            this.itemConfig = null;
-        }
-
-        CLT(final double probability, final ItemConfig itemConfig) {
-            this.probability = probability;
-            this.maxPower = 0;
-            this.itemConfig = itemConfig;
-        }
-
-        double getProbability() {
-            return probability;
-        }
-
-        int getMaxPower() {
-            return maxPower;
-        }
-
-        ItemConfig getItemConfig() {
-            return itemConfig;
-        }
     }
 
     /*
@@ -167,6 +135,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
             .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
+            // Bedrock has no real usage, but may bring potential damage to the world.
             //.put(Material.BEDROCK, new CLT(3.0D, 0))
             .put(Material.SPAWNER, new CLT(3.0D,0))
 
@@ -281,7 +250,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             final ItemStack itemStack = inventory.getItem(i);
             if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(MULTIPLY_PROBABILITY, density))) {
                 setAmount(String.format("%s item #%d", title, i),
-                        itemStack.getAmount(), itemStack, 1, MAX_POWER);
+                        itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
         }
 
@@ -339,22 +308,22 @@ public class MineshaftPopulator implements ChunkPopulator {
     // Ideated from https://minecraft.wiki/w/Smelting
     // Material -> max power of drop
     private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            .put(Material.GOLD_NUGGET, MAX_POWER)
-            .put(Material.IRON_NUGGET, MAX_POWER)
+            .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
+            .put(Material.IRON_NUGGET, CLT.MAX_POWER)
 
-            .put(Material.IRON_INGOT, MAX_POWER - 1)
-            .put(Material.GOLD_INGOT, MAX_POWER - 1)
+            .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
+            .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
 
-            .put(Material.REDSTONE, MAX_POWER - 2)
-            .put(Material.LAPIS_LAZULI, MAX_POWER - 2)
+            .put(Material.REDSTONE, CLT.MAX_POWER - 2)
+            .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
 
             .put(Material.NETHERITE_SCRAP, 0)
             .put(Material.SPONGE, 0)
             .build();
 
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
-            .put(Material.COAL, MAX_POWER)
-            .put(Material.COAL_BLOCK, MAX_POWER - 2)
+            .put(Material.COAL, CLT.MAX_POWER)
+            .put(Material.COAL_BLOCK, CLT.MAX_POWER - 2)
             .put(Material.LAVA_BUCKET, 0)
             .build();
 
@@ -421,7 +390,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         final int newAmount =
                 Math.min(
                         itemStack.getMaxStackSize(),
-                        itemStack.getAmount() * (int)Math.pow(2.0, RANDOM.nextInt(minPower, maxPower + 1))
+                        itemStack.getAmount() * CLT.getRandomAmount(minPower, maxPower)
                 );
 
         itemStack.setAmount(newAmount);
