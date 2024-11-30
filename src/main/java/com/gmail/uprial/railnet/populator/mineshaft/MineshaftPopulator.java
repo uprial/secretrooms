@@ -152,12 +152,18 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_PICKAXE, new CLT(2.0D, netheriteToolConfig))
 
             .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.SLIME_SPAWN_EGG, new CLT(1.0D, 0))
             .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D, 0))
             .put(Material.SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.SPIDER_SPAWN_EGG, new CLT(1.0D, 0))
 
+            .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D, 0))
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D, 0))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D, 0))
+
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D, 0))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D, 0))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D, 0))
+            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D, 0))
 
             .put(Material.SKELETON_SKULL, new CLT(0.25D, 0))
             .put(Material.CREEPER_HEAD, new CLT(0.25D, 0))

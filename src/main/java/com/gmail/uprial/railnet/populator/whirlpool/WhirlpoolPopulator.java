@@ -20,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
-import java.util.Random;
 
 public class WhirlpoolPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
