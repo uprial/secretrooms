@@ -23,6 +23,8 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.*;
 
+import static com.gmail.uprial.railnet.common.Formatter.format;
+
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
 
@@ -254,14 +256,14 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
-            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (pass(MULTIPLY_PROBABILITY, density))) {
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (Probability.PASS(MULTIPLY_PROBABILITY, density))) {
                 setAmount(String.format("%s item #%d", title, i),
                         itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
         }
 
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-            if(pass(entry.getValue().getProbability(), density)) {
+            if(Probability.PASS(entry.getValue().getProbability(), density)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -377,20 +379,6 @@ public class MineshaftPopulator implements ChunkPopulator {
                 furnaceResultTable);
     }
 
-    private String format(final Block block) {
-        return String.format("%s[%s:%d:%d:%d]",
-                block.getType(),
-                block.getWorld().getName(),
-                block.getX(), block.getY(), block.getZ());
-    }
-
-    private String format(final Entity entity) {
-        return String.format("%s[%s:%.0f:%.0f:%.0f]",
-                entity.getType(),
-                entity.getWorld().getName(),
-                entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ());
-    }
-
     private void setAmount(final String title, final int oldAmount, final ItemStack itemStack,
                            final int minPower, final int maxPower) {
         final int newAmount =
@@ -413,10 +401,6 @@ public class MineshaftPopulator implements ChunkPopulator {
                         title, itemStack.getType(), newAmount));
             }
         }
-    }
-
-    private boolean pass(final double probability, final int density) {
-        return Probability.PASS(probability * (1.0D + density));
     }
 
     private <T> T getRandomSetItem(final Set<T> set) {

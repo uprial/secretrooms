@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+import static com.gmail.uprial.railnet.common.Formatter.format;
+
 public class WhirlpoolPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
 
@@ -120,10 +122,14 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
 
                             final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
+
+                            // The deepest water the more loot in the chest.
+                            int density = (int)Math.floor((vc.getSeaLevel() - y) / 10.0D);
+
                             int i = 0;
 
                             for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-                                if(Probability.PASS(entry.getValue().getProbability())) {
+                                if(Probability.PASS(entry.getValue().getProbability(), density)) {
                                     final int amount = entry.getValue().getRandomAmount();
 
                                     inventory.setItem(i, new ItemStack(entry.getKey(), amount));
@@ -141,12 +147,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                                 }
                             }
 
-                            /*
-                                The deepest water the more loot in the chest.
-
-                                One more population will happen if no idempotency marker is set.
-                             */
-                            int density = (int)Math.floor((vc.getSeaLevel() - y) / 10.0D);
+                            // One more population will happen if no idempotency marker is set.
                             new MineshaftPopulator(customLogger).populateChest(block, density);
                         }
                     }
@@ -185,13 +186,6 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
     static boolean isAppropriate(final int x, final int z, final long seed, final long density) {
         return (getHash(seed * x * z) % density) == 0;
-    }
-
-    private String format(final Block block) {
-        return String.format("%s[%s:%d:%d:%d]",
-                block.getType(),
-                block.getWorld().getName(),
-                block.getX(), block.getY(), block.getZ());
     }
 
     final static String world = "world";
