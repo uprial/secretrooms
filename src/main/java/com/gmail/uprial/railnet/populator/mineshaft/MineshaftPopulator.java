@@ -93,7 +93,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
 
     private final ItemConfig goldenClothConfig =  new ItemConfig()
-            .ench(Enchantment.PROTECTION, 0, 4)
+            // Survival maximum level is 4, here it's 5
+            .ench(Enchantment.PROTECTION, 3, 5)
             .ench(Enchantment.THORNS, 0, 3)
             .trim(TrimMaterial.GOLD, TrimPattern.RIB);
 
@@ -103,19 +104,22 @@ public class MineshaftPopulator implements ChunkPopulator {
             .ench(Enchantment.VANISHING_CURSE);
 
     private final ItemConfig goldenToolConfig =  new ItemConfig()
-            .ench(Enchantment.EFFICIENCY, 0, 5)
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.EFFICIENCY, 5, 10)
             .ench(Enchantment.FORTUNE, 0, 3);
 
-    private final ItemConfig netheriteWeaponConfig =  new ItemConfig()
+    private final ItemConfig netheriteSwordConfig =  new ItemConfig()
             // Survival maximum level is 5, here it's 10
             .ench(Enchantment.SHARPNESS, 0, 10)
             .ench(Enchantment.VANISHING_CURSE);
 
-    private final ItemConfig goldenWeaponConfig =  new ItemConfig()
-            // Survival maximum level is 5, here it's 20
-            .ench(Enchantment.SHARPNESS, 10, 20)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.SWEEPING_EDGE, 0, 5);
+    private final ItemConfig goldenSwordConfig =  new ItemConfig()
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.SHARPNESS, 5, 10)
+            .ench(Enchantment.LOOTING, 0, 3)
+            .ench(Enchantment.KNOCKBACK, 0, 2)
+            .ench(Enchantment.FIRE_ASPECT, 0, 2)
+            .ench(Enchantment.SWEEPING_EDGE, 0, 3);
 
     /*
         Ideated from:
@@ -145,7 +149,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
             .put(Material.GOLDEN_PICKAXE, new CLT(5.0D, goldenToolConfig))
-            .put(Material.GOLDEN_SWORD, new CLT(5.0D, goldenWeaponConfig))
+            .put(Material.GOLDEN_SWORD, new CLT(5.0D, goldenSwordConfig))
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
             .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
@@ -164,7 +168,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
             .put(Material.NETHERITE_PICKAXE, new CLT(2.0D, netheriteToolConfig))
-            .put(Material.NETHERITE_SWORD, new CLT(2.0D, netheriteWeaponConfig))
+            .put(Material.NETHERITE_SWORD, new CLT(2.0D, netheriteSwordConfig))
 
             .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D, 0))
             .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D, 0))
