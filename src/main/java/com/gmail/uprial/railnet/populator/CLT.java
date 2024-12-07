@@ -17,6 +17,12 @@ public class CLT {
     private final int maxPower;
     private final ItemConfig itemConfig;
 
+    public CLT(final double probability) {
+        this.probability = probability;
+        this.maxPower = 0;
+        this.itemConfig = null;
+    }
+
     public CLT(final double probability, final int maxPower) {
         this.probability = probability;
         this.maxPower = maxPower;

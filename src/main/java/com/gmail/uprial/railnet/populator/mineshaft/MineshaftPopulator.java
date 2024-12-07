@@ -146,7 +146,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
-            //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
+            //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
             /*
                 Obtaining these resources isn't worth its time,
@@ -170,9 +170,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.GOLDEN_PICKAXE, new CLT(4.0D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(4.0D, goldenSwordConfig))
 
-            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
-            .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
-            .put(Material.SPAWNER, new CLT(3.0D,0))
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D))
+            .put(Material.SPAWNER, new CLT(3.0D))
 
             .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
@@ -187,31 +187,31 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_PICKAXE, new CLT(1.5D, netheriteToolConfig))
             .put(Material.NETHERITE_SWORD, new CLT(1.5D, netheriteSwordConfig))
 
-            .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.SKELETON_SPAWN_EGG, new CLT(1.0D, 0))
-            .put(Material.SPIDER_SPAWN_EGG, new CLT(1.0D, 0))
+            .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D))
+            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D))
+            .put(Material.SKELETON_SPAWN_EGG, new CLT(1.0D))
+            .put(Material.SPIDER_SPAWN_EGG, new CLT(1.0D))
 
-            .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D, 0))
-            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D, 0))
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D, 0))
+            .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D))
 
-            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D, 0))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D, 0))
-            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D, 0))
-            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D, 0))
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D))
+            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D))
 
             // Just for fun
-            .put(Material.SKELETON_SKULL, new CLT(0.25D, 0))
-            .put(Material.CREEPER_HEAD, new CLT(0.25D, 0))
-            .put(Material.PIGLIN_HEAD, new CLT(0.25D, 0))
-            .put(Material.PLAYER_HEAD, new CLT(0.25D, 0))
-            .put(Material.ZOMBIE_HEAD, new CLT(0.25D, 0))
+            .put(Material.SKELETON_SKULL, new CLT(0.25D))
+            .put(Material.CREEPER_HEAD, new CLT(0.25D))
+            .put(Material.PIGLIN_HEAD, new CLT(0.25D))
+            .put(Material.PLAYER_HEAD, new CLT(0.25D))
+            .put(Material.ZOMBIE_HEAD, new CLT(0.25D))
 
             // Something insane
-            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D, 0))
-            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D, 0))
-            .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D, 0))
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D))
+            .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D))
 
             .build();
 
