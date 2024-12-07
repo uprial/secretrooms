@@ -310,13 +310,18 @@ class RailWayChunk {
             set(ix, 0, 4, Material.POWERED_RAIL, BlockFace.EAST);
         }
 
-        // A chest with minecarts
+        /*
+            Since this populator generates a lot of rails,
+            I see no reason to safe on iron,
+            so create a chest with minecarts.
+         */
         final Block block = set(startX + 2, -1, 3, Material.CHEST, BlockFace.WEST);
         final Chest chest = (Chest)block.getState();
         final Inventory inventory = chest.getBlockInventory();
         for(int i = 0; i < 10; i++) {
             inventory.addItem(new ItemStack(Material.MINECART, 1));
         }
+        // Keep in mind, it will also be populated later by MineshaftPopulator
     }
 
     private void leftTunnel() {

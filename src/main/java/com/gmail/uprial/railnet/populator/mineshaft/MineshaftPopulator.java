@@ -125,18 +125,36 @@ public class MineshaftPopulator implements ChunkPopulator {
         Ideated from:
             https://minecraft.wiki/w/Rarity
             https://minecraft.wiki/w/Spawn_Egg
+
+        Removed ideas:
+            Ender pearls motivate player to fight endermans.
+            .put(Material.ENDER_PEARL,
+
+            End crystals require a block of obsidian beneath,
+            which removes all potential fun of placing them.
+            .put(Material.END_CRYSTAL, new CLT(7.5D, 1))
+
+            Bedrock has no real usage, but may bring potential damage to the world.
+            .put(Material.BEDROCK,
+
+            Golden carrots and apples are funny for 1st time,
+            but they are neither food with good saturation for everyday life
+            nor provide enough regeneration in a fight.
+            .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
+            .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
+
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT, 0))
 
-            .put(Material.ENDER_PEARL, new CLT(10.0D, 2))
+            /*
+                Obtaining these resources isn't worth its time,
+                but as a gift it's a lot of fun.
+             */
             .put(Material.TNT, new CLT(10.0D, 2))
             .put(Material.OBSIDIAN, new CLT(10.0D, 2))
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
-            .put(Material.END_CRYSTAL, new CLT(7.5D, 1))
-            .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
-            .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
 
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
@@ -148,13 +166,11 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            .put(Material.GOLDEN_PICKAXE, new CLT(5.0D, goldenToolConfig))
-            .put(Material.GOLDEN_SWORD, new CLT(5.0D, goldenSwordConfig))
+            .put(Material.GOLDEN_PICKAXE, new CLT(4.0D, goldenToolConfig))
+            .put(Material.GOLDEN_SWORD, new CLT(4.0D, goldenSwordConfig))
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D, 0))
             .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D, 0))
-            // Bedrock has no real usage, but may bring potential damage to the world.
-            //.put(Material.BEDROCK, new CLT(3.0D, 0))
             .put(Material.SPAWNER, new CLT(3.0D,0))
 
             .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig
@@ -167,8 +183,8 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            .put(Material.NETHERITE_PICKAXE, new CLT(2.0D, netheriteToolConfig))
-            .put(Material.NETHERITE_SWORD, new CLT(2.0D, netheriteSwordConfig))
+            .put(Material.NETHERITE_PICKAXE, new CLT(1.5D, netheriteToolConfig))
+            .put(Material.NETHERITE_SWORD, new CLT(1.5D, netheriteSwordConfig))
 
             .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D, 0))
             .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D, 0))
@@ -184,12 +200,14 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D, 0))
             .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D, 0))
 
+            // Just for fun
             .put(Material.SKELETON_SKULL, new CLT(0.25D, 0))
             .put(Material.CREEPER_HEAD, new CLT(0.25D, 0))
             .put(Material.PIGLIN_HEAD, new CLT(0.25D, 0))
             .put(Material.PLAYER_HEAD, new CLT(0.25D, 0))
             .put(Material.ZOMBIE_HEAD, new CLT(0.25D, 0))
 
+            // Something insane
             .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D, 0))
             .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D, 0))
             .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D, 0))
