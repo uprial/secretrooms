@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
@@ -72,8 +73,8 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private final Map<String,Integer> worldDensity = ImmutableMap.<String,Integer>builder()
-            .put("world_nether", 1)
-            .put("world_the_end", 2)
+            .put(WorldName.NETHER, 1)
+            .put(WorldName.END, 2)
             .build();
 
     private int getWorldDensity(final World world) {

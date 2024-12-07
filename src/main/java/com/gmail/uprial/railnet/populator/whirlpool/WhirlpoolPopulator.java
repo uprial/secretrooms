@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator.whirlpool;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.VirtualChunk;
@@ -188,7 +189,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
         return (getHash(seed * x * z) % density) == 0;
     }
 
-    final static String world = "world";
+    final static String world = WorldName.WORLD;
     final static int density = 100;
 
     private boolean isAppropriate(final Chunk chunk) {

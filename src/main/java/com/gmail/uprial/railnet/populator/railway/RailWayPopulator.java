@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator.railway;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.railway.map.ChunkMap;
 import com.gmail.uprial.railnet.populator.railway.map.InvalidMapException;
@@ -90,8 +91,8 @@ public class RailWayPopulator implements ChunkPopulator {
                 So, only two railways make sense.
              */
             final List<RailWayConfig> connectionsConfig = ImmutableList.<RailWayConfig>builder()
-                    .add(new RailWayConfig("base2mansion", "world", RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
-                    .add(new RailWayConfig("base2monument", "world", RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
+                    .add(new RailWayConfig("base2mansion", WorldName.WORLD, RailType.UNDERGROUND, null, StructureType.WOODLAND_MANSION))
+                    .add(new RailWayConfig("base2monument", WorldName.WORLD, RailType.SURFACE, null, StructureType.OCEAN_MONUMENT))
                     .build();
 
             for(final RailWayConfig railWayConfig : connectionsConfig) {
@@ -131,7 +132,7 @@ public class RailWayPopulator implements ChunkPopulator {
             // Test ways
 
             /*
-            final World world = plugin.getServer().getWorld("world");
+            final World world = plugin.getServer().getWorld(WorldName.WORLD);
             final ChunkMap chunkMap = map.computeIfAbsent(world, k -> new ChunkMap("test way"));
             chunkMap.addWay(
                     1, -2,
