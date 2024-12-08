@@ -15,7 +15,7 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 * Fuel and ingots in furnaces (*1)
 * Whirlpools in water with loot chests under magma blocks
 
-(*1) Doesn't work in structures with post-generation, known example: Desert Pyramids.
+(*1) Doesn't work in structures with post-generation, known example: Desert Pyramid, Outpost.
 
 ## Commands
 

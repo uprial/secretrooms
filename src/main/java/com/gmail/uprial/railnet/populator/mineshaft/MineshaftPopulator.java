@@ -75,13 +75,38 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    private final Map<String,Integer> worldDensity = ImmutableMap.<String,Integer>builder()
+    // Increase density in some worlds
+    private final Map<String,Integer> worldDensities = ImmutableMap.<String,Integer>builder()
             .put(WorldName.NETHER, 1)
             .put(WorldName.END, 2)
             .build();
 
-    private int getWorldDensity(final World world) {
-        return worldDensity.getOrDefault(WorldName.normalize(world.getName()), 0);
+    /*
+        Increase density above some blocks.
+
+        Specifically, structure research:
+        $ grep "world:<X-prefix>.*:<Z-prefix>.*populated" logs/latest.log
+            | cut -d' ' -f12 | cut -d'[' -f1 | sort | uniq
+
+        gives...
+     */
+        private final Map<Material,Integer> materialDensities = ImmutableMap.<Material,Integer>builder()
+            // Woodland mansion, inherits 0 from worldDensities
+            .put(Material.DARK_OAK_PLANKS, 4)
+            .put(Material.DARK_OAK_SLAB, 4)
+            .put(Material.DARK_OAK_STAIRS, 4)
+            // Bastion, inherits 1 from worldDensities
+            .put(Material.BLACKSTONE, 2)
+            .put(Material.GILDED_BLACKSTONE, 2)
+            .put(Material.POLISHED_BLACKSTONE_BRICKS, 2)
+            .put(Material.POLISHED_BLACKSTONE_SLAB, 2)
+            .build();
+
+    private int getDensity(final Block basement) {
+        final int worldDensity = worldDensities.getOrDefault(WorldName.normalize(basement.getWorld().getName()), 0);
+        final int materialDensity = materialDensities.getOrDefault(basement.getType(), 0);
+
+        return worldDensity + materialDensity;
     }
 
     /*
@@ -168,7 +193,11 @@ public class MineshaftPopulator implements ChunkPopulator {
                             .add(PotionEffect.INFINITE_DURATION)
                             .build(),
 
-                    // Effect type options: effect -> amplifier
+                    /*
+                        Effect type options: effect -> amplifier.
+                        Please check https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+                        to ensure each option is included or excluded by a clear reason.
+                     */
                     ImmutableMap.<PotionEffectType, Integer>builder()
                             .put(PotionEffectType.ABSORPTION, 4)
                             // BAD_OMEN: duplicates OMINOUS_BOTTLE
@@ -405,25 +434,35 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
+    private Block getBasement(final Block block) {
+        return block.getWorld().getBlockAt(block.getX(), block.getY() - 1, block.getZ());
+    }
+
+    private Block getBasement(final Entity entity) {
+        return entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)entity.getLocation().getY() - 1, (int)entity.getLocation().getZ());
+    }
+
     private void populateChest(final Block block) {
-        populateChest(block, getWorldDensity(block.getWorld()));
+        populateChest(block, getDensity(getBasement(block)));
     }
 
     public void populateChest(final Block block, final int density) {
         populateInventory(format(block), block.getWorld().getName(), ((Chest)block.getState()).getBlockInventory(), density);
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("%s populated with density %d", format(block), density));
+            customLogger.debug(String.format("%s populated with density %d and %s under",
+                    format(block), density, format(getBasement(block))));
         }
     }
 
     private void populateStorageMinecart(final StorageMinecart storageMinecart) {
-        final int density = getWorldDensity(storageMinecart.getWorld());
+        final int density = getDensity(getBasement(storageMinecart));
 
         populateInventory(format(storageMinecart), storageMinecart.getWorld().getName(), storageMinecart.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("%s populated with density %d", format(storageMinecart), density));
+            customLogger.debug(String.format("%s populated with density %d and %s under",
+                    format(storageMinecart), density, format(getBasement(storageMinecart))));
         }
     }
 
