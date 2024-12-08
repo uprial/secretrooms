@@ -1,10 +1,14 @@
 package com.gmail.uprial.railnet;
 
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 class RailNetCommandExecutor implements CommandExecutor {
     public static final String COMMAND_NS = "railnet";
@@ -27,9 +31,26 @@ class RailNetCommandExecutor implements CommandExecutor {
                     return true;
                 }
             }
-            else if((args.length >= 1) && (args[0].equalsIgnoreCase("repopulate-loaded"))) {
+            else if((args.length >= 5) && (args[0].equalsIgnoreCase("repopulate-loaded"))) {
                 if (sender.hasPermission(COMMAND_NS + ".repopulate-loaded")) {
-                    plugin.repopulateLoaded();
+                    final Map<Integer,String> params = ImmutableMap.<Integer,String>builder()
+                            .put(2, "x")
+                            .put(3, "z")
+                            .put(4, "radius")
+                            .build();
+                    final Map<String,Integer> values = new HashMap<>();
+
+                    for(Map.Entry<Integer, String> param : params.entrySet()) {
+                        final int value;
+                        try {
+                            value = Integer.valueOf(args[param.getKey()]);
+                        } catch (NumberFormatException ignored) {
+                            customLogger.info(String.format("<%s> should be an integer", param.getValue()));
+                            return false;
+                        }
+                        values.put(param.getValue(), value);
+                    }
+                    plugin.repopulateLoaded(args[1], values.get("x"), values.get("z"), values.get("radius"));
                     customLogger.info("RailNet repopulated loaded terrain.");
                     return true;
                 }
@@ -41,7 +62,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                     helpString += '/' + COMMAND_NS + " reload - reload config from disk\n";
                 }
                 if (sender.hasPermission(COMMAND_NS + ".populate-loaded")) {
-                    helpString += '/' + COMMAND_NS + " repopulate-loaded - repopulate loaded terrain\n";
+                    helpString += '/' + COMMAND_NS + " repopulate-loaded <world> <x> <z> <radius> - repopulate loaded terrain\n";
                 }
 
                 customLogger.info(helpString);

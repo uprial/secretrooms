@@ -87,12 +87,23 @@ public class Populator {
         }
     }
 
-    public void repopulateLoaded() {
-        customLogger.debug("Repopulate loaded...");
+    public void repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
+        customLogger.debug(
+                String.format("Repopulate loaded chunks in %s:%d:%d with radius %d...",
+                        worldName, x, z, radius));
+
+        int counter = 0;
         for(final World world : plugin.getServer().getWorlds()) {
-            for (final Chunk chunk : world.getLoadedChunks()) {
-                populateChunk(chunk);
+            if(world.getName().equalsIgnoreCase(worldName)) {
+                for (final Chunk chunk : world.getLoadedChunks()) {
+                    if ((Math.abs(chunk.getX() - x) < radius)
+                            && (Math.abs(chunk.getZ() - z) < radius)) {
+                        populateChunk(chunk);
+                        counter++;
+                    }
+                }
             }
         }
+        customLogger.debug(String.format("%d chunks repopulated.", counter));
     }
 }
