@@ -3,6 +3,13 @@ package com.gmail.uprial.railnet.common;
 import java.util.List;
 
 public final class Utils {
+    // A number of server ticks in one second
+    public static final int SERVER_TICKS_IN_SECOND = 20;
+
+    public static int seconds2ticks(int seconds) {
+        return seconds * SERVER_TICKS_IN_SECOND;
+    }
+
     public static <T> String joinStrings(String delimiter, List<T> contents) {
         if (contents.size() < 1) {
             return "";

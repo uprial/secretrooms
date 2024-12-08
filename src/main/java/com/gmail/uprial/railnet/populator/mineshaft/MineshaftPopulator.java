@@ -2,11 +2,13 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,16 +23,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
+import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 
 public class MineshaftPopulator implements ChunkPopulator {
     private final CustomLogger customLogger;
-
-    private final static Random RANDOM = new Random();
 
     public MineshaftPopulator(final CustomLogger customLogger) {
         this.customLogger = customLogger;
@@ -158,29 +160,55 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
-            // https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
-            .put(Material.POTION, new CLT(6.0D, new ItemConfig().effects(
+            .put(Material.POTION, new CLT(116.0D, new ItemConfig().effects(
+                    // Duration options
+                    ImmutableSet.<Integer>builder()
+                            .add(seconds2ticks(3_600))
+                            .add(seconds2ticks(3_600 * 24))
+                            .add(PotionEffect.INFINITE_DURATION)
+                            .build(),
+
+                    // Effect type options: effect -> amplifier
                     ImmutableMap.<PotionEffectType, Integer>builder()
+                            .put(PotionEffectType.ABSORPTION, 4)
+                            // BAD_OMEN: duplicates OMINOUS_BOTTLE
                             .put(PotionEffectType.BLINDNESS, 0) // negative
+                            // CONDUIT_POWER: duplicates WATER_BREATHING
                             .put(PotionEffectType.DARKNESS, 0) // negative
+                            // DOLPHINS_GRACE: doesn't work
                             .put(PotionEffectType.FIRE_RESISTANCE, 0)
                             .put(PotionEffectType.GLOWING, 0)
                             .put(PotionEffectType.HASTE, 4)
                             .put(PotionEffectType.HEALTH_BOOST, 4)
-                            .put(PotionEffectType.HUNGER, 4) // negative
+                            .put(PotionEffectType.HERO_OF_THE_VILLAGE, 4)
+                            .put(PotionEffectType.HUNGER, 2) // negative
+                            // INFESTED: doesn't work
+                            // INSTANT_DAMAGE: has no lasting effect
+                            // INSTANT_HEALTH: has no lasting effect
                             .put(PotionEffectType.INVISIBILITY, 0)
-                            .put(PotionEffectType.JUMP_BOOST, 2)
+                            .put(PotionEffectType.JUMP_BOOST, 4)
                             .put(PotionEffectType.LEVITATION, 2) // negative
+                            .put(PotionEffectType.LUCK, 4)
+                            .put(PotionEffectType.MINING_FATIGUE, 2) // negative
                             .put(PotionEffectType.NAUSEA, 0) // negative
                             .put(PotionEffectType.NIGHT_VISION, 0)
+                            // OOZING: has no lasting effect
                             .put(PotionEffectType.POISON, 2) // negative
+                            // RAID_OMEN: duplicates OMINOUS_BOTTLE
                             .put(PotionEffectType.REGENERATION, 0)
-                            .put(PotionEffectType.RESISTANCE, 2)
+                            .put(PotionEffectType.RESISTANCE, 4)
                             .put(PotionEffectType.SATURATION, 0)
                             .put(PotionEffectType.SLOW_FALLING, 4)
+                            .put(PotionEffectType.SLOWNESS, 2) // negative
                             .put(PotionEffectType.SPEED, 4)
-                            .put(PotionEffectType.STRENGTH, 2)
+                            .put(PotionEffectType.STRENGTH, 4)
+                            // TRIAL_OMEN: duplicates OMINOUS_BOTTLE
+                            .put(PotionEffectType.UNLUCK, 2) // negative
                             .put(PotionEffectType.WATER_BREATHING, 0)
+                            .put(PotionEffectType.WEAKNESS, 2) // negative
+                            // WEAVING: has no lasting effect
+                            // WIND_CHARGED: has no lasting effect
+                            .put(PotionEffectType.WITHER, 2) // negative
                             .build())
             ))
 
@@ -441,7 +469,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             return;
         }
 
-        final Material material = getRandomSetItem(lootTable.keySet());
+        final Material material = RandomUtils.getSetItem(lootTable.keySet());
         itemStackSetter.set(new ItemStack(material, 1));
         // The sequence is needed to properly update the amount
         itemStack = itemStackGetter.get();
@@ -486,9 +514,5 @@ public class MineshaftPopulator implements ChunkPopulator {
                         title, itemStack.getType(), newAmount));
             }
         }
-    }
-
-    private <T> T getRandomSetItem(final Set<T> set) {
-        return  (new ArrayList<>(set)).get(RANDOM.nextInt(set.size()));
     }
 }

@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator;
 
+import com.gmail.uprial.railnet.common.RandomUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -87,21 +88,25 @@ public class ItemConfig {
     }
 
     private static class effects implements VirtualItemConfig {
-        final Map<PotionEffectType,Integer> options;
+        final Map<PotionEffectType,Integer> effectTypeOptions;
+        final Set<Integer> durationOptions;
 
-        effects(final Map<PotionEffectType,Integer> options) {
-            this.options = options;
+        effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
+            this.durationOptions = durationOptions;
+            this.effectTypeOptions = effectTypeOptions;
         }
 
         @Override
         public void apply(final ItemStack itemStack) {
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
-            final Set<PotionEffectType> effectTypeSet = options.keySet();
-            final PotionEffectType effectType = (new ArrayList<>(effectTypeSet)).get(RANDOM.nextInt(effectTypeSet.size()));
-            final int amplifier = options.get(effectType);
+            final PotionEffectType effectType = RandomUtils.getSetItem(effectTypeOptions.keySet());
 
-            potionMeta.addCustomEffect(new PotionEffect(effectType, PotionEffect.INFINITE_DURATION, amplifier), true);
+            final int amplifier = effectTypeOptions.get(effectType);
+
+            final int duration = RandomUtils.getSetItem(durationOptions);
+
+            potionMeta.addCustomEffect(new PotionEffect(effectType, duration, amplifier), true);
             itemStack.setItemMeta(potionMeta);
         }
     }
@@ -129,8 +134,8 @@ public class ItemConfig {
         return this;
     }
 
-    public ItemConfig effects(final Map<PotionEffectType,Integer> effects) {
-        configs.add(new effects(effects));
+    public ItemConfig effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
+        configs.add(new effects(durationOptions, effectTypeOptions));
         return this;
     }
 
