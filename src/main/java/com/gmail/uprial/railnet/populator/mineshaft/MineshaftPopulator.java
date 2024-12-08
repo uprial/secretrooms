@@ -159,7 +159,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
             // https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
-            .put(Material.POTION, new CLT(100.0D, new ItemConfig().effects(
+            .put(Material.POTION, new CLT(6.0D, new ItemConfig().effects(
                     ImmutableMap.<PotionEffectType, Integer>builder()
                             .put(PotionEffectType.BLINDNESS, 0) // negative
                             .put(PotionEffectType.DARKNESS, 0) // negative
