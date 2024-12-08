@@ -3,13 +3,15 @@ package com.gmail.uprial.railnet.populator;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.OminousBottleMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ItemConfig {
     private final static Random RANDOM = new Random();
@@ -69,6 +71,41 @@ public class ItemConfig {
         }
     }
 
+    private static class amplifier implements VirtualItemConfig {
+        final int level;
+
+        amplifier(final int level) {
+            this.level = level;
+        }
+
+        @Override
+        public void apply(final ItemStack itemStack) {
+            final OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) itemStack.getItemMeta();
+            ominousBottleMeta.setAmplifier(level);
+            itemStack.setItemMeta(ominousBottleMeta);
+        }
+    }
+
+    private static class effects implements VirtualItemConfig {
+        final Map<PotionEffectType,Integer> options;
+
+        effects(final Map<PotionEffectType,Integer> options) {
+            this.options = options;
+        }
+
+        @Override
+        public void apply(final ItemStack itemStack) {
+            final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+
+            final Set<PotionEffectType> effectTypeSet = options.keySet();
+            final PotionEffectType effectType = (new ArrayList<>(effectTypeSet)).get(RANDOM.nextInt(effectTypeSet.size()));
+            final int amplifier = options.get(effectType);
+
+            potionMeta.addCustomEffect(new PotionEffect(effectType, PotionEffect.INFINITE_DURATION, amplifier), true);
+            itemStack.setItemMeta(potionMeta);
+        }
+    }
+
     public ItemConfig() {
     }
 
@@ -84,6 +121,16 @@ public class ItemConfig {
 
     public ItemConfig trim(final TrimMaterial material, final TrimPattern pattern) {
         configs.add(new trim(material, pattern));
+        return this;
+    }
+
+    public ItemConfig amplify(final int level) {
+        configs.add(new amplifier(level));
+        return this;
+    }
+
+    public ItemConfig effects(final Map<PotionEffectType,Integer> effects) {
+        configs.add(new effects(effects));
         return this;
     }
 

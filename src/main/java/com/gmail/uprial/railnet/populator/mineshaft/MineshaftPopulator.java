@@ -21,6 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -157,6 +158,32 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
+            // https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
+            .put(Material.POTION, new CLT(100.0D, new ItemConfig().effects(
+                    ImmutableMap.<PotionEffectType, Integer>builder()
+                            .put(PotionEffectType.BLINDNESS, 0) // negative
+                            .put(PotionEffectType.DARKNESS, 0) // negative
+                            .put(PotionEffectType.FIRE_RESISTANCE, 0)
+                            .put(PotionEffectType.GLOWING, 0)
+                            .put(PotionEffectType.HASTE, 4)
+                            .put(PotionEffectType.HEALTH_BOOST, 4)
+                            .put(PotionEffectType.HUNGER, 4) // negative
+                            .put(PotionEffectType.INVISIBILITY, 0)
+                            .put(PotionEffectType.JUMP_BOOST, 2)
+                            .put(PotionEffectType.LEVITATION, 2) // negative
+                            .put(PotionEffectType.NAUSEA, 0) // negative
+                            .put(PotionEffectType.NIGHT_VISION, 0)
+                            .put(PotionEffectType.POISON, 2) // negative
+                            .put(PotionEffectType.REGENERATION, 0)
+                            .put(PotionEffectType.RESISTANCE, 2)
+                            .put(PotionEffectType.SATURATION, 0)
+                            .put(PotionEffectType.SLOW_FALLING, 4)
+                            .put(PotionEffectType.SPEED, 4)
+                            .put(PotionEffectType.STRENGTH, 2)
+                            .put(PotionEffectType.WATER_BREATHING, 0)
+                            .build())
+            ))
+
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
@@ -192,6 +219,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.SKELETON_SPAWN_EGG, new CLT(1.0D))
             .put(Material.SPIDER_SPAWN_EGG, new CLT(1.0D))
 
+            .put(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, new CLT(1.0D))
+            .put(Material.OMINOUS_BOTTLE, new CLT(1.0D, new ItemConfig().amplify(4)))
+
             .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D))
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
             .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D))
@@ -207,6 +237,25 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.PIGLIN_HEAD, new CLT(0.25D))
             .put(Material.PLAYER_HEAD, new CLT(0.25D))
             .put(Material.ZOMBIE_HEAD, new CLT(0.25D))
+
+            .put(Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
 
             // Something insane
             .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D))
