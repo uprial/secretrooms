@@ -1,6 +1,10 @@
 package com.gmail.uprial.railnet.populator;
 
+import com.gmail.uprial.railnet.common.WorldName;
+
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 // ChestLootConfig
 public class CLT {
@@ -16,6 +20,7 @@ public class CLT {
     private final double probability;
     private final int maxPower;
     private final ItemConfig itemConfig;
+    private final Set<String> worldNames = new HashSet<>();
 
     public CLT(final double probability) {
         this.probability = probability;
@@ -49,5 +54,14 @@ public class CLT {
 
     public ItemConfig getItemConfig() {
         return itemConfig;
+    }
+
+    public CLT limitWorldName(final String worldName) {
+        worldNames.add(WorldName.normalize(worldName));
+        return this;
+    }
+
+    public boolean isAppropriateWorldName(final String worldName) {
+        return worldNames.isEmpty() || worldNames.contains(WorldName.normalize(worldName));
     }
 }

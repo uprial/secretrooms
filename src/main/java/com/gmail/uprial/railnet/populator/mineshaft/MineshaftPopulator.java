@@ -81,7 +81,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .build();
 
     private int getWorldDensity(final World world) {
-        return worldDensity.getOrDefault(world.getName().toLowerCase(Locale.ROOT), 0);
+        return worldDensity.getOrDefault(WorldName.normalize(world.getName()), 0);
     }
 
     /*
@@ -160,7 +160,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
-            .put(Material.POTION, new CLT(116.0D, new ItemConfig().effects(
+            .put(Material.POTION, new CLT(6.0D, new ItemConfig().effects(
                     // Duration options
                     ImmutableSet.<Integer>builder()
                             .add(seconds2ticks(3_600))
@@ -252,12 +252,12 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D))
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D).limitWorldName(WorldName.NETHER))
 
-            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D))
-            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D))
             .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.NETHER))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.NETHER))
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.END))
 
             // Just for fun
             .put(Material.SKELETON_SKULL, new CLT(0.25D))
@@ -286,9 +286,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
 
             // Something insane
-            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D))
-            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D))
             .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D).limitWorldName(WorldName.NETHER))
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D).limitWorldName(WorldName.END))
 
             .build();
 
@@ -348,7 +348,7 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private final static double MULTIPLY_PROBABILITY = 10.0D;
-    private void populateInventory(final String title, final Inventory inventory, final int density) {
+    private void populateInventory(final String title, final String worldName, final Inventory inventory, final int density) {
         /*
             getContents() returns a list of nulls
             even when the content isn't actually null,
@@ -376,7 +376,8 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
 
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-            if(Probability.PASS(entry.getValue().getProbability(), density)) {
+            if(Probability.PASS(entry.getValue().getProbability(), density)
+                    && entry.getValue().isAppropriateWorldName(worldName)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -409,7 +410,7 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     public void populateChest(final Block block, final int density) {
-        populateInventory(format(block), ((Chest)block.getState()).getBlockInventory(), density);
+        populateInventory(format(block), block.getWorld().getName(), ((Chest)block.getState()).getBlockInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d", format(block), density));
@@ -419,7 +420,7 @@ public class MineshaftPopulator implements ChunkPopulator {
     private void populateStorageMinecart(final StorageMinecart storageMinecart) {
         final int density = getWorldDensity(storageMinecart.getWorld());
 
-        populateInventory(format(storageMinecart), storageMinecart.getInventory(), density);
+        populateInventory(format(storageMinecart), storageMinecart.getWorld().getName(), storageMinecart.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d", format(storageMinecart), density));
