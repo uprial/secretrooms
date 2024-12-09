@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
@@ -281,12 +280,12 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D))
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D).limitWorldName(WorldName.NETHER))
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D).onlyInWorld(WorldName.NETHER))
 
             .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.NETHER))
-            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.NETHER))
-            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D).limitWorldName(WorldName.END))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.NETHER))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.NETHER))
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.END))
 
             // Just for fun
             .put(Material.SKELETON_SKULL, new CLT(0.25D))
@@ -316,8 +315,8 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             // Something insane
             .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D))
-            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D).limitWorldName(WorldName.NETHER))
-            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D).limitWorldName(WorldName.END))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D).onlyInWorld(WorldName.NETHER))
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D).onlyInWorld(WorldName.END))
 
             .build();
 
@@ -398,7 +397,17 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         for(int i = 0; i < inventory.getSize(); i++) {
             final ItemStack itemStack = inventory.getItem(i);
-            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (Probability.PASS(MULTIPLY_PROBABILITY, density))) {
+            /*
+                High levels of density are in
+                - whirlpools (up to 5)
+                - woodland mansions (4)
+                - bastions (3)
+                - the end (2)
+                - the nether (1)
+
+                and there is nothing specific to multiply.
+             */
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (Probability.PASS(MULTIPLY_PROBABILITY, 0))) {
                 setAmount(String.format("%s item #%d", title, i),
                         itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
@@ -406,7 +415,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
             if(Probability.PASS(entry.getValue().getProbability(), density)
-                    && entry.getValue().isAppropriateWorldName(worldName)) {
+                    && entry.getValue().isAppropriateWorld(worldName)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.

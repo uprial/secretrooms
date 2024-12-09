@@ -56,12 +56,12 @@ public class CLT {
         return itemConfig;
     }
 
-    public CLT limitWorldName(final String worldName) {
+    public CLT onlyInWorld(final String worldName) {
         worldNames.add(WorldName.normalize(worldName));
         return this;
     }
 
-    public boolean isAppropriateWorldName(final String worldName) {
+    public boolean isAppropriateWorld(final String worldName) {
         return worldNames.isEmpty() || worldNames.contains(WorldName.normalize(worldName));
     }
 }
