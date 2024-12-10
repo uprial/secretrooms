@@ -6,7 +6,7 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Generate rail from spawn to mansion and monument and rare loot in chests and furnaces.
+Generate rail from spawn to mansion and monument and rare loot in chests and furnaces, harden Endermans and skeletons.
 
 ## Features
 
@@ -14,6 +14,8 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 * Uncommon and rare loot in chests (*1)
 * Fuel and ingots in furnaces (*1)
 * Whirlpools in water with loot chests under magma blocks
+* 0.1% of Endermans ignore carved pumpkins
+* Skeletons have a chance to add negative effects to their arrows 
 
 (*1) Doesn't work in structures with post-generation, known example: Desert Pyramid, Outpost.
 
