@@ -15,12 +15,12 @@ import org.bukkit.inventory.ItemStack;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
-public class EntityListener implements Listener {
+public class NastyEndermanListener implements Listener {
     private static final double PROBABILITY = 0.1D;
 
     private final CustomLogger customLogger;
 
-    public EntityListener(final CustomLogger customLogger) {
+    public NastyEndermanListener(final CustomLogger customLogger) {
         this.customLogger = customLogger;
     }
 
