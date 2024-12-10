@@ -45,7 +45,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                         try {
                             value = Integer.valueOf(args[param.getKey()]);
                         } catch (NumberFormatException ignored) {
-                            customLogger.info(String.format("<%s> should be an integer", param.getValue()));
+                            customLogger.error(String.format("<%s> should be an integer", param.getValue()));
                             return false;
                         }
                         values.put(param.getValue(), value);
