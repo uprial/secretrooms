@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
@@ -65,6 +66,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.TRAPPED_CHEST, this::populateChest)
             .put(Material.FURNACE, this::populateFurnace)
             .put(Material.BLAST_FURNACE, this::populateFurnace)
+            .put(Material.BARREL, this::populateBarrel)
             .build();
 
     private void populateBlock(final Block block) {
@@ -472,6 +474,17 @@ public class MineshaftPopulator implements ChunkPopulator {
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
                     format(storageMinecart), density, format(getBasement(storageMinecart))));
+        }
+    }
+
+    private void populateBarrel(final Block block) {
+        final int density = getDensity(getBasement(block));
+
+        populateInventory(format(block), block.getWorld().getName(), ((Barrel)block.getState()).getInventory(), density);
+
+        if(customLogger.isDebugMode()) {
+            customLogger.debug(String.format("%s populated with density %d and %s under",
+                    format(block), density, format(getBasement(block))));
         }
     }
 
