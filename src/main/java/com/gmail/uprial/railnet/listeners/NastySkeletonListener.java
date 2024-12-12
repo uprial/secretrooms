@@ -20,26 +20,37 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 
 public class NastySkeletonListener implements Listener {
-    private static final double PROBABILITY = 5.0D;
-
     private final CustomLogger customLogger;
 
     public NastySkeletonListener(final CustomLogger customLogger) {
         this.customLogger = customLogger;
     }
 
+    private static final double POSITIVE_P = 2.0D;
+    private static final double NEGATIVE_P = 5.0D;
+
     private enum E {
 
-        INCONVENIENT(300, 2),
-        PAINFUL(60, 1),
-        HARD(5, 0);
+        USELESS(POSITIVE_P, 60, 2),
+        GOOD(POSITIVE_P, 30, 1),
+        AMAZING(POSITIVE_P, 5, 0),
 
+        INCONVENIENT(NEGATIVE_P, 60, 2),
+        PAINFUL(NEGATIVE_P, 30, 1),
+        HARD(NEGATIVE_P, 5, 0);
+
+        private final double probability;
         private final int duration;
         private final int amplifier;
 
-        E(final int duration, final int amplifier) {
+        E(final double probability, final int duration, final int amplifier) {
+            this.probability = probability;
             this.duration = duration;
             this.amplifier = amplifier;
+        }
+
+        public double getProbability() {
+            return probability;
         }
 
         public int getAmplifier() {
@@ -56,15 +67,30 @@ public class NastySkeletonListener implements Listener {
         Source: MineshaftPopulator.chestLootTable.POTION
      */
     final private Map<PotionEffectType,E> effectMap = ImmutableMap .<PotionEffectType, E>builder()
+            .put(PotionEffectType.ABSORPTION, E.GOOD)
             .put(PotionEffectType.BLINDNESS, E.HARD) // negative
             .put(PotionEffectType.DARKNESS, E.INCONVENIENT) // negative
+            .put(PotionEffectType.FIRE_RESISTANCE, E.USELESS)
+            .put(PotionEffectType.GLOWING, E.USELESS)
+            .put(PotionEffectType.HASTE, E.USELESS)
+            .put(PotionEffectType.HEALTH_BOOST, E.AMAZING)
+            .put(PotionEffectType.HERO_OF_THE_VILLAGE, E.USELESS)
             .put(PotionEffectType.HUNGER, E.PAINFUL) // negative
+            .put(PotionEffectType.INVISIBILITY, E.GOOD)
+            .put(PotionEffectType.JUMP_BOOST, E.GOOD)
             .put(PotionEffectType.LEVITATION, E.PAINFUL) // negative
+            .put(PotionEffectType.LUCK, E.USELESS)
             .put(PotionEffectType.MINING_FATIGUE, E.INCONVENIENT) // negative
             .put(PotionEffectType.NAUSEA, E.INCONVENIENT) // negative
+            .put(PotionEffectType.NIGHT_VISION, E.USELESS)
             .put(PotionEffectType.POISON, E.PAINFUL) // negative
+            .put(PotionEffectType.REGENERATION, E.AMAZING)
+            .put(PotionEffectType.RESISTANCE, E.GOOD)
+            .put(PotionEffectType.SATURATION, E.AMAZING)
+            .put(PotionEffectType.SLOW_FALLING, E.USELESS)
             .put(PotionEffectType.SLOWNESS, E.INCONVENIENT) // negative
             .put(PotionEffectType.UNLUCK, E.INCONVENIENT) // negative
+            .put(PotionEffectType.WATER_BREATHING, E.USELESS)
             .put(PotionEffectType.WEAKNESS, E.INCONVENIENT) // negative
             .put(PotionEffectType.WITHER, E.PAINFUL) // negative
             .build();
@@ -78,7 +104,7 @@ public class NastySkeletonListener implements Listener {
             if ((projectile instanceof Arrow) && (shooter instanceof AbstractSkeleton)) {
                 final Arrow arrow = (Arrow)projectile;
                 for (Map.Entry<PotionEffectType, E> entry : effectMap.entrySet()) {
-                    if(Probability.PASS(PROBABILITY, 0)) {
+                    if(Probability.PASS(entry.getValue().getProbability(), 0)) {
                         arrow.addCustomEffect(
                                 new PotionEffect(entry.getKey(),
                                         seconds2ticks(entry.getValue().getDuration()),
