@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 
@@ -27,9 +28,13 @@ public final class RailNet extends JavaPlugin {
 
     private Populator populator = null;
 
+    private BukkitTask cronTask;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        cronTask = new RailNetCron(this).runTaskTimer();
 
         consoleLogger = new CustomLogger(getLogger());
         loadConfig(getConfig(), consoleLogger);
@@ -64,6 +69,7 @@ public final class RailNet extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
+        cronTask.cancel();
         consoleLogger.info("Plugin disabled");
     }
 

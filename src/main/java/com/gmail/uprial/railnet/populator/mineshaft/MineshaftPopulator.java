@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.mineshaft;
 
+import com.gmail.uprial.railnet.RailNetCron;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.RandomUtils;
@@ -40,21 +41,23 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     @Override
     public void populate(final Chunk chunk) {
-        final int minY = chunk.getWorld().getMinHeight();
-        final int maxY = chunk.getWorld().getMaxHeight();
-        for(int y = minY; y < maxY; y++) {
-            for(int x = 0; x < 16; x++) {
-                for(int z = 0; z < 16; z++) {
-                    populateBlock(chunk.getBlock(x, y, z));
+        RailNetCron.defer(() -> {
+            final int minY = chunk.getWorld().getMinHeight();
+            final int maxY = chunk.getWorld().getMaxHeight();
+            for(int y = minY; y < maxY; y++) {
+                for(int x = 0; x < 16; x++) {
+                    for(int z = 0; z < 16; z++) {
+                        populateBlock(chunk.getBlock(x, y, z));
+                    }
                 }
             }
-        }
 
-        for(final Entity entity : chunk.getEntities()) {
-            if(entity instanceof StorageMinecart) {
-                populateStorageMinecart((StorageMinecart)entity);
+            for(final Entity entity : chunk.getEntities()) {
+                if(entity instanceof StorageMinecart) {
+                    populateStorageMinecart((StorageMinecart)entity);
+                }
             }
-        }
+        });
     }
 
     private interface BlockPopulator {
@@ -243,7 +246,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
             .put(Material.POTION, new CLT(3.0D, potionConfig))
-            .put(Material.SPLASH_POTION, new CLT(200.0D, potionConfig))
+            .put(Material.SPLASH_POTION, new CLT(2.0D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(1.0D, potionConfig))
 
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig

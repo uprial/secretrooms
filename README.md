@@ -11,13 +11,11 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 ## Features
 
 * Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
-* Uncommon and rare loot in chests (*1)
-* Fuel and ingots in furnaces (*1)
+* Uncommon and rare loot in chests
+* Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
 * 0.1% of Endermans ignore carved pumpkins
 * Skeletons have a chance to add negative effects to their arrows 
-
-(*1) Doesn't work in structures with post-generation, known example: Desert Pyramid, Outpost.
 
 ## Commands
 
