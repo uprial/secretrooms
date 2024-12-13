@@ -26,8 +26,8 @@ public class NastySkeletonListener implements Listener {
         this.customLogger = customLogger;
     }
 
-    private static final double POSITIVE_P = 2.0D;
-    private static final double NEGATIVE_P = 5.0D;
+    private static final double POSITIVE_P = 0.3D;
+    private static final double NEGATIVE_P = 1.0D;
 
     private enum E {
 
