@@ -41,6 +41,11 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     @Override
     public void populate(final Chunk chunk) {
+        /*
+            Fix population in structures with post-generation,
+            known examples: Desert Pyramid, Outpost
+            - chests there seems to be populated somehow after their chunk load.
+         */
         RailNetCron.defer(() -> {
             final int minY = chunk.getWorld().getMinHeight();
             final int maxY = chunk.getWorld().getMaxHeight();
