@@ -250,8 +250,10 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
+            // 3 + 2 + 1 + 1 = 7
             .put(Material.POTION, new CLT(3.0D, potionConfig))
-            .put(Material.SPLASH_POTION, new CLT(2.0D, potionConfig))
+            .put(Material.TIPPED_ARROW, new CLT(200.0D, potionConfig, CLT.MAX_POWER))
+            .put(Material.SPLASH_POTION, new CLT(1.0D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(1.0D, potionConfig))
 
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig

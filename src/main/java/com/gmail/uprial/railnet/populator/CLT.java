@@ -23,21 +23,21 @@ public class CLT {
     private final Set<String> worldNames = new HashSet<>();
 
     public CLT(final double probability) {
-        this.probability = probability;
-        this.maxPower = 0;
-        this.itemConfig = null;
+        this(probability, null, 0);
     }
 
     public CLT(final double probability, final int maxPower) {
-        this.probability = probability;
-        this.maxPower = maxPower;
-        this.itemConfig = null;
+        this(probability, null, maxPower);
     }
 
     public CLT(final double probability, final ItemConfig itemConfig) {
+        this(probability, itemConfig, 0);
+    }
+
+    public CLT(final double probability, final ItemConfig itemConfig, final int maxPower) {
         this.probability = probability;
-        this.maxPower = 0;
         this.itemConfig = itemConfig;
+        this.maxPower = maxPower;
     }
 
     public double getProbability() {
