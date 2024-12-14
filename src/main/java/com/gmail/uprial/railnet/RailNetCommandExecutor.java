@@ -52,9 +52,9 @@ class RailNetCommandExecutor implements CommandExecutor {
                         }
                         values.put(param.getValue(), value);
                     }
-                    plugin.repopulateLoaded(args[1],
+                    final int counter = plugin.repopulateLoaded(args[1],
                             values.get("x"), values.get("z"), values.get("radius"));
-                    customLogger.info("RailNet repopulated loaded terrain.");
+                    customLogger.debug(String.format("%d chunks repopulated.", counter));
                     return true;
                 }
             } else if((args.length >= 2) && (args[0].equalsIgnoreCase("repopulate-loaded"))
@@ -68,8 +68,9 @@ class RailNetCommandExecutor implements CommandExecutor {
                 }
                 final Player player = (Player)sender;
                 final Chunk chunk = player.getLocation().getChunk();
-                plugin.repopulateLoaded(player.getWorld().getName(), chunk.getX(), chunk.getZ(), radius);
-                customLogger.info("RailNet repopulated loaded terrain.");
+                final int counter = plugin.repopulateLoaded(player.getWorld().getName(),
+                        chunk.getX(), chunk.getZ(), radius);
+                customLogger.debug(String.format("%d chunks repopulated.", counter));
                 return true;
             } else if((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                 String helpString = "==== RailNet help ====\n";

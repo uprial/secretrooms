@@ -87,7 +87,7 @@ public class Populator {
         }
     }
 
-    public void repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
+    public int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
         customLogger.debug(
                 String.format("Repopulate loaded chunks in %s:%d:%d with radius %d...",
                         worldName, x, z, radius));
@@ -104,6 +104,7 @@ public class Populator {
                 }
             }
         }
-        customLogger.debug(String.format("%d chunks repopulated.", counter));
+
+        return counter;
     }
 }

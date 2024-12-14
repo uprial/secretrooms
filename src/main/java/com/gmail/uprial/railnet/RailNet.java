@@ -62,8 +62,8 @@ public final class RailNet extends JavaPlugin {
         loadConfig(getConfig(), userLogger, consoleLogger);
     }
 
-    void repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
-        populator.repopulateLoaded(worldName, x, z, radius);
+    int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
+        return populator.repopulateLoaded(worldName, x, z, radius);
     }
 
     @Override
