@@ -1,11 +1,13 @@
 package com.gmail.uprial.railnet;
 
 import com.google.common.collect.ImmutableMap;
+import org.bukkit.Chunk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,18 +52,33 @@ class RailNetCommandExecutor implements CommandExecutor {
                         }
                         values.put(param.getValue(), value);
                     }
-                    plugin.repopulateLoaded(args[1], values.get("x"), values.get("z"), values.get("radius"));
+                    plugin.repopulateLoaded(args[1],
+                            values.get("x"), values.get("z"), values.get("radius"));
                     customLogger.info("RailNet repopulated loaded terrain.");
                     return true;
                 }
-            }
-            else if((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
+            } else if((args.length >= 2) && (args[0].equalsIgnoreCase("repopulate-loaded"))
+                    && (sender instanceof Player)) {
+                final int radius;
+                try {
+                    radius = Integer.valueOf(args[1]);
+                } catch (NumberFormatException ignored) {
+                    customLogger.error(String.format("<%s> should be an integer", args[1]));
+                    return false;
+                }
+                final Player player = (Player)sender;
+                final Chunk chunk = player.getLocation().getChunk();
+                plugin.repopulateLoaded(player.getWorld().getName(), chunk.getX(), chunk.getZ(), radius);
+                customLogger.info("RailNet repopulated loaded terrain.");
+                return true;
+            } else if((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                 String helpString = "==== RailNet help ====\n";
 
                 if (sender.hasPermission(COMMAND_NS + ".reload")) {
                     helpString += '/' + COMMAND_NS + " reload - reload config from disk\n";
                 }
                 if (sender.hasPermission(COMMAND_NS + ".populate-loaded")) {
+                    helpString += '/' + COMMAND_NS + " repopulate-loaded <radius> - repopulate loaded terrain around player\n";
                     helpString += '/' + COMMAND_NS + " repopulate-loaded <world> <x> <z> <radius> - repopulate loaded terrain\n";
                 }
 

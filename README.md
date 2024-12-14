@@ -21,6 +21,8 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 
 `railnet reload` - reload config from disk
 
+`repopulate-loaded <radius>` - repopulate loaded terrain around player
+
 `railnet repopulate-loaded <world> <x> <z> <radius>` - repopulate loaded terrain
 
 ## Permissions
