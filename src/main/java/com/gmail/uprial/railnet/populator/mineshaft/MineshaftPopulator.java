@@ -135,6 +135,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             // Survival maximum level is 4, here it's 5
             .ench(Enchantment.PROTECTION, 3, 5)
             .ench(Enchantment.THORNS, 0, 3)
+            .ench(Enchantment.MENDING)
             .trim(TrimMaterial.GOLD, TrimPattern.RIB);
 
     private final ItemConfig netheriteToolConfig =  new ItemConfig()
@@ -161,10 +162,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             .ench(Enchantment.SWEEPING_EDGE, 0, 3);
 
     private final Set<Integer> potionDurationOptions = ImmutableSet.<Integer>builder()
+            .add(seconds2ticks(60 * 15))
             .add(seconds2ticks(3_600))
             .add(seconds2ticks(3_600 * 4))
             .add(seconds2ticks(3_600 * 24))
-            .add(seconds2ticks(3_600 * 24 * 7))
             .add(PotionEffect.INFINITE_DURATION)
             .build();
 
@@ -256,34 +257,30 @@ public class MineshaftPopulator implements ChunkPopulator {
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
              */
-            .put(Material.TNT, new CLT(10.0D, 2))
-            .put(Material.OBSIDIAN, new CLT(10.0D, 2))
+            .put(Material.TNT, new CLT(5.0D, 2))
+            .put(Material.OBSIDIAN, new CLT(5.0D, 2))
 
-            .put(Material.DIAMOND, new CLT(7.5D, 1))
+            // 1.5 + 0.5 + 0.5 + 1.5 = 4
+            .put(Material.POTION, new CLT(1.5D, potionConfig))
+            .put(Material.SPLASH_POTION, new CLT(0.5D, potionConfig))
+            .put(Material.LINGERING_POTION, new CLT(0.5D, potionConfig))
+            .put(Material.TIPPED_ARROW, new CLT(1.5D, arrowConfig, CLT.MAX_POWER))
 
-            // 3 + 1 + 1 + 2 = 7
-            .put(Material.POTION, new CLT(3.0D, potionConfig))
-            .put(Material.SPLASH_POTION, new CLT(1.0D, potionConfig))
-            .put(Material.LINGERING_POTION, new CLT(1.0D, potionConfig))
+            .put(Material.DIAMOND, new CLT(3.0D, 1))
 
-            .put(Material.TIPPED_ARROW, new CLT(2.0D, arrowConfig, CLT.MAX_POWER))
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.5D))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(2.5D))
+            .put(Material.SPAWNER, new CLT(2.5D))
 
-            .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig
+            .put(Material.GOLDEN_HELMET, new CLT(2.0D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
-            .put(Material.GOLDEN_CHESTPLATE, new CLT(5.0D, goldenClothConfig))
-            .put(Material.GOLDEN_LEGGINGS, new CLT(5.0D, goldenClothConfig
+            .put(Material.GOLDEN_CHESTPLATE, new CLT(2.0D, goldenClothConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(2.0D, goldenClothConfig
                     .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
-            .put(Material.GOLDEN_BOOTS, new CLT(5.0D, goldenClothConfig
+            .put(Material.GOLDEN_BOOTS, new CLT(2.0D, goldenClothConfig
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
-
-            .put(Material.GOLDEN_PICKAXE, new CLT(4.0D, goldenToolConfig))
-            .put(Material.GOLDEN_SWORD, new CLT(4.0D, goldenSwordConfig))
-
-            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(3.0D))
-            .put(Material.TOTEM_OF_UNDYING, new CLT(3.0D))
-            .put(Material.SPAWNER, new CLT(3.0D))
 
             .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
@@ -294,6 +291,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteClothConfig
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
+
+            .put(Material.GOLDEN_PICKAXE, new CLT(1.5D, goldenToolConfig))
+            .put(Material.GOLDEN_SWORD, new CLT(1.5D, goldenSwordConfig))
 
             .put(Material.NETHERITE_PICKAXE, new CLT(1.5D, netheriteToolConfig))
             .put(Material.NETHERITE_SWORD, new CLT(1.5D, netheriteSwordConfig))
