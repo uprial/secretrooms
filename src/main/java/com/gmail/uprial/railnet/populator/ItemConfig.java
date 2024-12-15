@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.RandomUtils;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -104,7 +105,14 @@ public class ItemConfig {
 
             final int amplifier = effectTypeOptions.get(effectType);
 
-            final int duration = RandomUtils.getSetItem(durationOptions);
+            int duration = RandomUtils.getSetItem(durationOptions);
+            if(itemStack.getType().equals(Material.TIPPED_ARROW)) {
+                /*
+                    According to https://minecraft.wiki/w/Tipped_Arrow,
+                    The duration of the effect is 1⁄8 that of the corresponding potion.
+                 */
+                duration *= 8;
+            }
 
             potionMeta.addCustomEffect(new PotionEffect(effectType, duration, amplifier), true);
             itemStack.setItemMeta(potionMeta);
