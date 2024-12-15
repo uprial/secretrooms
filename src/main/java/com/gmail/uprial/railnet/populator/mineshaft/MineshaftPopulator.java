@@ -18,6 +18,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
@@ -511,6 +512,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             customLogger.debug(String.format("%s populated with density %d and %s under",
                     format(block), density, format(getBasement(block))));
         }
+    }
+
+    public void populatePlayer(final Player player, final int density) {
+        populateInventory(format(player), player.getWorld().getName(), player.getInventory(), density);
     }
 
     // Ideated from https://minecraft.wiki/w/Smelting

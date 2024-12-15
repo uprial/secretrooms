@@ -25,6 +25,8 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 
 `railnet repopulate-loaded <world> <x> <z> <radius>` - repopulate loaded terrain
 
+`railnet claim <density>` - generate player inventory like it's a chest
+
 ## Permissions
 
 * Access to 'reload' command:

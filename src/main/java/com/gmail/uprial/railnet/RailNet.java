@@ -12,6 +12,7 @@ import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
 import com.google.common.collect.Lists;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -64,6 +65,10 @@ public final class RailNet extends JavaPlugin {
 
     int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
         return populator.repopulateLoaded(worldName, x, z, radius);
+    }
+
+    void populatePlayer(final Player player, final int density) {
+        new MineshaftPopulator(consoleLogger).populatePlayer(player, density);
     }
 
     @Override
