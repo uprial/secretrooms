@@ -54,7 +54,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                     }
                     final int counter = plugin.repopulateLoaded(args[1],
                             values.get("x"), values.get("z"), values.get("radius"));
-                    customLogger.debug(String.format("%d chunks repopulated.", counter));
+                    customLogger.info(String.format("%d chunks repopulated.", counter));
                     return true;
                 }
             } else if((args.length >= 2) && (args[0].equalsIgnoreCase("repopulate-loaded"))
@@ -70,7 +70,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                 final Chunk chunk = player.getLocation().getChunk();
                 final int counter = plugin.repopulateLoaded(player.getWorld().getName(),
                         chunk.getX(), chunk.getZ(), radius);
-                customLogger.debug(String.format("%d chunks repopulated.", counter));
+                customLogger.info(String.format("%d chunks repopulated.", counter));
                 return true;
             } else if((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                 String helpString = "==== RailNet help ====\n";

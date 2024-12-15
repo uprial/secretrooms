@@ -31,13 +31,13 @@ public class NastySkeletonListener implements Listener {
 
     private enum E {
 
-        USELESS(POSITIVE_P, 60, 2),
-        GOOD(POSITIVE_P, 30, 1),
+        USELESS(POSITIVE_P, 30, 2),
+        GOOD(POSITIVE_P, 15, 1),
         AMAZING(POSITIVE_P, 5, 0),
 
         INCONVENIENT(NEGATIVE_P, 60, 2),
         PAINFUL(NEGATIVE_P, 30, 1),
-        HARD(NEGATIVE_P, 5, 0);
+        HARD(NEGATIVE_P, 10, 0);
 
         private final double probability;
         private final int duration;
