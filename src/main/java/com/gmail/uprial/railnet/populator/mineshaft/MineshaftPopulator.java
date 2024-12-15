@@ -159,61 +159,71 @@ public class MineshaftPopulator implements ChunkPopulator {
             .ench(Enchantment.FIRE_ASPECT, 0, 2)
             .ench(Enchantment.SWEEPING_EDGE, 0, 3);
 
-    private final ItemConfig potionConfig = new ItemConfig().effects(
-            // Duration options
-            ImmutableSet.<Integer>builder()
-                    .add(seconds2ticks(3_600))
-                    .add(seconds2ticks(3_600 * 24))
-                    .add(PotionEffect.INFINITE_DURATION)
-                    .build(),
+    private final Set<Integer> potionDurationOptions = ImmutableSet.<Integer>builder()
+            .add(seconds2ticks(3_600))
+            .add(seconds2ticks(3_600 * 4))
+            .add(seconds2ticks(3_600 * 24))
+            .add(seconds2ticks(3_600 * 24 * 7))
+            .add(PotionEffect.INFINITE_DURATION)
+            .build();
 
-            /*
-                Effect type options: effect -> amplifier.
-                Please check https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
-                to ensure each option is included or excluded by a clear reason.
-             */
-            ImmutableMap.<PotionEffectType, Integer>builder()
-                    .put(PotionEffectType.ABSORPTION, 4)
-                    // BAD_OMEN: duplicates OMINOUS_BOTTLE
-                    .put(PotionEffectType.BLINDNESS, 0) // negative
-                    // CONDUIT_POWER: duplicates WATER_BREATHING
-                    .put(PotionEffectType.DARKNESS, 0) // negative
-                    // DOLPHINS_GRACE: doesn't work
-                    .put(PotionEffectType.FIRE_RESISTANCE, 0)
-                    .put(PotionEffectType.GLOWING, 0)
-                    .put(PotionEffectType.HASTE, 4)
-                    .put(PotionEffectType.HEALTH_BOOST, 4)
-                    .put(PotionEffectType.HERO_OF_THE_VILLAGE, 4)
-                    .put(PotionEffectType.HUNGER, 2) // negative
-                    // INFESTED: doesn't work
-                    // INSTANT_DAMAGE: has no lasting effect
-                    // INSTANT_HEALTH: has no lasting effect
-                    .put(PotionEffectType.INVISIBILITY, 0)
-                    .put(PotionEffectType.JUMP_BOOST, 4)
-                    .put(PotionEffectType.LEVITATION, 2) // negative
-                    .put(PotionEffectType.LUCK, 4)
-                    .put(PotionEffectType.MINING_FATIGUE, 2) // negative
-                    .put(PotionEffectType.NAUSEA, 0) // negative
-                    .put(PotionEffectType.NIGHT_VISION, 0)
-                    // OOZING: has no lasting effect
-                    .put(PotionEffectType.POISON, 2) // negative
-                    // RAID_OMEN: duplicates OMINOUS_BOTTLE
-                    .put(PotionEffectType.REGENERATION, 0)
-                    .put(PotionEffectType.RESISTANCE, 4)
-                    .put(PotionEffectType.SATURATION, 0)
-                    .put(PotionEffectType.SLOW_FALLING, 4)
-                    .put(PotionEffectType.SLOWNESS, 2) // negative
-                    .put(PotionEffectType.SPEED, 4)
-                    .put(PotionEffectType.STRENGTH, 4)
-                    // TRIAL_OMEN: duplicates OMINOUS_BOTTLE
-                    .put(PotionEffectType.UNLUCK, 2) // negative
-                    .put(PotionEffectType.WATER_BREATHING, 0)
-                    .put(PotionEffectType.WEAKNESS, 2) // negative
-                    // WEAVING: has no lasting effect
-                    // WIND_CHARGED: has no lasting effect
-                    .put(PotionEffectType.WITHER, 2) // negative
-                    .build()
-            );
+    private final Set<Integer> arrowDurationOptions = ImmutableSet.<Integer>builder()
+            .add(seconds2ticks(60))
+            .add(seconds2ticks(60 * 5))
+            .add(seconds2ticks(60 * 15))
+            .add(seconds2ticks(3_600))
+            .add(seconds2ticks(3_600 * 4))
+            .build();
+
+    /*
+        Effect type options: effect -> amplifier.
+        Please check https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+        to ensure each option is included or excluded by a clear reason.
+     */
+    private final Map<PotionEffectType,Integer> potionEffects = ImmutableMap.<PotionEffectType, Integer>builder()
+            .put(PotionEffectType.ABSORPTION, 4)
+            // BAD_OMEN: duplicates OMINOUS_BOTTLE
+            .put(PotionEffectType.BLINDNESS, 0) // negative
+            // CONDUIT_POWER: duplicates WATER_BREATHING
+            .put(PotionEffectType.DARKNESS, 0) // negative
+            // DOLPHINS_GRACE: doesn't work
+            .put(PotionEffectType.FIRE_RESISTANCE, 0)
+            .put(PotionEffectType.GLOWING, 0)
+            .put(PotionEffectType.HASTE, 4)
+            .put(PotionEffectType.HEALTH_BOOST, 4)
+            .put(PotionEffectType.HERO_OF_THE_VILLAGE, 4)
+            .put(PotionEffectType.HUNGER, 2) // negative
+            // INFESTED: doesn't work
+            // INSTANT_DAMAGE: has no lasting effect
+            // INSTANT_HEALTH: has no lasting effect
+            .put(PotionEffectType.INVISIBILITY, 0)
+            .put(PotionEffectType.JUMP_BOOST, 4)
+            .put(PotionEffectType.LEVITATION, 2) // negative
+            .put(PotionEffectType.LUCK, 4)
+            .put(PotionEffectType.MINING_FATIGUE, 2) // negative
+            .put(PotionEffectType.NAUSEA, 0) // negative
+            .put(PotionEffectType.NIGHT_VISION, 0)
+            // OOZING: has no lasting effect
+            .put(PotionEffectType.POISON, 2) // negative
+            // RAID_OMEN: duplicates OMINOUS_BOTTLE
+            .put(PotionEffectType.REGENERATION, 0)
+            .put(PotionEffectType.RESISTANCE, 4)
+            .put(PotionEffectType.SATURATION, 0)
+            .put(PotionEffectType.SLOW_FALLING, 4)
+            .put(PotionEffectType.SLOWNESS, 2) // negative
+            .put(PotionEffectType.SPEED, 4)
+            .put(PotionEffectType.STRENGTH, 4)
+            // TRIAL_OMEN: duplicates OMINOUS_BOTTLE
+            .put(PotionEffectType.UNLUCK, 2) // negative
+            .put(PotionEffectType.WATER_BREATHING, 0)
+            .put(PotionEffectType.WEAKNESS, 2) // negative
+            // WEAVING: has no lasting effect
+            // WIND_CHARGED: has no lasting effect
+            .put(PotionEffectType.WITHER, 2) // negative
+            .build();
+
+    private final ItemConfig potionConfig = new ItemConfig().effects(potionDurationOptions, potionEffects);
+    private final ItemConfig arrowConfig = new ItemConfig().effects(arrowDurationOptions, potionEffects);
 
     /*
         Ideated from:
@@ -250,11 +260,12 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(7.5D, 1))
 
-            // 3 + 2 + 1 + 1 = 7
+            // 3 + 1 + 1 + 2 = 7
             .put(Material.POTION, new CLT(3.0D, potionConfig))
-            .put(Material.TIPPED_ARROW, new CLT(2.0D, potionConfig, CLT.MAX_POWER))
             .put(Material.SPLASH_POTION, new CLT(1.0D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(1.0D, potionConfig))
+
+            .put(Material.TIPPED_ARROW, new CLT(2.0D, arrowConfig, CLT.MAX_POWER))
 
             .put(Material.GOLDEN_HELMET, new CLT(5.0D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)

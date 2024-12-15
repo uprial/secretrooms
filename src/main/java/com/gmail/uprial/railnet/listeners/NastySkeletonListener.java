@@ -68,14 +68,20 @@ public class NastySkeletonListener implements Listener {
      */
     final private Map<PotionEffectType,E> effectMap = ImmutableMap .<PotionEffectType, E>builder()
             .put(PotionEffectType.ABSORPTION, E.GOOD)
+            // BAD_OMEN: duplicates OMINOUS_BOTTLE
             .put(PotionEffectType.BLINDNESS, E.HARD) // negative
+            // CONDUIT_POWER: duplicates WATER_BREATHING
             .put(PotionEffectType.DARKNESS, E.INCONVENIENT) // negative
+            // DOLPHINS_GRACE: doesn't work
             .put(PotionEffectType.FIRE_RESISTANCE, E.USELESS)
             .put(PotionEffectType.GLOWING, E.USELESS)
             .put(PotionEffectType.HASTE, E.USELESS)
             .put(PotionEffectType.HEALTH_BOOST, E.AMAZING)
             .put(PotionEffectType.HERO_OF_THE_VILLAGE, E.USELESS)
             .put(PotionEffectType.HUNGER, E.PAINFUL) // negative
+            // INFESTED: doesn't work
+            .put(PotionEffectType.INSTANT_DAMAGE, E.PAINFUL)
+            .put(PotionEffectType.INSTANT_HEALTH, E.GOOD) // negative
             .put(PotionEffectType.INVISIBILITY, E.GOOD)
             .put(PotionEffectType.JUMP_BOOST, E.GOOD)
             .put(PotionEffectType.LEVITATION, E.PAINFUL) // negative
@@ -83,15 +89,20 @@ public class NastySkeletonListener implements Listener {
             .put(PotionEffectType.MINING_FATIGUE, E.INCONVENIENT) // negative
             .put(PotionEffectType.NAUSEA, E.INCONVENIENT) // negative
             .put(PotionEffectType.NIGHT_VISION, E.USELESS)
+            // OOZING: has no lasting effect
             .put(PotionEffectType.POISON, E.PAINFUL) // negative
+            // RAID_OMEN: duplicates OMINOUS_BOTTLE
             .put(PotionEffectType.REGENERATION, E.AMAZING)
             .put(PotionEffectType.RESISTANCE, E.GOOD)
             .put(PotionEffectType.SATURATION, E.AMAZING)
             .put(PotionEffectType.SLOW_FALLING, E.USELESS)
             .put(PotionEffectType.SLOWNESS, E.INCONVENIENT) // negative
+            // TRIAL_OMEN: duplicates OMINOUS_BOTTLE
             .put(PotionEffectType.UNLUCK, E.INCONVENIENT) // negative
             .put(PotionEffectType.WATER_BREATHING, E.USELESS)
             .put(PotionEffectType.WEAKNESS, E.INCONVENIENT) // negative
+            // WEAVING: has no lasting effect
+            // WIND_CHARGED: has no lasting effect
             .put(PotionEffectType.WITHER, E.PAINFUL) // negative
             .build();
 
