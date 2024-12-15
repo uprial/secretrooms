@@ -207,7 +207,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(PotionEffectType.POISON, 2) // negative
             // RAID_OMEN: duplicates OMINOUS_BOTTLE
             .put(PotionEffectType.REGENERATION, 0)
-            .put(PotionEffectType.RESISTANCE, 4)
+            .put(PotionEffectType.RESISTANCE, 2)
             .put(PotionEffectType.SATURATION, 0)
             .put(PotionEffectType.SLOW_FALLING, 4)
             .put(PotionEffectType.SLOWNESS, 2) // negative
