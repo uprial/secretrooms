@@ -45,7 +45,7 @@ public class NastyEndermanListener implements Listener {
 
             final Player player = getStrongestPlayer(event.getEntity().getWorld());
 
-            if(player != null) {
+            if((player != null) && (player.isValid()) && (!player.isFlying())){
                 final Enderman enderman = (Enderman) event.getEntity();
 
                 if ((player.getEquipment() != null)
