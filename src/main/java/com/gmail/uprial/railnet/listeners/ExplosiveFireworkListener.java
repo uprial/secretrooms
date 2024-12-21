@@ -32,16 +32,21 @@ public class ExplosiveFireworkListener implements Listener {
                     if(power != null) {
                         if(power <= Nuke.MAX_ENGINE_POWER) {
                             firework.getWorld().createExplosion(firework.getLocation(), power, true, true);
+                            if(customLogger.isDebugMode()) {
+                                customLogger.debug(getMessage(firework, power));
+                            }
                         } else {
                             Nuke.explode(plugin, firework.getLocation(), power, 0, () -> 2);
-                        }
-                        if(customLogger.isDebugMode()) {
-                            customLogger.debug(String.format("Firework exploded at %s with power %d",
-                                    format(firework.getLocation()), power));
+                            customLogger.info(getMessage(firework, power));
                         }
                     }
                 }
             }
         }
+    }
+
+    private String getMessage(final Firework firework, final Integer power) {
+        return String.format("Firework exploded at %s with power %d",
+                format(firework.getLocation()), power);
     }
 }
