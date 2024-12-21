@@ -269,9 +269,10 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.DIAMOND, new CLT(3.0D))
 
+            // Please, keep consistent with FireworkCraftBook
             .put(Material.FIREWORK_ROCKET, new CLT(3.0D, 2)
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BURST, 3, 5))
-                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL, 5, 8))
+                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL, 5, 12))
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 

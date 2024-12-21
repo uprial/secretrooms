@@ -21,8 +21,15 @@ public class FireworkCraftBook {
 
     public void enable() {
         for(int i = 1; i < 9; i++) {
-            addRecipe(Material.TNT, i, 1 + i / 2, i);
-            addRecipe(Material.NETHER_STAR, i,10 * i, 20 * i);
+            // With i = 5, generates the same as MineshaftPopulator: 3 and 5
+            addRecipe(Material.TNT, i,
+                    FireworkEffect.Type.BURST,1 + i / 2, i);
+            // With i = 4, generates the same as MineshaftPopulator: 5 and 12
+            addRecipe(Material.END_CRYSTAL, i,
+                    FireworkEffect.Type.BALL, 1 + i, 3 * i);
+            // With i = 1, generates the same as MineshaftPopulator: 10 and 20
+            addRecipe(Material.NETHER_STAR, i,
+                    FireworkEffect.Type.BALL_LARGE, 10 * i, 20 * i);
         }
     }
 
@@ -35,15 +42,16 @@ public class FireworkCraftBook {
     private void addRecipe(
             final Material material,
             final int amount,
+            final FireworkEffect.Type type,
             final int fireworkPower,
             final int explosionPower) {
 
         final ItemStack result = new ItemStack(Material.FIREWORK_ROCKET);
         new ItemConfig()
-                .firework(FireworkEffect.Type.BURST, fireworkPower, explosionPower)
+                .firework(type, fireworkPower, explosionPower)
                 .apply(result);
 
-        final String key = String.format("explosive-firework-%d-%d", fireworkPower, explosionPower);
+        final String key = String.format("e-f-%s-%d-%d", type.toString().toLowerCase(), fireworkPower, explosionPower);
         final NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         final ShapelessRecipe recipe = new ShapelessRecipe(namespacedKey, result);
 
