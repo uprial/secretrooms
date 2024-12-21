@@ -2,9 +2,7 @@ package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.WorldName;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 // ChestLootConfig
 public class CLT {
@@ -19,7 +17,7 @@ public class CLT {
 
     private final double probability;
     private final int maxPower;
-    private final ItemConfig itemConfig;
+    private final List<ItemConfig> itemConfigOptions = new ArrayList<>();
     private final Set<String> worldNames = new HashSet<>();
 
     public CLT(final double probability) {
@@ -36,7 +34,9 @@ public class CLT {
 
     public CLT(final double probability, final ItemConfig itemConfig, final int maxPower) {
         this.probability = probability;
-        this.itemConfig = itemConfig;
+        if(itemConfig != null) {
+            this.itemConfigOptions.add(itemConfig);
+        }
         this.maxPower = maxPower;
     }
 
@@ -52,8 +52,17 @@ public class CLT {
         return getRandomAmount(0, maxPower);
     }
 
+    public CLT addItemConfigOption(final ItemConfig itemConfig) {
+        this.itemConfigOptions.add(itemConfig);
+        return this;
+    }
+
+    public boolean hasItemConfig() {
+        return !itemConfigOptions.isEmpty();
+    }
+
     public ItemConfig getItemConfig() {
-        return itemConfig;
+        return itemConfigOptions.get(RANDOM.nextInt(itemConfigOptions.size()));
     }
 
     public CLT onlyInWorld(final String worldName) {

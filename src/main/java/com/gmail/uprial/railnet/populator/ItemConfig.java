@@ -1,10 +1,12 @@
 package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.RandomUtils;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.OminousBottleMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
@@ -119,6 +121,38 @@ public class ItemConfig {
         }
     }
 
+    private static class firework implements VirtualItemConfig {
+        final FireworkEffect.Type type;
+        final int fireworkPower;
+        final int explosionPower;
+
+        firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
+            this.type = type;
+            this.fireworkPower = fireworkPower;
+            this.explosionPower = explosionPower;
+        }
+
+        @Override
+        public void apply(final ItemStack itemStack) {
+            final FireworkMeta fireworkMeta = (FireworkMeta) itemStack.getItemMeta();
+
+            fireworkMeta.addEffect(FireworkEffect.builder()
+                    .with(type)
+                    .withFlicker()
+                    .withTrail()
+                    .withColor(MagicColor.encode(explosionPower))
+                    .build());
+            fireworkMeta.setPower(fireworkPower);
+
+            final String description = String.format("Explosion power: %d", explosionPower);
+            fireworkMeta.setLore(Collections.singletonList(description));
+
+            itemStack.setItemMeta(fireworkMeta);
+
+            new ench1(Enchantment.FLAME, 1).apply(itemStack);
+        }
+    }
+
     public ItemConfig() {
     }
 
@@ -144,6 +178,11 @@ public class ItemConfig {
 
     public ItemConfig effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
         configs.add(new effects(durationOptions, effectTypeOptions));
+        return this;
+    }
+
+    public ItemConfig firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
+        configs.add(new firework(type, fireworkPower, explosionPower));
         return this;
     }
 

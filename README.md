@@ -17,6 +17,10 @@ Generate rail from spawn to mansion and monument and rare loot in chests and fur
 * 0.1% of Endermans ignore carved pumpkins
 * Skeletons have a chance to add negative effects to their arrows 
 
+#### Bazookas
+
+![Bazookas](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
+
 ## Commands
 
 `railnet reload` - reload config from disk

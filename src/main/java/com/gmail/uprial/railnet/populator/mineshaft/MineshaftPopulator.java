@@ -11,6 +11,7 @@ import com.gmail.uprial.railnet.populator.ItemConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
@@ -266,7 +267,13 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.LINGERING_POTION, new CLT(0.5D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(1.5D, arrowConfig, CLT.MAX_POWER))
 
-            .put(Material.DIAMOND, new CLT(3.0D, 1))
+            .put(Material.DIAMOND, new CLT(3.0D))
+
+            .put(Material.FIREWORK_ROCKET, new CLT(3.0D, 2)
+                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BURST, 3, 5))
+                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL, 5, 8))
+                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
+            )
 
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.5D))
             .put(Material.TOTEM_OF_UNDYING, new CLT(2.5D))
@@ -459,7 +466,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                if(entry.getValue().getItemConfig() != null) {
+                if(entry.getValue().hasItemConfig()) {
                     // The fresh getItem() is needed to properly update the amount
                     entry.getValue().getItemConfig().apply(inventory.getItem(i));
                 }

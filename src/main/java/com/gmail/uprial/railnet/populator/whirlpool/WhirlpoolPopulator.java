@@ -135,7 +135,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
                                     inventory.setItem(i, new ItemStack(entry.getKey(), amount));
 
-                                    if (entry.getValue().getItemConfig() != null) {
+                                    if (entry.getValue().hasItemConfig()) {
                                         // The fresh getItem() is needed to properly update the amount
                                         entry.getValue().getItemConfig().apply(inventory.getItem(i));
                                     }

@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.common;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
@@ -16,5 +17,11 @@ public class Formatter {
                 entity.getType(),
                 entity.getWorld().getName(),
                 entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ());
+    }
+
+    public static String format(final Location location) {
+        return String.format("%s:%.0f:%.0f:%.0f",
+                location.getWorld().getName(),
+                location.getX(), location.getY(), location.getZ());
     }
 }
