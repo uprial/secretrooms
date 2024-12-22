@@ -2,10 +2,11 @@ package com.gmail.uprial.railnet;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
+import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.ExplosiveFireworkListener;
 import com.gmail.uprial.railnet.listeners.NastyEndermanListener;
 import com.gmail.uprial.railnet.listeners.NastySkeletonListener;
-import com.gmail.uprial.railnet.populator.FireworkCraftBook;
+import com.gmail.uprial.railnet.firework.FireworkCraftBook;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
@@ -57,7 +58,9 @@ public final class RailNet extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
         getServer().getPluginManager().registerEvents(new NastyEndermanListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new NastySkeletonListener(consoleLogger), this);
-        getServer().getPluginManager().registerEvents(new ExplosiveFireworkListener(this, consoleLogger), this);
+
+        getServer().getPluginManager().registerEvents(
+                new ExplosiveFireworkListener(new FireworkEngine(this, consoleLogger)), this);
 
         fireworkCraftBook = new FireworkCraftBook(this);
         fireworkCraftBook.enable();

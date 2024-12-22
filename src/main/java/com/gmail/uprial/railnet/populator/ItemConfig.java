@@ -1,12 +1,12 @@
 package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.RandomUtils;
+import com.gmail.uprial.railnet.firework.FireworkEngine;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.OminousBottleMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
@@ -134,22 +134,7 @@ public class ItemConfig {
 
         @Override
         public void apply(final ItemStack itemStack) {
-            final FireworkMeta fireworkMeta = (FireworkMeta) itemStack.getItemMeta();
-
-            fireworkMeta.addEffect(FireworkEffect.builder()
-                    .with(type)
-                    .withFlicker()
-                    .withTrail()
-                    .withColor(MagicColor.encode(explosionPower))
-                    .build());
-            fireworkMeta.setPower(fireworkPower);
-
-            final String description = String.format("Explosion power: %d", explosionPower);
-            fireworkMeta.setLore(Collections.singletonList(description));
-
-            itemStack.setItemMeta(fireworkMeta);
-
-            new ench1(Enchantment.FLAME, 1).apply(itemStack);
+            FireworkEngine.apply(itemStack, type, fireworkPower, explosionPower);
         }
     }
 
