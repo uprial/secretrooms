@@ -19,7 +19,7 @@ import java.util.Map;
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class FireworkEngine {
-    public final static int MAGIC_TYPE_EXPLOSIVE = 0;
+    final static int MAGIC_TYPE_EXPLOSIVE = 0;
 
     private final static Map<Integer, EntityType> MAGIC_TYPE_2_ENTITY_TYPE = ImmutableMap.<Integer,EntityType>builder()
             .put(1, EntityType.ARMADILLO)
@@ -108,10 +108,21 @@ public class FireworkEngine {
 
     private final RailNet plugin;
     private final CustomLogger customLogger;
+    private final FireworkCraftBook craftBook;
 
     public FireworkEngine(final RailNet plugin, final CustomLogger customLogger) {
         this.plugin = plugin;
         this.customLogger = customLogger;
+
+        craftBook = new FireworkCraftBook(plugin);
+    }
+
+    public void enableCraftBook() {
+        craftBook.enable();
+    }
+
+    public void disableCraftBook() {
+        craftBook.disable();
     }
 
     public static void apply(

@@ -2,18 +2,18 @@ package com.gmail.uprial.railnet.firework;
 
 import org.bukkit.Color;
 
-public class FireworkMagicColor {
+class FireworkMagicColor {
     /*
         Avoid any changes on the already generated map:
         the already generated and crafted fireworks will stop working.
      */
     private static final int MAGIC_RED = Color.RED.getRed() - 1;
 
-    public static Color encode(final FireworkMagic magic) {
+    static Color encode(final FireworkMagic magic) {
         return Color.fromRGB(MAGIC_RED, magic.getType(), magic.getAmount());
     }
 
-    public static FireworkMagic decode(final Color color) {
+    static FireworkMagic decode(final Color color) {
         if((color.getRed() == MAGIC_RED)) {
             return new FireworkMagic(color.getGreen(), color.getBlue());
         } else {

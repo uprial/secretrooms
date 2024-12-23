@@ -1,6 +1,6 @@
 package com.gmail.uprial.railnet.firework;
 
-public class FireworkMagic {
+class FireworkMagic {
     private final int type;
     private final int amount;
 
@@ -9,11 +9,11 @@ public class FireworkMagic {
         this.amount = amount;
     }
 
-    public int getAmount() {
+    int getAmount() {
         return amount;
     }
 
-    public int getType() {
+    int getType() {
         return type;
     }
 }

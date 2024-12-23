@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class FireworkCraftBook {
+class FireworkCraftBook {
     private final RailNet plugin;
 
     private final Map<Material, EntityType> egg2entity = ImmutableMap.<Material,EntityType>builder()
@@ -101,11 +101,11 @@ public class FireworkCraftBook {
 
     private final Set<NamespacedKey> addedKeys = new HashSet<>();
 
-    public FireworkCraftBook(final RailNet plugin) {
+    FireworkCraftBook(final RailNet plugin) {
         this.plugin = plugin;
     }
 
-    public void enable() {
+    void enable() {
         for(int i = 1; i < 9; i++) {
             // With i = 5, generates the same as MineshaftPopulator: 3 and 5
             addRecipe(Material.TNT, i,
@@ -124,7 +124,7 @@ public class FireworkCraftBook {
         }
     }
 
-    public void disable() {
+    void disable() {
         for(NamespacedKey key : addedKeys) {
             plugin.getServer().removeRecipe(key);
         }

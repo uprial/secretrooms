@@ -6,7 +6,6 @@ import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.ExplosiveFireworkListener;
 import com.gmail.uprial.railnet.listeners.NastyEndermanListener;
 import com.gmail.uprial.railnet.listeners.NastySkeletonListener;
-import com.gmail.uprial.railnet.firework.FireworkCraftBook;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.listeners.ChunkListener;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
@@ -32,7 +31,7 @@ public final class RailNet extends JavaPlugin {
 
     private Populator populator = null;
 
-    private FireworkCraftBook fireworkCraftBook = null;
+    private FireworkEngine fireworkEngine = null;
 
     private BukkitTask cronTask;
 
@@ -59,11 +58,10 @@ public final class RailNet extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new NastyEndermanListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new NastySkeletonListener(consoleLogger), this);
 
-        getServer().getPluginManager().registerEvents(
-                new ExplosiveFireworkListener(new FireworkEngine(this, consoleLogger)), this);
+        fireworkEngine = new FireworkEngine(this, consoleLogger);
+        fireworkEngine.enableCraftBook();
 
-        fireworkCraftBook = new FireworkCraftBook(this);
-        fireworkCraftBook.enable();
+        getServer().getPluginManager().registerEvents(new ExplosiveFireworkListener(fireworkEngine), this);
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
@@ -84,7 +82,7 @@ public final class RailNet extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        fireworkCraftBook.disable();
+        fireworkEngine.disableCraftBook();
         HandlerList.unregisterAll(this);
         cronTask.cancel();
         consoleLogger.info("Plugin disabled");
