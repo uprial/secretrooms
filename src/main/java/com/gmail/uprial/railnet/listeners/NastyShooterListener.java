@@ -4,13 +4,10 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
 import com.google.common.collect.ImmutableMap;
-import org.bukkit.entity.AbstractSkeleton;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -21,15 +18,14 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
-import static com.gmail.uprial.railnet.common.MetadataHelper.getMetadata;
-import static com.gmail.uprial.railnet.common.MetadataHelper.setMetadata;
+import static com.gmail.uprial.railnet.common.MetadataHelper.*;
 import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 
-public class NastySkeletonListener implements Listener {
+public class NastyShooterListener implements Listener {
     private final RailNet plugin;
     private final CustomLogger customLogger;
 
-    public NastySkeletonListener(final RailNet plugin, final CustomLogger customLogger) {
+    public NastyShooterListener(final RailNet plugin, final CustomLogger customLogger) {
         this.plugin = plugin;
         this.customLogger = customLogger;
     }
@@ -37,10 +33,6 @@ public class NastySkeletonListener implements Listener {
     private static final String MK_EFFECTS = "rn_effects";
     private static final double POSITIVE_PROBABILITY = 0.3D;
     private static final double NEGATIVE_PROBABILITY = 1.0D;
-
-    private static final String MK_EXPLOSION = "rn_explosion";
-    private static final double EXPLOSION_PROBABILITY = 1.0D;
-    private static final float EXPLOSION_POWER = 2.0f;
 
     private enum E {
 
@@ -50,7 +42,7 @@ public class NastySkeletonListener implements Listener {
 
         INCONVENIENT(NEGATIVE_PROBABILITY, 60, 2),
         PAINFUL(NEGATIVE_PROBABILITY, 30, 1),
-        HARD(NEGATIVE_PROBABILITY, 10, 0);
+        HARD(NEGATIVE_PROBABILITY, 7, 0);
 
         private final double probability;
         private final int duration;
@@ -125,61 +117,33 @@ public class NastySkeletonListener implements Listener {
         if (!event.isCancelled()) {
             final Projectile projectile = event.getEntity();
             final ProjectileSource shooter = projectile.getShooter();
-            if ((projectile instanceof Arrow) && (shooter instanceof AbstractSkeleton)) {
-                final AbstractSkeleton skeleton = (AbstractSkeleton)shooter;
+            if ((projectile instanceof Arrow)
+                    && (shooter instanceof LivingEntity)
+                    && !(shooter instanceof Player)) {
 
-                Set<PotionEffect> potionEffects = getMetadata(skeleton, MK_EFFECTS);
-                if(potionEffects == null) {
-                    potionEffects = new HashSet<>();
+                final LivingEntity entity = (LivingEntity)shooter;
+
+                final Set<PotionEffect> potionEffects = getMetadataOrDefault(plugin, entity, MK_EFFECTS, () -> {
+                    final Set<PotionEffect> newPotionEffects = new HashSet<>();
                     for (Map.Entry<PotionEffectType, E> entry : effectMap.entrySet()) {
                         if (Probability.PASS(entry.getValue().getProbability(), 0)) {
-                            potionEffects.add(
+                            newPotionEffects.add(
                                     new PotionEffect(entry.getKey(),
                                             seconds2ticks(entry.getValue().getDuration()),
                                             entry.getValue().getAmplifier()));
 
                             if(customLogger.isDebugMode()) {
-                                customLogger.info(String.format("Arrow of %s got %s",
-                                        format(skeleton), entry.getKey()));
+                                customLogger.debug(String.format("%s of %s got %s",
+                                        projectile.getType(), format(entity), entry.getKey()));
                             }
                         }
                     }
 
-                    setMetadata(plugin, skeleton, MK_EFFECTS, potionEffects);
-                }
+                    return newPotionEffects;
+                });
 
                 for(final PotionEffect potionEffect : potionEffects) {
-                    ((Arrow)projectile).addCustomEffect(potionEffect, true);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings({"unused", "MethodMayBeStatic"})
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onProjectileHitEvent(ProjectileHitEvent event) {
-        if (!event.isCancelled()) {
-            final Projectile projectile = event.getEntity();
-            final ProjectileSource shooter = projectile.getShooter();
-            if ((projectile instanceof Arrow) && (shooter instanceof AbstractSkeleton)) {
-                final AbstractSkeleton skeleton = (AbstractSkeleton)shooter;
-
-                Boolean explosion = getMetadata(skeleton, MK_EXPLOSION);
-                if(explosion == null) {
-                    explosion = false;
-                    if(Probability.PASS(EXPLOSION_PROBABILITY, 0)) {
-                        explosion = true;
-                        if (customLogger.isDebugMode()) {
-                            customLogger.info(String.format("Arrow of %s got explosion with power %.1f",
-                                    format(skeleton), EXPLOSION_POWER));
-                        }
-                    }
-
-                    setMetadata(plugin, skeleton, MK_EXPLOSION, explosion);
-                }
-
-                if(explosion) {
-                    projectile.getWorld().createExplosion(projectile.getLocation(), EXPLOSION_POWER, true);
+                    ((Arrow) projectile).addCustomEffect(potionEffect, true);
                 }
             }
         }
