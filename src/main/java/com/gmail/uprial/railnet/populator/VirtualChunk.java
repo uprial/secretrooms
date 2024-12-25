@@ -12,6 +12,8 @@ import org.bukkit.block.data.Rail;
 
 import java.util.Map;
 
+import static com.gmail.uprial.railnet.common.Formatter.format;
+
 public class VirtualChunk {
     private final String title;
     private final Chunk chunk;
@@ -43,7 +45,7 @@ public class VirtualChunk {
         vx += x;
         if(vx < 0) {
             throw new VirtualChunkError(
-                    String.format("Negative virtual X of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
+                    String.format("Negative virtual X of %s chunk in %s: %d", format(chunk), title, vx));
         }
 
         vy += y;
@@ -51,7 +53,7 @@ public class VirtualChunk {
         vz += z;
         if(vz < 0) {
             throw new VirtualChunkError(
-                    String.format("Negative virtual Z of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
+                    String.format("Negative virtual Z of %s chunk in %s: %d", format(chunk), title, vz));
         }
     }
 
@@ -71,7 +73,7 @@ public class VirtualChunk {
         // With any X-positive move, getting access to this block will raise an exception
         if(vx > 0) {
             throw new VirtualChunkError(
-                    String.format("Positive virtual X of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vx));
+                    String.format("Positive virtual X of %s chunk in %s: %d", format(chunk), title, vx));
         }
         return 15;
     }
@@ -80,7 +82,7 @@ public class VirtualChunk {
         // With any Z-positive move, getting access to this block will raise an exception
         if(vz > 0) {
             throw new VirtualChunkError(
-                    String.format("Positive virtual Z of %d:%d chunk in %s: %d", chunk.getX(), chunk.getZ(), title, vz));
+                    String.format("Positive virtual Z of %s chunk in %s: %d", format(chunk), title, vz));
         }
         return 15;
     }
@@ -151,7 +153,8 @@ public class VirtualChunk {
             ((Rail)blockData).setShape(blockFace2railShape.get(getBlockFacesSum(vBlockFace, blockFace)));
         } else {
             throw new VirtualChunkError(
-                    String.format("Block %s at %d:%d:%d can't be rotated in %s", material, x, y, z, title));
+                    String.format("Block %s at %s:%d:%d:%d can't be rotated in %s",
+                            material, chunk.getWorld().getName(), x, y, z, title));
         }
 
         // Power rails

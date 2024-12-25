@@ -89,8 +89,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
             if(minY >= vc.getSeaLevel()) {
                 if(customLogger.isDebugMode()) {
                     // No water
-                    customLogger.debug(String.format("Whirlpool %s:%d:%d can't be populated",
-                            chunk.getWorld().getName(), chunk.getX(), chunk.getZ()));
+                    customLogger.debug(String.format("Whirlpool[%s] can't be populated", format(chunk)));
                 }
                 return;
             }
@@ -111,8 +110,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                         if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
                             if (customLogger.isDebugMode()) {
                                 // Idempotency marker
-                                customLogger.debug(String.format("Whirlpool %s:%d:%d is already populated",
-                                        chunk.getWorld().getName(), chunk.getX(), chunk.getZ()));
+                                customLogger.debug(String.format("Whirlpool[%s] is already populated", format(chunk)));
                             }
                             return;
                         }
@@ -159,8 +157,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
             }
 
             if(customLogger.isDebugMode()) {
-                customLogger.debug(String.format("Whirlpool %s:%d:%d populated",
-                        chunk.getWorld().getName(), chunk.getX(), chunk.getZ()));
+                customLogger.debug(String.format("Whirlpool[%s] populated", format(chunk)));
             }
         }
     }

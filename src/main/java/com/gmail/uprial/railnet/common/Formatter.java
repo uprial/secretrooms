@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.common;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -21,7 +22,12 @@ public class Formatter {
 
     public static String format(final Location location) {
         return String.format("%s:%.0f:%.0f:%.0f",
-                location.getWorld().getName(),
+                (location.getWorld() != null) ? location.getWorld().getName() : "empty",
                 location.getX(), location.getY(), location.getZ());
+    }
+
+    public static String format(final Chunk chunk) {
+        return String.format("%s:%d:%d",
+                chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 }

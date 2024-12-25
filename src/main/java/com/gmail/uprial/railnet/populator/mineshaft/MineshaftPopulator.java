@@ -73,7 +73,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         for(int y = minY; y < maxY; y++) {
             for(int x = 0; x < 16; x++) {
                 for(int z = 0; z < 16; z++) {
-                    populateBlock(chunk.getBlock(x, y, z));
+                    maybePopulateBlock(chunk.getBlock(x, y, z));
                 }
             }
         }
@@ -97,7 +97,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.BARREL, this::populateBarrel)
             .build();
 
-    private void populateBlock(final Block block) {
+    private void maybePopulateBlock(final Block block) {
         final BlockPopulator blockPopulator = blockPopulators.get(block.getType());
         if(blockPopulator != null) {
             blockPopulator.populate(block);

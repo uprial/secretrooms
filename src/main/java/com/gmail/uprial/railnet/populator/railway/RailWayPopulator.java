@@ -194,8 +194,8 @@ public class RailWayPopulator implements ChunkPopulator {
                 new RailWayChunk(chunkMap, chunk, railType, blockFace).populate();
 
                 if(customLogger.isDebugMode()) {
-                    customLogger.debug(String.format("RailWay %s:%d:%d populated with %s-%s",
-                            chunk.getWorld().getName(), chunk.getX(), chunk.getZ(), railType, blockFace));
+                    customLogger.debug(String.format("RailWay[%s] populated with %s-%s",
+                            format(chunk), railType, blockFace));
                 }
             });
         }
