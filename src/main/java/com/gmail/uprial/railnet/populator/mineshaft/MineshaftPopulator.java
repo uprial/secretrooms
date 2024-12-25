@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.mineshaft;
 
+import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.RailNetCron;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
@@ -13,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -35,36 +37,52 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 
 public class MineshaftPopulator implements ChunkPopulator {
+    private final RailNet plugin;
     private final CustomLogger customLogger;
 
-    public MineshaftPopulator(final CustomLogger customLogger) {
+    public MineshaftPopulator(final RailNet plugin, final CustomLogger customLogger) {
+        this.plugin = plugin;
         this.customLogger = customLogger;
     }
 
     @Override
-    public void populate(final Chunk chunk) {
+    public void populate(final Chunk readonlyChunk) {
         /*
             Fix population in structures with post-generation,
             known examples: Desert Pyramid, Outpost
             - chests there seems to be populated somehow after their chunk load.
          */
-        RailNetCron.defer(() -> {
-            final int minY = chunk.getWorld().getMinHeight();
-            final int maxY = chunk.getWorld().getMaxHeight();
-            for(int y = minY; y < maxY; y++) {
-                for(int x = 0; x < 16; x++) {
-                    for(int z = 0; z < 16; z++) {
-                        populateBlock(chunk.getBlock(x, y, z));
-                    }
-                }
-            }
+        final UUID readonlyWorldUID = readonlyChunk.getWorld().getUID();
+        final int chunkX = readonlyChunk.getX();
+        final int chunkZ = readonlyChunk.getZ();
 
-            for(final Entity entity : chunk.getEntities()) {
-                if(entity instanceof StorageMinecart) {
-                    populateStorageMinecart((StorageMinecart)entity);
+        RailNetCron.defer(() -> populateDeferred(readonlyWorldUID, chunkX, chunkZ));
+    }
+
+    private void populateDeferred(final UUID worldUID, final int chunkX, final int chunkZ) {
+        final World world = plugin.getServer().getWorld(worldUID);
+        if(world == null) {
+            customLogger.warning(String.format("World %s not found", worldUID));
+            return;
+        }
+
+        final Chunk chunk = world.getChunkAt(chunkX, chunkZ);
+
+        final int minY = chunk.getWorld().getMinHeight();
+        final int maxY = chunk.getWorld().getMaxHeight();
+        for(int y = minY; y < maxY; y++) {
+            for(int x = 0; x < 16; x++) {
+                for(int z = 0; z < 16; z++) {
+                    populateBlock(chunk.getBlock(x, y, z));
                 }
             }
-        });
+        }
+
+        for(final Entity entity : chunk.getEntities()) {
+            if(entity instanceof StorageMinecart) {
+                populateStorageMinecart((StorageMinecart)entity);
+            }
+        }
     }
 
     private interface BlockPopulator {

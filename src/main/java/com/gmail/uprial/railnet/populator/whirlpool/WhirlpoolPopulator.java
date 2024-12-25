@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.whirlpool;
 
+import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.WorldName;
@@ -25,11 +26,13 @@ import java.util.Map;
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class WhirlpoolPopulator implements ChunkPopulator {
+    private final RailNet plugin;
     private final CustomLogger customLogger;
 
     VirtualChunk vc;
 
-    public WhirlpoolPopulator(final CustomLogger customLogger) {
+    public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger) {
+        this.plugin = plugin;
         this.customLogger = customLogger;
     }
 
@@ -149,7 +152,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             }
 
                             // One more population will happen if no idempotency marker is set.
-                            new MineshaftPopulator(customLogger).populateChest(block, density);
+                            new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
                         }
                     }
                 }

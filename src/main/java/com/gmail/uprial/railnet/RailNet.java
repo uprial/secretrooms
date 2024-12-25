@@ -30,13 +30,13 @@ public final class RailNet extends JavaPlugin {
 
     private FireworkEngine fireworkEngine = null;
 
-    private BukkitTask cronTask;
+    private RailNetCron cron;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
-        cronTask = new RailNetCron(this).runTaskTimer();
+        cron = new RailNetCron(this);
 
         consoleLogger = new CustomLogger(getLogger());
         loadConfig(getConfig(), consoleLogger);
@@ -45,9 +45,9 @@ public final class RailNet extends JavaPlugin {
                 Lists.newArrayList(
                         // Order does matter: RailWay is top priority
                         new RailWayPopulator(this, consoleLogger),
-                        new WhirlpoolPopulator(consoleLogger),
+                        new WhirlpoolPopulator(this, consoleLogger),
                         // Order does matter: populate chests in RailWay and Whirlpool.
-                        new MineshaftPopulator(consoleLogger)
+                        new MineshaftPopulator(this, consoleLogger)
                 )
         );
 
@@ -75,14 +75,14 @@ public final class RailNet extends JavaPlugin {
     }
 
     void populatePlayer(final Player player, final int density) {
-        new MineshaftPopulator(consoleLogger).populatePlayer(player, density);
+        new MineshaftPopulator(this, consoleLogger).populatePlayer(player, density);
     }
 
     @Override
     public void onDisable() {
         fireworkEngine.disableCraftBook();
         HandlerList.unregisterAll(this);
-        cronTask.cancel();
+        cron.cancel();
         consoleLogger.info("Plugin disabled");
     }
 
