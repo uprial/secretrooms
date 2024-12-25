@@ -19,9 +19,20 @@ Generate rails from spawn to mansion and monument, rare loot in chests and furna
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 
-#### Bazookas
+#### Use cases
 
-![Bazookas](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
+Make a bazooka:
+
+![Recipes](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
+
+Fire the bazooka:
+
+![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.png)
+
+Find an entrance, take a minecart, enjoy your ride, discover a struct
+
+![Find a monument](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-monument.png)
+
 
 ## Commands
 
