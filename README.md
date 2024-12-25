@@ -6,16 +6,16 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Generate rail from spawn to mansion and monument and rare loot in chests and furnaces, harden Endermans and skeletons.
+Generate rail from spawn to mansion and monument and rare loot in chests and furnaces, harden Endermans and Skeletons, and make Bazookas.
 
 ## Features
 
 * Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
-* Uncommon and rare loot in chests
+* Uncommon, rare, and epic loot in chests with higher probability in mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
-* 0.1% of Endermans ignore carved pumpkins
-* Skeletons have a chance to add negative effects to their arrows 
+* 0.1% of Endermans ignore carved pumpkins on players
+* Skeletons have a chance to add both positive and negative effects to their arrows
 
 #### Bazookas
 
