@@ -37,6 +37,10 @@ Find a whirlpool, then a chest, and loot it
 
 ![Find a whirlpool](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-whirlpool.png)
 
+Find furnaces in mineshaft, check your luck
+
+![Find furnaces](https://raw.githubusercontent.com/uprial/railnet/master/images/find-furnaces.png)
+
 
 ## Commands
 
