@@ -33,6 +33,10 @@ Find an entrance, take a minecart, enjoy your ride, discover a struct
 
 ![Find a monument](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-monument.png)
 
+Find a whirlpool, then a chest, and loot it
+
+![Find a whirlpool]((https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-whirlpool.png)
+
 
 ## Commands
 
