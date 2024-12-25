@@ -17,6 +17,8 @@ Generate rails from spawn to mansion and monument, rare loot in chests and furna
 * 0.1% of Endermans ignore carved pumpkins on players
 * Skeletons have a chance to add both positive and negative effects to their arrows
 
+That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
+
 #### Bazookas
 
 ![Bazookas](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
