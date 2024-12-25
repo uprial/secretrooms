@@ -6,7 +6,7 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Generate rail from spawn to mansion and monument and rare loot in chests and furnaces, harden Endermans and Skeletons, and make Bazookas.
+Generate rails from spawn to mansion and monument, rare loot in chests and furnaces, allow Bazookas.
 
 ## Features
 
