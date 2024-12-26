@@ -243,8 +243,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(PotionEffectType.WITHER, 2) // negative
             .build();
 
-    private final ItemConfig potionConfig = new ItemConfig().effects(potionDurationOptions, potionEffects);
-    private final ItemConfig arrowConfig = new ItemConfig().effects(arrowDurationOptions, potionEffects);
+    private final ItemConfig potionConfig = new ItemConfig()
+            .effects(potionDurationOptions, potionEffects);
+    private final ItemConfig arrowConfig = new ItemConfig()
+            .effects(arrowDurationOptions, potionEffects);
 
     /*
         Ideated from:

@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.firework.FireworkEngine;
+import com.google.common.collect.ImmutableList;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -24,7 +25,7 @@ public class ItemConfig {
         void apply(final ItemStack itemStack);
     }
 
-    private final List<VirtualItemConfig> configs = new ArrayList<>();
+    private final ImmutableList<VirtualItemConfig> configs;
 
     private static class ench1 implements VirtualItemConfig {
         final Enchantment enchantment;
@@ -139,36 +140,43 @@ public class ItemConfig {
     }
 
     public ItemConfig() {
+        configs = ImmutableList.<VirtualItemConfig>builder().build();
+    }
+
+    private ItemConfig(final ImmutableList<VirtualItemConfig> configs) {
+        this.configs = configs;
+    }
+
+    private ItemConfig addConfig(final VirtualItemConfig config) {
+        return new ItemConfig(
+                ImmutableList.<VirtualItemConfig>builder()
+                        .addAll(configs)
+                        .add(config)
+                        .build());
     }
 
     public ItemConfig ench(final Enchantment enchantment) {
-        configs.add(new ench1(enchantment, 1));
-        return this;
+        return addConfig(new ench1(enchantment, 1));
     }
 
     public ItemConfig ench(final Enchantment enchantment, final int level1, final int level2) {
-        configs.add(new ench2(enchantment, level1, level2));
-        return this;
+        return addConfig(new ench2(enchantment, level1, level2));
     }
 
     public ItemConfig trim(final TrimMaterial material, final TrimPattern pattern) {
-        configs.add(new trim(material, pattern));
-        return this;
+        return addConfig(new trim(material, pattern));
     }
 
     public ItemConfig amplify(final int level) {
-        configs.add(new amplifier(level));
-        return this;
+        return addConfig(new amplifier(level));
     }
 
     public ItemConfig effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
-        configs.add(new effects(durationOptions, effectTypeOptions));
-        return this;
+        return addConfig(new effects(durationOptions, effectTypeOptions));
     }
 
     public ItemConfig firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
-        configs.add(new firework(type, fireworkPower, explosionPower));
-        return this;
+        return addConfig(new firework(type, fireworkPower, explosionPower));
     }
 
     public void apply(final ItemStack itemStack) {
