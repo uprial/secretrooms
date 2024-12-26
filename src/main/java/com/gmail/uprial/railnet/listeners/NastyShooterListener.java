@@ -35,7 +35,6 @@ public class NastyShooterListener implements Listener {
     private static final double NEGATIVE_PROBABILITY = 1.0D;
 
     private enum E {
-
         USELESS(POSITIVE_PROBABILITY, 30, 2),
         GOOD(POSITIVE_PROBABILITY, 15, 1),
         AMAZING(POSITIVE_PROBABILITY, 5, 0),
@@ -73,7 +72,7 @@ public class NastyShooterListener implements Listener {
      */
     final private Map<PotionEffectType,E> effectMap = ImmutableMap .<PotionEffectType, E>builder()
             .put(PotionEffectType.ABSORPTION, E.GOOD)
-            // BAD_OMEN: duplicates OMINOUS_BOTTLE
+            .put(PotionEffectType.BAD_OMEN, E.INCONVENIENT) // negative
             .put(PotionEffectType.BLINDNESS, E.HARD) // negative
             // CONDUIT_POWER: duplicates WATER_BREATHING
             .put(PotionEffectType.DARKNESS, E.INCONVENIENT) // negative
@@ -84,7 +83,7 @@ public class NastyShooterListener implements Listener {
             .put(PotionEffectType.HEALTH_BOOST, E.AMAZING)
             .put(PotionEffectType.HERO_OF_THE_VILLAGE, E.USELESS)
             .put(PotionEffectType.HUNGER, E.PAINFUL) // negative
-            // INFESTED: doesn't work
+            .put(PotionEffectType.INFESTED, E.INCONVENIENT) // negative
             .put(PotionEffectType.INSTANT_DAMAGE, E.HARD) // negative
             .put(PotionEffectType.INSTANT_HEALTH, E.GOOD)
             .put(PotionEffectType.INVISIBILITY, E.GOOD)
@@ -94,20 +93,20 @@ public class NastyShooterListener implements Listener {
             .put(PotionEffectType.MINING_FATIGUE, E.INCONVENIENT) // negative
             .put(PotionEffectType.NAUSEA, E.INCONVENIENT) // negative
             .put(PotionEffectType.NIGHT_VISION, E.USELESS)
-            // OOZING: has no lasting effect
+            .put(PotionEffectType.OOZING, E.INCONVENIENT) // negative
             .put(PotionEffectType.POISON, E.PAINFUL) // negative
-            // RAID_OMEN: duplicates OMINOUS_BOTTLE
+            // RAID_OMEN: duplicates BAD_OMEN
             .put(PotionEffectType.REGENERATION, E.AMAZING)
             .put(PotionEffectType.RESISTANCE, E.GOOD)
             .put(PotionEffectType.SATURATION, E.AMAZING)
             .put(PotionEffectType.SLOW_FALLING, E.USELESS)
             .put(PotionEffectType.SLOWNESS, E.INCONVENIENT) // negative
-            // TRIAL_OMEN: duplicates OMINOUS_BOTTLE
+            // TRIAL_OMEN: duplicates BAD_OMEN
             .put(PotionEffectType.UNLUCK, E.INCONVENIENT) // negative
             .put(PotionEffectType.WATER_BREATHING, E.USELESS)
             .put(PotionEffectType.WEAKNESS, E.INCONVENIENT) // negative
-            // WEAVING: has no lasting effect
-            // WIND_CHARGED: has no lasting effect
+            .put(PotionEffectType.WEAVING, E.INCONVENIENT) // negative
+            .put(PotionEffectType.WIND_CHARGED, E.INCONVENIENT) // negative
             .put(PotionEffectType.WITHER, E.PAINFUL) // negative
             .build();
 
