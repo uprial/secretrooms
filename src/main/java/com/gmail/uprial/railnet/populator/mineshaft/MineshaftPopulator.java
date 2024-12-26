@@ -255,20 +255,20 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         Removed ideas:
             Ender pearls motivate player to fight endermans.
-            .put(Material.ENDER_PEARL,
+            .put(Material.ENDER_PEARL, ...)
 
             End crystals require a block of obsidian beneath,
             which removes all potential fun of placing them.
-            .put(Material.END_CRYSTAL, new CLT(7.5D, 1))
+            .put(Material.END_CRYSTAL, ...)
 
             Bedrock has no real usage, but may bring potential damage to the world.
-            .put(Material.BEDROCK,
+            .put(Material.BEDROCK, ...)
 
             Golden carrots and apples are funny for 1st time,
             but they are neither food with good saturation for everyday life
             nor provide enough regeneration in a fight.
-            .put(Material.GOLDEN_APPLE, new CLT(7.5D, 1))
-            .put(Material.GOLDEN_CARROT, new CLT(7.5D, 1))
+            .put(Material.GOLDEN_APPLE, ...)
+            .put(Material.GOLDEN_CARROT, ...)
 
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()

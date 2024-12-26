@@ -8,17 +8,17 @@ import static org.junit.Assert.assertEquals;
 
 public class UtilsTest {
     @Test
-    public void testJoinEmptyStrings() throws Exception {
+    public void testJoinEmptyStrings() {
         assertEquals("", joinStrings(",", Lists.newArrayList(new String[]{})));
     }
 
     @Test
-    public void testJoinOneString() throws Exception {
+    public void testJoinOneString() {
         assertEquals("a", joinStrings(",", Lists.newArrayList("a")));
     }
 
     @Test
-    public void testJoinSeveralStrings() throws Exception {
+    public void testJoinSeveralStrings() {
         assertEquals("a,b", joinStrings(",", Lists.newArrayList("a", "b")));
     }
 }

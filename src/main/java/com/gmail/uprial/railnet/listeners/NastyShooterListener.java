@@ -110,7 +110,7 @@ public class NastyShooterListener implements Listener {
             .put(PotionEffectType.WITHER, E.PAINFUL) // negative
             .build();
 
-    @SuppressWarnings({"unused", "MethodMayBeStatic"})
+    @SuppressWarnings({"unused"})
     @EventHandler(priority = EventPriority.NORMAL)
     public void onProjectileLaunchEvent(ProjectileLaunchEvent event) {
         if (!event.isCancelled()) {

@@ -527,17 +527,15 @@ class RailWayChunk {
     private void drawBox(final Material material,
                          final int x1, final int y1, final int z1,
                          final int x2, final int y2, final int z2) {
-        iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-            set(x, y, z, material);
-        });
+        iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z)
+                -> set(x, y, z, material));
     }
 
     private void drawBox(final Material material, final BlockFace blockFace,
                          final int x1, final int y1, final int z1,
                          final int x2, final int y2, final int z2) {
-        iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-            set(x, y, z, material, blockFace);
-        });
+        iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z)
+                -> set(x, y, z, material, blockFace));
     }
 
     private void borderBox(final int dx, final int dy, final int dz,
@@ -556,13 +554,11 @@ class RailWayChunk {
 
         // If more than 10% of blocks in the box can be transparent
         if(transparent.intValue() > all / 10) {
-            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-                borderBlock(dx, dy, dz, x, y, z);
-            });
+            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z)
+                    -> borderBlock(dx, dy, dz, x, y, z));
         } else {
-            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z) -> {
-                set(x, y, z, Material.STONE_BRICKS);
-            });
+            iterateBox(x1, y1, z1, x2, y2, z2, (final int x, final int y, final int z)
+                    -> set(x, y, z, Material.STONE_BRICKS));
         }
     }
 

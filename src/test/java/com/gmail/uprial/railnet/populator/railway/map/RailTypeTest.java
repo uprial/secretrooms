@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RailTypeTest {
     @Test
-    public void testAll() throws Exception {
+    public void testAll() {
         assertEquals(1, RailType.SURFACE.getHashCode());
         assertEquals(2, RailType.SURFACE.getMaxHashCode());
 

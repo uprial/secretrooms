@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 public class WhirlpoolPopulatorTest {
     @Test
-    public void testConsistency() throws Exception {
+    public void testConsistency() {
         final int seed = 119;
         final int density = 12;
         final Map<Integer, Object> maps = new HashMap<>();
@@ -33,7 +33,7 @@ public class WhirlpoolPopulatorTest {
     }
 
     @Test
-    public void testDistribution() throws Exception {
+    public void testDistribution() {
         for(int density = 88; density < 288; density += 22) {
             for (int seed = 19; seed < 1119; seed += 119) {
                 int counter = 0;

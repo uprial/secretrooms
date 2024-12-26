@@ -185,15 +185,15 @@ public class ChunkMap {
     }
 
     public void forEach(final XZRailWayCallback xzRailWayCallback) {
-        map.forEach((final ChunkXZ chunkXZ, final OrdinalRailWaySet ordinalRailWaySet) -> {
-            ordinalRailWaySet.forEach((final OrdinalRailWay ordinalRailWay) -> {
-                xzRailWayCallback.call(
+        map.forEach((final ChunkXZ chunkXZ, final OrdinalRailWaySet ordinalRailWaySet)
+            -> ordinalRailWaySet.forEach((final OrdinalRailWay ordinalRailWay)
+                -> xzRailWayCallback.call(
                         chunkXZ.getX(),
                         chunkXZ.getZ(),
                         ordinalRailWay.getRailType(),
-                        ordinalRailWay.getBlockFace());
-            });
-        });
+                        ordinalRailWay.getBlockFace())
+            )
+        );
     }
 
     @Override

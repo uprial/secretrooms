@@ -5,8 +5,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.List;
-
 import static com.gmail.uprial.railnet.config.ConfigReaderSimple.*;
 import static org.junit.Assert.*;
 

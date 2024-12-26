@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 public class StructureEnumTest extends TestConfigBase {
     @Test
-    public void testConsistency() throws Exception {
+    public void testConsistency() {
         assertEquals(StructureEnum.values().length, Structure.class.getFields().length);
     }
 }

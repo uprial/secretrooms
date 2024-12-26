@@ -26,7 +26,7 @@ public class ExplosiveShooterListener implements Listener {
     private static final double EXPLOSION_PROBABILITY = 1.0D;
     private static final float EXPLOSION_POWER = 2.0f;
 
-    @SuppressWarnings({"unused", "MethodMayBeStatic"})
+    @SuppressWarnings({"unused"})
     @EventHandler(priority = EventPriority.NORMAL)
     public void onProjectileHitEvent(ProjectileHitEvent event) {
         if (!event.isCancelled()) {

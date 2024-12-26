@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BiomeEnumTest {
     @Test
-    public void testConsistency() throws Exception {
+    public void testConsistency() {
         // Exclude Biome.CUSTOM
         assertEquals(BiomeEnum.values().length, Biome.class.getFields().length - 1);
     }

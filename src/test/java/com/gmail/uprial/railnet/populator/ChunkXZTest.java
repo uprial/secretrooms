@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNotEquals;
 
 public class ChunkXZTest {
     @Test
-    public void testAll() throws Exception {
+    public void testAll() {
         final ChunkXZ chunkXZ = new ChunkXZ(1, 2);
 
         assertEquals("1:2", chunkXZ.toString());

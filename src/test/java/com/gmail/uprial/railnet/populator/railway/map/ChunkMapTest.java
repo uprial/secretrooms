@@ -15,7 +15,7 @@ public class ChunkMapTest {
     public final ExpectedException e = ExpectedException.none();
 
     @Test
-    public void testOrdinalRailWay() throws Exception {
+    public void testOrdinalRailWay() {
         final ChunkMap.OrdinalRailWay ordinalRailWay = new ChunkMap.OrdinalRailWay(1, RailType.UNDERGROUND, BlockFace.NORTH);
 
         assertEquals("UNDERGROUND-NORTH#1", ordinalRailWay.toString());
@@ -34,7 +34,7 @@ public class ChunkMapTest {
     }
 
     @Test
-    public void testGetBlockFace() throws Exception {
+    public void testGetBlockFace() {
         final ChunkMap chunkMap = new ChunkMap("home2hell");
 
         assertEquals(BlockFace.EAST, chunkMap.getBlockFace(1, 0));
@@ -44,7 +44,7 @@ public class ChunkMapTest {
     }
 
     @Test
-    public void testGetWrongBlockFace() throws Exception {
+    public void testGetWrongBlockFace() {
         final ChunkMap chunkMap = new ChunkMap("home2hell");
 
         e.expect(InternalConfigurationError.class);
@@ -54,7 +54,7 @@ public class ChunkMapTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
+    public void testEmpty() {
         assertEquals(
                 "home2hell{}",
                 new ChunkMap("home2hell").toString());
@@ -196,7 +196,7 @@ public class ChunkMapTest {
     }
 
     @Test
-    public void testDoesNoContainRailWays() throws Exception {
+    public void testDoesNoContainRailWays() {
         assertFalse(new ChunkMap("home2hell").containsRailWays(0, 0));
     }
 
@@ -244,9 +244,8 @@ public class ChunkMapTest {
 
     private int forEachCounter(final ChunkMap chunkMap) {
         final AtomicInteger counter = new AtomicInteger(0);
-        chunkMap.forEach((final int x, final int z, final RailType railType, final BlockFace blockFace) -> {
-            counter.getAndIncrement();
-        });
+        chunkMap.forEach((final int x, final int z, final RailType railType, final BlockFace blockFace)
+                -> counter.getAndIncrement());
 
         return counter.intValue();
     }
