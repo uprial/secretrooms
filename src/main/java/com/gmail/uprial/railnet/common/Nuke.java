@@ -1,6 +1,9 @@
 package com.gmail.uprial.railnet.common;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -12,26 +15,24 @@ public class Nuke {
      */
     public static final float MAX_ENGINE_POWER = 16.0f;
 
+    private static final int WATER_WITHERING_POWER = 16;
+
     /*
         A ball of explosions is made of many spheres,
         increasing their radius step by step.
      */
     private static final float STEP = MAX_ENGINE_POWER / 2.0f;
 
-    public interface INextDelayGenerator {
-        Integer get();
-    }
-
-    public static int explode(
+    public static void explode(
             final JavaPlugin plugin,
             final Location fromLocation,
             final float radius,
             final int initialDelay,
-            final INextDelayGenerator nextDelayGenerator) {
-        int delay = initialDelay + nextDelayGenerator.get();
+            final int period) {
+
         plugin.getServer().getScheduler()
                 .scheduleSyncDelayedTask(plugin,
-                        () -> exp(fromLocation), delay);
+                        () -> exp(fromLocation), initialDelay);
 
         final int spheres = Math.round(radius / STEP);
         /*
@@ -44,13 +45,10 @@ public class Nuke {
          */
         for(int i = 1; i < spheres; i++) {
             final float r = i * STEP;
-            delay += nextDelayGenerator.get();
             plugin.getServer().getScheduler()
                     .scheduleSyncDelayedTask(plugin,
-                            () -> explode(fromLocation, radius, r), delay);
+                            () -> explode(fromLocation, radius, r), initialDelay + i * period);
         }
-
-        return delay;
     }
 
     /*
@@ -62,7 +60,7 @@ public class Nuke {
             To distribute angles evenly,
             must be a number not equal to 1.0D nor 0.0D, closer to 1.0D.
          */
-        double gr = (3.0D - Math.sqrt(5.0D));
+        final double gr = (3.0D - Math.sqrt(5.0D));
 
         /*
             Though it might seem enough to split a big sphere into many smaller ones,
@@ -91,10 +89,10 @@ public class Nuke {
 
             total: 4990 > 1655 > 860
          */
-        float epicenterDistance = STEP;
-        float peripheryDistance = MAX_ENGINE_POWER + STEP;
+        final float epicenterDistance = STEP;
+        final float peripheryDistance = MAX_ENGINE_POWER + STEP;
 
-        double distance = epicenterDistance
+        final double distance = epicenterDistance
                 + r / radius * (peripheryDistance - epicenterDistance);
         /*
             The surface area of a sphere of radius r1 is 4 * pi * r1^2.
@@ -104,18 +102,18 @@ public class Nuke {
             To cover a sphere of radius r1 with circles of radius r2,
             4 * pi * r1^2 / (pi * r2^2) = 4 * r1^2 / r2^2 = 4 * (r1 / r2)^2 are needed.
          */
-        int number = (int)Math.ceil(4 * Math.pow(r / distance, 2.0D));
+        final int number = (int)Math.ceil(4 * Math.pow(r / distance, 2.0D));
         //System.out.printf("r: %.2f, number: %d%n", r, number);
         for(int i = 0; i < number; i++){
-            double y = 1.0D - 2.0D * (double)i / number;
-            double angle1 = Math.acos(y);
-            double angle2 = Math.PI * gr * i;
-            double x = Math.sin(angle1) * Math.cos(angle2);
-            double z = Math.sin(angle1) * Math.sin(angle2);
+            final double y = 1.0D - 2.0D * (double)i / number;
+            final double angle1 = Math.acos(y);
+            final double angle2 = Math.PI * gr * i;
+            final double x = Math.sin(angle1) * Math.cos(angle2);
+            final double z = Math.sin(angle1) * Math.sin(angle2);
 
             Location toLocation = fromLocation.clone().add(x * r, y * r, z * r);
-            Vector direction = getDirection(fromLocation, toLocation);
-            RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
+            final Vector direction = getDirection(fromLocation, toLocation);
+            final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
                     fromLocation,
                     direction,
                     toLocation.distance(fromLocation));
@@ -131,9 +129,32 @@ public class Nuke {
         }
     }
 
-    private static void exp(Location location) {
-        //location.getWorld().getBlockAt(location).setType(Material.MAGMA_BLOCK);
-        location.getWorld().createExplosion(location, MAX_ENGINE_POWER, true);
+    private static void exp(final Location expLocation) {
+        // Since we're withering water, we need to start from top layers that affect lower levels.
+        for(int dy = WATER_WITHERING_POWER; dy >= -WATER_WITHERING_POWER; dy--) {
+            for(int dx = -WATER_WITHERING_POWER; dx <= WATER_WITHERING_POWER; dx++) {
+                for(int dz = -WATER_WITHERING_POWER; dz <= WATER_WITHERING_POWER; dz++) {
+                    final Location blockLocation = expLocation.clone().add(dx, dy, dz);
+                    if(blockLocation.distance(expLocation) <= WATER_WITHERING_POWER + 0.01d) {
+                        final Block block = expLocation.getWorld().getBlockAt(blockLocation);
+                        if (block.getType().equals(Material.WATER)) {
+                            block.setType(Material.AIR);
+                        } else if (block.getBlockData() instanceof Waterlogged) {
+                        /*
+                            According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html#WATER,
+                            Material WATER BlockData is Levelled but not Waterlogged
+                         */
+                            final Waterlogged waterlogged = (Waterlogged) block.getBlockData();
+                            if (waterlogged.isWaterlogged()) {
+                                waterlogged.setWaterlogged(false);
+                                block.setBlockData(waterlogged);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        expLocation.getWorld().createExplosion(expLocation, MAX_ENGINE_POWER, true);
     }
 
     private static Vector getDirection(final Location fromLocation, final Location toLocation) {
