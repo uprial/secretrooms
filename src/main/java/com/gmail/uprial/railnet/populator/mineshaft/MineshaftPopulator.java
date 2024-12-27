@@ -145,8 +145,8 @@ public class MineshaftPopulator implements ChunkPopulator {
     //private final Material chestIdempotencyMarker = Material.COOKED_MUTTON;
 
     private final ItemConfig netheriteClothConfig =  new ItemConfig()
-            // Survival maximum level is 4, here it's 5
-            .ench(Enchantment.PROTECTION, 0, 5)
+            // Survival maximum level is 4
+            .ench(Enchantment.PROTECTION, 0, 4)
             .ench(Enchantment.VANISHING_CURSE)
             .trim(TrimMaterial.NETHERITE, TrimPattern.RIB);
 
@@ -157,8 +157,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             .trim(TrimMaterial.GOLD, TrimPattern.RIB);
 
     private final ItemConfig netheriteToolConfig =  new ItemConfig()
-            // Survival maximum level is 5, here it's 10
-            .ench(Enchantment.EFFICIENCY, 0, 10)
+            // Survival maximum level is 5
+            .ench(Enchantment.EFFICIENCY, 0, 5)
             .ench(Enchantment.VANISHING_CURSE);
 
     private final ItemConfig goldenToolConfig =  new ItemConfig()
@@ -167,8 +167,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             .ench(Enchantment.FORTUNE, 0, 3);
 
     private final ItemConfig netheriteSwordConfig =  new ItemConfig()
-            // Survival maximum level is 5, here it's 10
-            .ench(Enchantment.SHARPNESS, 0, 10)
+            // Survival maximum level is 5
+            .ench(Enchantment.SHARPNESS, 0, 5)
             .ench(Enchantment.VANISHING_CURSE);
 
     private final ItemConfig goldenSwordConfig =  new ItemConfig()
