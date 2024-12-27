@@ -154,7 +154,6 @@ public class MineshaftPopulator implements ChunkPopulator {
             // Survival maximum level is 4, here it's 5
             .ench(Enchantment.PROTECTION, 3, 5)
             .ench(Enchantment.THORNS, 0, 3)
-            .ench(Enchantment.MENDING)
             .trim(TrimMaterial.GOLD, TrimPattern.RIB);
 
     private final ItemConfig netheriteToolConfig =  new ItemConfig()
@@ -278,101 +277,134 @@ public class MineshaftPopulator implements ChunkPopulator {
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
              */
-            .put(Material.TNT, new CLT(5.0D, 2))
-            .put(Material.OBSIDIAN, new CLT(5.0D, 2))
+            .put(Material.TNT, new CLT(4.0D, 2))
+            .put(Material.OBSIDIAN, new CLT(4.0D, 2))
 
-            // 1.5 + 0.5 + 0.5 + 1.5 = 4
-            .put(Material.POTION, new CLT(1.5D, potionConfig))
+            // 1.0 + 0.5 + 0.5 + 1.0 = 3.0
+            .put(Material.POTION, new CLT(1.0D, potionConfig))
             .put(Material.SPLASH_POTION, new CLT(0.5D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(0.5D, potionConfig))
-            .put(Material.TIPPED_ARROW, new CLT(1.5D, arrowConfig, CLT.MAX_POWER))
+            .put(Material.TIPPED_ARROW, new CLT(1.0D, arrowConfig, CLT.MAX_POWER))
 
-            .put(Material.DIAMOND, new CLT(3.0D))
+            .put(Material.DIAMOND, new CLT(2.0D))
 
             // Please, keep consistent with FireworkCraftBook
-            .put(Material.FIREWORK_ROCKET, new CLT(3.0D, 2)
+            .put(Material.FIREWORK_ROCKET, new CLT(2.0D, 2)
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BURST, 3, 5))
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL, 7, 12))
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 
-            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.5D))
-            .put(Material.TOTEM_OF_UNDYING, new CLT(2.5D))
-            .put(Material.SPAWNER, new CLT(2.5D))
+            .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.0D))
+            .put(Material.TOTEM_OF_UNDYING, new CLT(2.0D))
 
-            .put(Material.GOLDEN_HELMET, new CLT(2.0D, goldenClothConfig
+            .put(Material.GOLDEN_HELMET, new CLT(1.5D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
-            .put(Material.GOLDEN_CHESTPLATE, new CLT(2.0D, goldenClothConfig))
-            .put(Material.GOLDEN_LEGGINGS, new CLT(2.0D, goldenClothConfig
+            .put(Material.GOLDEN_CHESTPLATE, new CLT(1.5D, goldenClothConfig))
+            .put(Material.GOLDEN_LEGGINGS, new CLT(1.5D, goldenClothConfig
                     .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
-            .put(Material.GOLDEN_BOOTS, new CLT(2.0D, goldenClothConfig
+            .put(Material.GOLDEN_BOOTS, new CLT(1.5D, goldenClothConfig
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            .put(Material.NETHERITE_HELMET, new CLT(2.0D, netheriteClothConfig
-                    .ench(Enchantment.RESPIRATION, 0, 3)
-                    .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
-            .put(Material.NETHERITE_CHESTPLATE, new CLT(2.0D, netheriteClothConfig))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(2.0D, netheriteClothConfig
-                    .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
-            .put(Material.NETHERITE_BOOTS, new CLT(2.0D, netheriteClothConfig
-                    .ench(Enchantment.FEATHER_FALLING, 0, 4)
-                    .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
+            .put(Material.GOLDEN_PICKAXE, new CLT(1.0D, goldenToolConfig))
+            .put(Material.GOLDEN_SWORD, new CLT(1.0D, goldenSwordConfig))
 
-            .put(Material.GOLDEN_PICKAXE, new CLT(1.5D, goldenToolConfig))
-            .put(Material.GOLDEN_SWORD, new CLT(1.5D, goldenSwordConfig))
-
-            .put(Material.NETHERITE_PICKAXE, new CLT(1.5D, netheriteToolConfig))
-            .put(Material.NETHERITE_SWORD, new CLT(1.5D, netheriteSwordConfig))
-
-            .put(Material.CREEPER_SPAWN_EGG, new CLT(1.0D))
-            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(1.0D))
-            .put(Material.SKELETON_SPAWN_EGG, new CLT(1.0D))
-            .put(Material.SPIDER_SPAWN_EGG, new CLT(1.0D))
-
-            .put(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, new CLT(1.0D))
             .put(Material.OMINOUS_BOTTLE, new CLT(1.0D, new ItemConfig().amplify(4)))
 
-            .put(Material.SLIME_SPAWN_EGG, new CLT(0.5D))
-            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.5D).onlyInWorld(WorldName.NETHER))
+            .put(Material.NETHERITE_HELMET, new CLT(1.0D, netheriteClothConfig
+                    .ench(Enchantment.RESPIRATION, 0, 3)
+                    .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(1.0D, netheriteClothConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(1.0D, netheriteClothConfig
+                    .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
+            .put(Material.NETHERITE_BOOTS, new CLT(1.0D, netheriteClothConfig
+                    .ench(Enchantment.FEATHER_FALLING, 0, 4)
+                    .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.25D))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.NETHER))
+            .put(Material.NETHERITE_PICKAXE, new CLT(0.75D, netheriteToolConfig))
+            .put(Material.NETHERITE_SWORD, new CLT(0.75D, netheriteSwordConfig))
+
+            // Hostile mobs from https://minecraft.fandom.com/wiki/Mob
+            .put(Material.BOGGED_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.BREEZE_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.DROWNED_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.ELDER_GUARDIAN_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.ENDERMAN_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.ENDERMITE_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.GUARDIAN_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.HOGLIN_SPAWN_EGG, new CLT(0.5D).onlyInWorld(WorldName.NETHER))
+            .put(Material.HUSK_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.PIGLIN_BRUTE_SPAWN_EGG, new CLT(0.5D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PIGLIN_SPAWN_EGG, new CLT(0.5D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PILLAGER_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.SILVERFISH_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.SKELETON_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.SPIDER_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.STRAY_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.VEX_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.VINDICATOR_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.ZOGLIN_SPAWN_EGG, new CLT(0.5D))
+            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(0.5D))
+
+            .put(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, new CLT(0.5D))
+            .put(Material.SPAWNER, new CLT(0.5D))
+
+            // Good loot
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.33D).onlyInWorld(WorldName.NETHER))
+            .put(Material.CREEPER_SPAWN_EGG, new CLT(0.33D))
+            .put(Material.MAGMA_CUBE_SPAWN_EGG, new CLT(0.33D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PHANTOM_SPAWN_EGG, new CLT(0.33D))
+            .put(Material.RAVAGER_SPAWN_EGG, new CLT(0.33D))
+            .put(Material.SLIME_SPAWN_EGG, new CLT(0.33D))
+            .put(Material.WITCH_SPAWN_EGG, new CLT(0.33D))
+
+            // Amazing loot
+            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.5D))
             .put(Material.GHAST_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.NETHER))
             .put(Material.SHULKER_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.END))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.25D).onlyInWorld(WorldName.NETHER))
+            .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, new CLT(0.25D))
 
             // Just for fun
-            .put(Material.SKELETON_SKULL, new CLT(0.25D))
             .put(Material.CREEPER_HEAD, new CLT(0.25D))
             .put(Material.PIGLIN_HEAD, new CLT(0.25D))
             .put(Material.PLAYER_HEAD, new CLT(0.25D))
+            .put(Material.SKELETON_SKULL, new CLT(0.25D))
             .put(Material.ZOMBIE_HEAD, new CLT(0.25D))
 
-            .put(Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            // Based on https://minecraft.wiki/w/Rarity, uncommon templates
+            .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
             .put(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
             .put(Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
             .put(Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
-            .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
+            .put(Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.2D))
 
-            // Something insane
-            .put(Material.WARDEN_SPAWN_EGG, new CLT(0.1D))
-            .put(Material.WITHER_SPAWN_EGG, new CLT(0.1D).onlyInWorld(WorldName.NETHER))
-            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.1D).onlyInWorld(WorldName.END))
+            // Rare templates
+            .put(Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.1D))
+            .put(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.1D))
+            .put(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.1D))
+            .put(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.1D))
+
+            // Epic templates
+            .put(Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
+
+            // Semi-bosses
+            .put(Material.WARDEN_SPAWN_EGG, new CLT(0.05D))
+            .put(Material.WITHER_SPAWN_EGG, new CLT(0.05D).onlyInWorld(WorldName.NETHER))
+
+            // The boss
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.END))
 
             .build();
 
