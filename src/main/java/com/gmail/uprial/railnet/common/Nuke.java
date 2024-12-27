@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.common;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.util.Set;
+
 public class Nuke {
     /*
         Explosions with radius greater than 16 destroy blocks extremely effectively.
@@ -15,6 +18,14 @@ public class Nuke {
      */
     public static final float MAX_ENGINE_POWER = 16.0f;
 
+    /*
+        According to https://minecraft.wiki/w/Explosion,
+        fluids have high blast resistance, causing it to absorb any normal blasts.
+
+        That prevents making huge nukes,
+        so I wither fluid blocks in the explosion radius
+        when the blocks are visible from the explosion epicenter.
+     */
     private static final int WATER_WITHERING_POWER = 16;
 
     /*
@@ -129,21 +140,44 @@ public class Nuke {
         }
     }
 
+    private static final double EPSILON = 0.01d;
+
+    private static final Set<Material> FLUIDS = ImmutableSet.<Material>builder()
+            .add(Material.WATER)
+            .add(Material.LAVA)
+            .add(Material.BUBBLE_COLUMN)
+            .build();
+
     private static void exp(final Location expLocation) {
-        // Since we're withering water, we need to start from top layers that affect lower levels.
+        /*
+            Since we're withering water,
+            it's better to start from top layers that may affect lower levels.
+         */
         for(int dy = WATER_WITHERING_POWER; dy >= -WATER_WITHERING_POWER; dy--) {
             for(int dx = -WATER_WITHERING_POWER; dx <= WATER_WITHERING_POWER; dx++) {
                 for(int dz = -WATER_WITHERING_POWER; dz <= WATER_WITHERING_POWER; dz++) {
                     final Location blockLocation = expLocation.clone().add(dx, dy, dz);
-                    if(blockLocation.distance(expLocation) <= WATER_WITHERING_POWER + 0.01d) {
+                    final double distance = blockLocation.distance(expLocation);
+                    if(distance <= WATER_WITHERING_POWER + EPSILON) {
+                        // If not the epicenter block
+                        if(distance > EPSILON) {
+                            final RayTraceResult rayTraceResult = blockLocation.getWorld().rayTraceBlocks(
+                                    blockLocation,
+                                    getDirection(blockLocation, expLocation),
+                                    distance);
+                            if (rayTraceResult != null) {
+                                continue;
+                            }
+                        }
+
                         final Block block = expLocation.getWorld().getBlockAt(blockLocation);
-                        if (block.getType().equals(Material.WATER)) {
+                        if (FLUIDS.contains(block.getType())) {
                             block.setType(Material.AIR);
                         } else if (block.getBlockData() instanceof Waterlogged) {
-                        /*
-                            According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html#WATER,
-                            Material WATER BlockData is Levelled but not Waterlogged
-                         */
+                            /*
+                                According to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html#WATER,
+                                Material.WATER BlockData is Levelled but not Waterlogged
+                             */
                             final Waterlogged waterlogged = (Waterlogged) block.getBlockData();
                             if (waterlogged.isWaterlogged()) {
                                 waterlogged.setWaterlogged(false);
@@ -154,7 +188,7 @@ public class Nuke {
                 }
             }
         }
-        expLocation.getWorld().createExplosion(expLocation, MAX_ENGINE_POWER, true);
+        expLocation.getWorld().createExplosion(expLocation, MAX_ENGINE_POWER, true, true);
     }
 
     private static Vector getDirection(final Location fromLocation, final Location toLocation) {
