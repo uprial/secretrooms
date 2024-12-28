@@ -14,8 +14,9 @@ import java.util.Set;
 
 public class Nuke {
     /*
-        Explosions with radius greater than 16 destroy blocks extremely effectively.
-        There are definitely no way to destroy big amount of blocks by single explosion.
+        According to https://minecraft.wiki/w/Explosion,
+        explosions with radius greater than 16 destroy blocks extremely effectively:
+        there is definitely no way to destroy big amount of blocks by single explosion.
      */
     public static final float MAX_ENGINE_POWER = 16.0f;
 
@@ -52,7 +53,7 @@ public class Nuke {
         initialDelay = 0 AND period = 0 means all explosions are immediate.
 
         The explosions are supposed to be distributed evenly, but not ideally:
-        the explosion isn't actually a smooth ball, specifically for smaller values of radius.
+        the explosion isn't actually a smooth ball, especially for smaller values of radius.
      */
     public void explode(
             final Location fromLocation,
@@ -122,13 +123,6 @@ public class Nuke {
 
             So, moving from the epicenter to the periphery,
             we increase the distance between explosions.
-
-            R: full > decayed
-            8: 4 > 4
-            16: 16 > 13
-            24: 36 > 22
-            ...
-            120: 900 > 100
          */
         final float epicenterExplosionDistance = STEP;
         final float peripheryExplosionDistance = MAX_ENGINE_POWER + STEP;
@@ -153,22 +147,28 @@ public class Nuke {
     }
 
     static int getDecayedDensity(final float explosionRadius, final float sphereRadius) {
+        /*
+            Radius: full density > decayed density
+            8: 4 > 4
+            16: 16 > 13
+            24: 36 > 22
+            ...
+            120: 900 > 100
+         */
         return getDensity(sphereRadius, getExplosionDistance(explosionRadius, sphereRadius));
     }
-
-    private static final double EPSILON = 0.01d;
 
     void explode(final Location fromLocation) {
         witherFluids(fromLocation);
         fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true);
     }
 
+    private static final double EPSILON = 0.01d;
     private static final Set<Material> FLUIDS = ImmutableSet.<Material>builder()
             .add(Material.WATER)
             .add(Material.LAVA)
             .add(Material.BUBBLE_COLUMN)
             .build();
-
     void witherFluids(final Location fromLocation) {
         /*
             Since we're withering fluid,
@@ -182,6 +182,7 @@ public class Nuke {
                     if(distance <= FLUID_WITHERING_POWER + EPSILON) {
                         // If not the epicenter block
                         if(distance > EPSILON) {
+                            // Wither only fluids visible from the epicenter
                             final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
                                     fromLocation,
                                     getDirection(fromLocation, toLocation),
@@ -228,6 +229,7 @@ public class Nuke {
             plugin.getServer().getScheduler()
                     .scheduleSyncDelayedTask(plugin, task, delay);
         } else {
+            // Run immediately.
             task.run();
         }
     }
