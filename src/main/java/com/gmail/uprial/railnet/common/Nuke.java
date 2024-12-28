@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet.common;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +27,7 @@ public class Nuke {
         so I wither fluid blocks in the explosion radius
         when the blocks are visible from the explosion epicenter.
      */
-    private static final int WATER_WITHERING_POWER = 16;
+    private static final int FLUID_WITHERING_POWER = 12;
 
     /*
         A ball of explosions is made of many spheres,
@@ -34,16 +35,23 @@ public class Nuke {
      */
     private static final float STEP = MAX_ENGINE_POWER / 2.0f;
 
-    public static void explode(
-            final JavaPlugin plugin,
+    private final JavaPlugin plugin;
+
+    /*
+        The whole class could be easily implemented in static,
+        but that would prevent its proper mocking in tests.
+     */
+    public Nuke(final JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void explode(
             final Location fromLocation,
             final float radius,
             final int initialDelay,
             final int period) {
 
-        plugin.getServer().getScheduler()
-                .scheduleSyncDelayedTask(plugin,
-                        () -> exp(fromLocation), initialDelay);
+        schedule(() -> explode(fromLocation), initialDelay);
 
         final int spheres = Math.round(radius / STEP);
         /*
@@ -51,14 +59,10 @@ public class Nuke {
 
             For example, for a 24-radius ball,
             spheres should be 0, 8, 16 but not 24.
-
-            total: 4990 > 1655 > 860 > 760
          */
         for(int i = 1; i < spheres; i++) {
             final float r = i * STEP;
-            plugin.getServer().getScheduler()
-                    .scheduleSyncDelayedTask(plugin,
-                            () -> explode(fromLocation, radius, r), initialDelay + i * period);
+            schedule(() -> explode(fromLocation, radius, r), initialDelay + i * period);
         }
     }
 
@@ -66,13 +70,41 @@ public class Nuke {
         The main generation method idea:
         https://stackoverflow.com/questions/63726093/how-to-easily-make-a-mesh-of-sphere-3d-points-over-a-vector
      */
-    private static void explode(final Location fromLocation, final float radius, final float r) {
+    void explode(final Location fromLocation, final float explosionRadius, final float sphereRadius) {
         /*
             To distribute angles evenly,
             must be a number not equal to 1.0D nor 0.0D, closer to 1.0D.
          */
         final double gr = (3.0D - Math.sqrt(5.0D));
 
+        final int density = getDecayedDensity(explosionRadius, sphereRadius);
+        for(int i = 0; i < density; i++){
+            final double y = 1.0D - 2.0D * (double)i / density;
+            final double angle1 = Math.acos(y);
+            final double angle2 = Math.PI * gr * i;
+            final double x = Math.sin(angle1) * Math.cos(angle2);
+            final double z = Math.sin(angle1) * Math.sin(angle2);
+
+            Location toLocation = fromLocation.clone().add(x * sphereRadius, y * sphereRadius, z * sphereRadius);
+            final Vector direction = getDirection(fromLocation, toLocation);
+            final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
+                    fromLocation,
+                    direction,
+                    toLocation.distance(fromLocation),
+                    FluidCollisionMode.ALWAYS);
+
+            // Make an explosion in front of the block found.
+            if(rayTraceResult != null) {
+                toLocation = rayTraceResult.getHitPosition().toLocation(toLocation.getWorld());
+                // Direction is always of 1.0 length.
+                toLocation.subtract(direction);
+            }
+
+            explode(toLocation);
+        }
+    }
+
+    static float getExplosionDistance(final float explosionRadius, final float sphereRadius) {
         /*
             Though it might seem enough to split a big sphere into many smaller ones,
             we need to create explosions more frequently closer to the epicenter
@@ -82,29 +114,23 @@ public class Nuke {
             we increase the distance between explosions.
 
             R: full > decayed
-            8: 4 > 4 > 4
-            16: 16 > 13 > 10
-            24: 36 > 25 > 19
-            32: 64 > 40 > 28
-            40: 100 > 56 > 37
-            48: 144 > 74 > 45
-            56: 196 > 92 > 53
-            64: 256 > 109 > 60
-            72: 354 > 127 > 67
-            80: 400 > 145 > 74
-            88: 484 > 162 > 80
-            96: 576 > 178 > 86
-            104: 676 > 195 > 91
-            112: 784 > 210 > 96
-            120: 900 > 225 > 100
-
-            total: 4990 > 1655 > 860
+            8: 4 > 4
+            16: 16 > 13
+            24: 36 > 22
+            ...
+            120: 900 > 100
          */
-        final float epicenterDistance = STEP;
-        final float peripheryDistance = MAX_ENGINE_POWER + STEP;
+        final float epicenterExplosionDistance = STEP;
+        final float peripheryExplosionDistance = MAX_ENGINE_POWER + STEP;
 
-        final double distance = epicenterDistance
-                + r / radius * (peripheryDistance - epicenterDistance);
+        return epicenterExplosionDistance
+                + (sphereRadius - epicenterExplosionDistance)
+                / (explosionRadius - epicenterExplosionDistance)
+                * (peripheryExplosionDistance - epicenterExplosionDistance);
+
+    }
+
+    static int getDensity(final float sphereRadius, final float explosionDistance) {
         /*
             The surface area of a sphere of radius r1 is 4 * pi * r1^2.
 
@@ -113,31 +139,11 @@ public class Nuke {
             To cover a sphere of radius r1 with circles of radius r2,
             4 * pi * r1^2 / (pi * r2^2) = 4 * r1^2 / r2^2 = 4 * (r1 / r2)^2 are needed.
          */
-        final int number = (int)Math.ceil(4 * Math.pow(r / distance, 2.0D));
-        //System.out.printf("r: %.2f, number: %d%n", r, number);
-        for(int i = 0; i < number; i++){
-            final double y = 1.0D - 2.0D * (double)i / number;
-            final double angle1 = Math.acos(y);
-            final double angle2 = Math.PI * gr * i;
-            final double x = Math.sin(angle1) * Math.cos(angle2);
-            final double z = Math.sin(angle1) * Math.sin(angle2);
+        return (int)Math.round(4 * Math.pow(sphereRadius / explosionDistance, 2.0D));
+    }
 
-            Location toLocation = fromLocation.clone().add(x * r, y * r, z * r);
-            final Vector direction = getDirection(fromLocation, toLocation);
-            final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
-                    fromLocation,
-                    direction,
-                    toLocation.distance(fromLocation));
-
-            // Make an explosion in front of the block found.
-            if(rayTraceResult != null) {
-                toLocation = rayTraceResult.getHitPosition().toLocation(toLocation.getWorld());
-                // Direction is always of 1.0 length.
-                toLocation.subtract(direction);
-            }
-
-            exp(toLocation);
-        }
+    static int getDecayedDensity(final float explosionRadius, final float sphereRadius) {
+        return getDensity(sphereRadius, getExplosionDistance(explosionRadius, sphereRadius));
     }
 
     private static final double EPSILON = 0.01d;
@@ -148,29 +154,30 @@ public class Nuke {
             .add(Material.BUBBLE_COLUMN)
             .build();
 
-    private static void exp(final Location expLocation) {
+    void explode(final Location fromLocation) {
         /*
-            Since we're withering water,
+            Since we're withering fluid,
             it's better to start from top layers that may affect lower levels.
          */
-        for(int dy = WATER_WITHERING_POWER; dy >= -WATER_WITHERING_POWER; dy--) {
-            for(int dx = -WATER_WITHERING_POWER; dx <= WATER_WITHERING_POWER; dx++) {
-                for(int dz = -WATER_WITHERING_POWER; dz <= WATER_WITHERING_POWER; dz++) {
-                    final Location blockLocation = expLocation.clone().add(dx, dy, dz);
-                    final double distance = blockLocation.distance(expLocation);
-                    if(distance <= WATER_WITHERING_POWER + EPSILON) {
+        for(int dy = FLUID_WITHERING_POWER; dy >= -FLUID_WITHERING_POWER; dy--) {
+            for(int dx = -FLUID_WITHERING_POWER; dx <= FLUID_WITHERING_POWER; dx++) {
+                for(int dz = -FLUID_WITHERING_POWER; dz <= FLUID_WITHERING_POWER; dz++) {
+                    final Location toLocation = fromLocation.clone().add(dx, dy, dz);
+                    final double distance = toLocation.distance(fromLocation);
+                    if(distance <= FLUID_WITHERING_POWER + EPSILON) {
                         // If not the epicenter block
                         if(distance > EPSILON) {
-                            final RayTraceResult rayTraceResult = blockLocation.getWorld().rayTraceBlocks(
-                                    blockLocation,
-                                    getDirection(blockLocation, expLocation),
-                                    distance);
+                            final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
+                                    fromLocation,
+                                    getDirection(fromLocation, toLocation),
+                                    distance,
+                                    FluidCollisionMode.NEVER);
                             if (rayTraceResult != null) {
                                 continue;
                             }
                         }
 
-                        final Block block = expLocation.getWorld().getBlockAt(blockLocation);
+                        final Block block = fromLocation.getWorld().getBlockAt(toLocation);
                         if (FLUIDS.contains(block.getType())) {
                             block.setType(Material.AIR);
                         } else if (block.getBlockData() instanceof Waterlogged) {
@@ -188,10 +195,10 @@ public class Nuke {
                 }
             }
         }
-        expLocation.getWorld().createExplosion(expLocation, MAX_ENGINE_POWER, true, true);
+        fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true);
     }
 
-    private static Vector getDirection(final Location fromLocation, final Location toLocation) {
+    private Vector getDirection(final Location fromLocation, final Location toLocation) {
         final Location direction = toLocation.clone().subtract(fromLocation);
         final double length = direction.length();
 
@@ -200,5 +207,10 @@ public class Nuke {
                 direction.getY() / length,
                 direction.getZ() / length
         );
+    }
+
+    void schedule(final Runnable task, final long delay) {
+        plugin.getServer().getScheduler()
+                .scheduleSyncDelayedTask(plugin, task, delay);
     }
 }

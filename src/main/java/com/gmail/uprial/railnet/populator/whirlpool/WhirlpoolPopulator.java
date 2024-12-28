@@ -29,6 +29,8 @@ public class WhirlpoolPopulator implements ChunkPopulator {
     private final RailNet plugin;
     private final CustomLogger customLogger;
 
+    private static final double DEPTH_2_DENSITY = 20.0d;
+
     VirtualChunk vc;
 
     public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger) {
@@ -126,7 +128,7 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
 
                             // The deepest water the more loot in the chest.
-                            int density = (int)Math.floor((vc.getSeaLevel() - y) / 10.0D);
+                            int density = (int)Math.floor((vc.getSeaLevel() - y) / DEPTH_2_DENSITY);
 
                             int i = 0;
 

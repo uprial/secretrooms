@@ -105,10 +105,14 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     // Increase density in some worlds
-    private final Map<String,Integer> worldDensities = ImmutableMap.<String,Integer>builder()
+    private final static Map<String,Integer> WORLD_DENSITIES = ImmutableMap.<String,Integer>builder()
             .put(WorldName.NETHER, 1)
             .put(WorldName.END, 2)
             .build();
+
+    private static int getWorldDensity(final String worldName) {
+        return WORLD_DENSITIES.getOrDefault(worldName, 0);
+    }
 
     /*
         Increase density above some blocks.
@@ -119,23 +123,28 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         gives...
      */
-        private final Map<Material,Integer> materialDensities = ImmutableMap.<Material,Integer>builder()
-            // Woodland mansion, inherits 0 from worldDensities
-            .put(Material.DARK_OAK_PLANKS, 4)
-            .put(Material.DARK_OAK_SLAB, 4)
-            .put(Material.DARK_OAK_STAIRS, 4)
-            // Bastion, inherits 1 from worldDensities
-            .put(Material.BLACKSTONE, 2)
-            .put(Material.GILDED_BLACKSTONE, 2)
-            .put(Material.POLISHED_BLACKSTONE_BRICKS, 2)
-            .put(Material.POLISHED_BLACKSTONE_SLAB, 2)
-            .build();
 
-    private int getDensity(final Block basement) {
-        final int worldDensity = worldDensities.getOrDefault(WorldName.normalize(basement.getWorld().getName()), 0);
-        final int materialDensity = materialDensities.getOrDefault(basement.getType(), 0);
+    // inherits 0 from WORLD_DENSITIES
+    private final static int MANSION_DENSITY = 4 - getWorldDensity(WorldName.WORLD);
+    // inherits 1 from WORLD_DENSITIES
+    private final static int BASTION_DENSITY = 3 - getWorldDensity(WorldName.NETHER);
 
-        return worldDensity + materialDensity;
+    private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
+        // Woodland mansion
+        .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
+        .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
+        .put(Material.DARK_OAK_STAIRS, MANSION_DENSITY)
+
+        // Bastion
+        .put(Material.BLACKSTONE, BASTION_DENSITY)
+        .put(Material.GILDED_BLACKSTONE, BASTION_DENSITY)
+        .put(Material.POLISHED_BLACKSTONE_BRICKS, BASTION_DENSITY)
+        .put(Material.POLISHED_BLACKSTONE_SLAB, BASTION_DENSITY)
+        .build();
+
+    private static int getDensity(final Block basement) {
+        return getWorldDensity(WorldName.normalize(basement.getWorld().getName()))
+                + MATERIAL_DENSITIES.getOrDefault(basement.getType(), 0);
     }
 
     /*
@@ -487,10 +496,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             final ItemStack itemStack = inventory.getItem(i);
             /*
                 High levels of density are in
-                - whirlpools (up to 5)
                 - woodland mansions (4)
                 - bastions (3)
                 - the end (2)
+                - whirlpools (0-2)
                 - the nether (1)
 
                 and there is nothing specific to multiply.
