@@ -35,34 +35,44 @@ public class Nuke {
      */
     private static final float STEP = MAX_ENGINE_POWER / 2.0f;
 
-    private final JavaPlugin plugin;
-
     /*
         The whole class could be easily implemented in static,
         but that would prevent its proper mocking in tests.
      */
+    private final JavaPlugin plugin;
     public Nuke(final JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
+    /*
+        To not freeze the server via big explosions,
+        explosions are scheduled.
+
+        initialDelay = 0 means an immediate epicenter explosion.
+        initialDelay = 0 AND period = 0 means all explosions are immediate.
+
+        The explosions are supposed to be distributed evenly, but not ideally:
+        the explosion isn't actually a smooth ball, specifically for smaller values of radius.
+     */
     public void explode(
             final Location fromLocation,
-            final float radius,
+            final float explosionRadius,
             final int initialDelay,
             final int period) {
 
         schedule(() -> explode(fromLocation), initialDelay);
 
-        final int spheres = Math.round(radius / STEP);
+        final int spheres = Math.round(explosionRadius / STEP);
         /*
+            No epicenter sphere.
             No last sphere.
 
             For example, for a 24-radius ball,
-            spheres should be 0, 8, 16 but not 24.
+            spheres should be 8 and 16 but not 0 or 24.
          */
         for(int i = 1; i < spheres; i++) {
-            final float r = i * STEP;
-            schedule(() -> explode(fromLocation, radius, r), initialDelay + i * period);
+            final float sphereRadius = i * STEP;
+            schedule(() -> explode(fromLocation, explosionRadius, sphereRadius), initialDelay + i * period);
         }
     }
 
@@ -96,7 +106,7 @@ public class Nuke {
             // Make an explosion in front of the block found.
             if(rayTraceResult != null) {
                 toLocation = rayTraceResult.getHitPosition().toLocation(toLocation.getWorld());
-                // Direction is always of 1.0 length.
+                // Direction is always normalized to length of 1.0.
                 toLocation.subtract(direction);
             }
 
@@ -106,7 +116,7 @@ public class Nuke {
 
     static float getExplosionDistance(final float explosionRadius, final float sphereRadius) {
         /*
-            Though it might seem enough to split a big sphere into many smaller ones,
+            Though it might seem enough to split a big ball into many smaller spheres,
             we need to create explosions more frequently closer to the epicenter
             to overcome block resistance in the epicenter.
 
@@ -148,13 +158,18 @@ public class Nuke {
 
     private static final double EPSILON = 0.01d;
 
+    void explode(final Location fromLocation) {
+        witherFluids(fromLocation);
+        fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true);
+    }
+
     private static final Set<Material> FLUIDS = ImmutableSet.<Material>builder()
             .add(Material.WATER)
             .add(Material.LAVA)
             .add(Material.BUBBLE_COLUMN)
             .build();
 
-    void explode(final Location fromLocation) {
+    void witherFluids(final Location fromLocation) {
         /*
             Since we're withering fluid,
             it's better to start from top layers that may affect lower levels.
@@ -195,7 +210,6 @@ public class Nuke {
                 }
             }
         }
-        fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true);
     }
 
     private Vector getDirection(final Location fromLocation, final Location toLocation) {
@@ -210,7 +224,11 @@ public class Nuke {
     }
 
     void schedule(final Runnable task, final long delay) {
-        plugin.getServer().getScheduler()
-                .scheduleSyncDelayedTask(plugin, task, delay);
+        if(delay > 0) {
+            plugin.getServer().getScheduler()
+                    .scheduleSyncDelayedTask(plugin, task, delay);
+        } else {
+            task.run();
+        }
     }
 }

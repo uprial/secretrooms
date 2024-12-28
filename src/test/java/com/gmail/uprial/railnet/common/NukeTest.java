@@ -28,10 +28,6 @@ public class NukeTest {
         void explode(final float radius) {
             super.explode(zeroLocation, radius, 0, 0);
         }
-
-        void schedule(final Runnable task, final long delay) {
-            task.run();
-        }
     }
 
     private static class NukeLayersCounter extends NukeMock {
@@ -58,7 +54,6 @@ public class NukeTest {
         void explode(final Location fromLocation) {
             // nop
         }
-
     }
 
     private static class NukeExplosionsCounter extends NukeMock {
