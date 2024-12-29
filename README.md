@@ -28,7 +28,7 @@ Make a bazooka:
 
 Fire the bazooka with 120 explosion radius:
 
-![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.png)
+![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.jpg)
 
 Find an entrance, take a minecart, enjoy your ride, discover a struct
 
