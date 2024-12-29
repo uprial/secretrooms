@@ -26,7 +26,7 @@ Make a bazooka:
 
 ![Recipes](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
 
-Fire the bazooka:
+Fire the bazooka with 120 explosion radius:
 
 ![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.png)
 

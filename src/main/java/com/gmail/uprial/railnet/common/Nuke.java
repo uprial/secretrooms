@@ -15,7 +15,7 @@ import java.util.Set;
 public class Nuke {
     /*
         According to https://minecraft.wiki/w/Explosion,
-        explosions with radius greater than 16 destroy blocks extremely effectively:
+        explosions with radius greater than 16 destroy blocks extremely ineffectively:
         there is definitely no way to destroy big amount of blocks by single explosion.
      */
     public static final float MAX_ENGINE_POWER = 16.0f;
