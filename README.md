@@ -47,7 +47,7 @@ Find furnaces in mineshaft, check your luck
 
 `railnet reload` - reload config from disk
 
-`repopulate-loaded <radius>` - repopulate loaded terrain around player
+`railnet repopulate-loaded <radius>` - repopulate loaded terrain around player
 
 `railnet repopulate-loaded <world> <x> <z> <radius>` - repopulate loaded terrain
 
@@ -59,6 +59,8 @@ Find furnaces in mineshaft, check your luck
 `railnet.reload` (default: op)
 * Access to 'repopulate-loaded' command:
 `railnet.repopulate-loaded` (default: op)
+* Access to 'claim' command:
+`railnet.claim` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)
