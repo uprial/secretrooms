@@ -54,6 +54,10 @@ Find furnaces in mineshaft, check your luck
 
 `railnet claim <density>` - generate player inventory like it's a chest
 
+`railnet break <radius>` - break terrain around player
+
+`railnet break <world> <x> <y> <z> <radius>` - break terrain
+
 ## Permissions
 
 * Access to 'reload' command:
@@ -62,6 +66,8 @@ Find furnaces in mineshaft, check your luck
 `railnet.repopulate-loaded` (default: op)
 * Access to 'claim' command:
 `railnet.claim` (default: op)
+* Access to 'break' command:
+`railnet.break` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)

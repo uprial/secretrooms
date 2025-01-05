@@ -9,10 +9,14 @@ import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
 import com.google.common.collect.Lists;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -72,6 +76,30 @@ public final class RailNet extends JavaPlugin {
 
     int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
         return populator.repopulateLoaded(worldName, x, z, radius);
+    }
+
+    int breakTerrain(final String worldName, final int x, final int y, final int z, final int radius) {
+        final World world = getServer().getWorld(worldName);
+        int counter = 0;
+        if(world != null) {
+            final ItemStack tool = new ItemStack(Material.NETHERITE_PICKAXE);
+            //tool.addEnchantment(Enchantment.FORTUNE, 3);
+            /*
+                Since we're breaking blocks
+                it's better to s tart from top layers that may affect lower levels.
+             */
+            for(int dy = radius; dy >= -radius; dy--) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
+                        if(world.getBlockAt(x + dx, y + dy, z + dz).breakNaturally(tool)) {
+                            counter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return counter;
     }
 
     void populatePlayer(final Player player, final int density) {

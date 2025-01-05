@@ -18,3 +18,6 @@ permissions:
   railnet.claim:
     description: Gives access to RailNet 'claim' command
     default: op
+  railnet.break:
+    description: Gives access to RailNet 'break' command
+    default: op

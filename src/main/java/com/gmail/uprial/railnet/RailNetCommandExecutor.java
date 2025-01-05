@@ -72,6 +72,35 @@ class RailNetCommandExecutor implements CommandExecutor {
                         customLogger.info(String.format("inventory claimed with density %d.", density));
                         return true;
                     }
+                } else if ((args.length >= 6) && (args[0].equalsIgnoreCase("break"))) {
+                    if (sender.hasPermission(COMMAND_NS + ".break")) {
+                        final Map<Integer, String> params = ImmutableMap.<Integer, String>builder()
+                                .put(2, "x")
+                                .put(3, "y")
+                                .put(4, "z")
+                                .put(5, "radius")
+                                .build();
+                        final Map<String, Integer> values = new HashMap<>();
+
+                        for (Map.Entry<Integer, String> param : params.entrySet()) {
+                            values.put(param.getValue(), getInt(args[param.getKey()]));
+                        }
+                        final int counter = plugin.breakTerrain(args[1],
+                                values.get("x"), values.get("y"), values.get("z"), values.get("radius"));
+                        customLogger.info(String.format("%d blocks broken.", counter));
+                        return true;
+                    }
+                } else if ((args.length >= 2) && (args[0].equalsIgnoreCase("break"))
+                        && (sender instanceof Player)) {
+                    if (sender.hasPermission(COMMAND_NS + ".break")) {
+                        final Player player = (Player) sender;
+                        final int counter = plugin.breakTerrain(player.getWorld().getName(),
+                                player.getLocation().getBlockX(),
+                                player.getLocation().getBlockY(),
+                                player.getLocation().getBlockZ(), getInt(args[1]));
+                        customLogger.info(String.format("%d blocks broken.", counter));
+                        return true;
+                    }
                 } else if ((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                     String helpString = "==== RailNet help ====\n";
 
@@ -84,6 +113,10 @@ class RailNetCommandExecutor implements CommandExecutor {
                     }
                     if (sender.hasPermission(COMMAND_NS + ".claim")) {
                         helpString += '/' + COMMAND_NS + " claim <density> - generate player inventory like it's a chest\n";
+                    }
+                    if (sender.hasPermission(COMMAND_NS + ".break")) {
+                        helpString += '/' + COMMAND_NS + " break <radius> - break terrain around player\n";
+                        helpString += '/' + COMMAND_NS + " break <world> <x> <y> <z> <radius> - break terrain\n";
                     }
 
                     customLogger.info(helpString);
