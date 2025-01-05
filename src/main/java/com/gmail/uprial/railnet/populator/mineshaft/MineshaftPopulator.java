@@ -73,7 +73,9 @@ public class MineshaftPopulator implements ChunkPopulator {
         for(int y = minY; y < maxY; y++) {
             for(int x = 0; x < 16; x++) {
                 for(int z = 0; z < 16; z++) {
-                    maybePopulateBlock(chunk.getBlock(x, y, z));
+                    final Block block = chunk.getBlock(x, y, z);
+                    maybePopulateBlock(block);
+                    maybeMutateBlock(block);
                 }
             }
         }
@@ -101,6 +103,53 @@ public class MineshaftPopulator implements ChunkPopulator {
         final BlockPopulator blockPopulator = blockPopulators.get(block.getType());
         if(blockPopulator != null) {
             blockPopulator.populate(block);
+        }
+    }
+
+    private static class Mutator {
+        private final Double probability;
+        private final Material material;
+
+        Mutator(final Double probability, final Material material) {
+            this.probability = probability;
+            this.material = material;
+        }
+
+        public Double getProbability() {
+            return probability;
+        }
+
+        public Material getMaterial() {
+            return material;
+        }
+    }
+
+    private static class InfestMutator extends Mutator {
+        private final static double INFEST_PROBABILITY = 0.01D;
+
+        InfestMutator(final Material material) {
+            super(INFEST_PROBABILITY, material);
+        }
+    }
+
+    private final Map<Material, Mutator> blockMutators = ImmutableMap.<Material, Mutator>builder()
+            .put(Material.CHISELED_STONE_BRICKS, new InfestMutator(Material.INFESTED_CHISELED_STONE_BRICKS))
+            .put(Material.COBBLESTONE, new InfestMutator(Material.INFESTED_COBBLESTONE))
+            .put(Material.CRACKED_STONE_BRICKS, new InfestMutator(Material.INFESTED_CRACKED_STONE_BRICKS))
+            .put(Material.DEEPSLATE, new InfestMutator(Material.INFESTED_DEEPSLATE))
+            .put(Material.MOSSY_STONE_BRICKS, new InfestMutator(Material.INFESTED_MOSSY_STONE_BRICKS))
+            .put(Material.STONE, new InfestMutator(Material.INFESTED_STONE))
+            .put(Material.STONE_BRICKS, new InfestMutator(Material.INFESTED_STONE_BRICKS))
+            .build();
+
+    private void maybeMutateBlock(final Block block) {
+        final Mutator mutator = blockMutators.get(block.getType());
+        if((mutator != null) && (Probability.PASS(mutator.getProbability(), getWorldDensity(block.getWorld().getName())))){
+            block.setType(mutator.getMaterial(), false);
+            // Commented because too frequent
+            /*if (customLogger.isDebugMode()) {
+                customLogger.debug(String.format("%s mutated to %s", format(block), mutator.getMaterial()));
+            }*/
         }
     }
 
