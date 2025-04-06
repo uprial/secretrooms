@@ -11,7 +11,7 @@ Generate rails from spawn to mansion and monument, rare loot in chests and furna
 ## Features
 
 * Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
-* Uncommon, rare, and epic loot in chests with higher probability in mansions and bastions
+* Uncommon, rare, and epic loot in chests with higher probability in pyramids, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
 * 0.1% of Endermans ignore carved pumpkins on players

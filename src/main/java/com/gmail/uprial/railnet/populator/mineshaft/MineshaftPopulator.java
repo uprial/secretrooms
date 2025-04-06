@@ -180,6 +180,23 @@ public class MineshaftPopulator implements ChunkPopulator {
 
     private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
         // Pyramid
+        /*
+            WARNING: WON'T FIX
+
+            Some trapped chests in Pyramids are generated with delays,
+            so they aren't timely populated.
+
+            A known way to fix it is to use PlayerInteractEvent,
+            then check and replace blocks under these trapped chests,
+            making population idempotent.
+
+            However, these trapped chests have TNT below,
+            so the typical behaviour of players is to remove blocks under these trapped chests,
+            preventing the solution.
+
+            Considering this a rare case in the probability-based population,
+            I decided it's too expensive to fix this bug.
+         */
         .put(Material.BLUE_TERRACOTTA, 2)
 
         // Woodland mansion
