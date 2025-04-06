@@ -179,6 +179,9 @@ public class MineshaftPopulator implements ChunkPopulator {
     private final static int BASTION_DENSITY = 3 - getWorldDensity(WorldName.NETHER);
 
     private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
+        // Pyramid
+        .put(Material.BLUE_TERRACOTTA, 2)
+
         // Woodland mansion
         .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
         .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
@@ -548,6 +551,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                 - woodland mansions (4)
                 - bastions (3)
                 - the end (2)
+                - pyramids (2)
                 - whirlpools (0-2)
                 - the nether (1)
 

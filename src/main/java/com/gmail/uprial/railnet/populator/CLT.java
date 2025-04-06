@@ -12,7 +12,7 @@ public class CLT {
     public final static int MAX_POWER = 6;
 
     public static int getRandomAmount(final int minPower, final int maxPower) {
-        return (int)Math.pow(2.0, RANDOM.nextInt(minPower, maxPower + 1));
+        return (int)Math.pow(2.0, minPower + RANDOM.nextInt(maxPower - minPower + 1));
     }
 
     private final double probability;

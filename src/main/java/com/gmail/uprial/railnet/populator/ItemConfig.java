@@ -55,7 +55,7 @@ public class ItemConfig {
 
         @Override
         public void apply(final ItemStack itemStack) {
-            itemStack.addUnsafeEnchantment(enchantment, RANDOM.nextInt(level1, level2 + 1));
+            itemStack.addUnsafeEnchantment(enchantment, level1 + RANDOM.nextInt(level2 - level1 + 1));
         }
     }
 
