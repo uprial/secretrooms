@@ -348,6 +348,11 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.GOLDEN_APPLE, ...)
             .put(Material.GOLDEN_CARROT, ...)
 
+            Wither and Ender Dragon may destroy the world,
+            which is too much for a random discovery
+            .put(Material.WITHER_SPAWN_EGG, ...onlyInWorld(WorldName.NETHER))
+            .put(Material.ENDER_DRAGON_SPAWN_EGG, ...onlyInWorld(WorldName.END))
+
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
