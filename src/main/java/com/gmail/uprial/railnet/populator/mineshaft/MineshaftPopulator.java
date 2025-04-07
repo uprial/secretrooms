@@ -262,7 +262,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             .add(seconds2ticks(3_600))
             .add(seconds2ticks(3_600 * 4))
             .add(seconds2ticks(3_600 * 24))
-            .add(PotionEffect.INFINITE_DURATION)
+            // The PotionEffect.INFINITE_DURATION option is discharged as too powerful
+            .add(seconds2ticks(3_600 * 24 * 7))
             .build();
 
     private final Set<Integer> arrowDurationOptions = ImmutableSet.<Integer>builder()
