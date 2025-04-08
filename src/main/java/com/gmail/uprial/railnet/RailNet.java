@@ -60,6 +60,7 @@ public final class RailNet extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new NastyShooterListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new ExplosiveShooterListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new StrongBlockListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(consoleLogger), this);
 
         fireworkEngine = new FireworkEngine(this, consoleLogger);
         fireworkEngine.enableCraftBook();

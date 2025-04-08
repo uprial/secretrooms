@@ -30,7 +30,6 @@ public class EndShipPopulator implements ChunkPopulator {
                 illusioner.setRemoveWhenFarAway(false);
 
                 if(customLogger.isDebugMode()) {
-                    customLogger.debug(String.format("%s spawned", format(illusioner)));
                     customLogger.debug(String.format("EndShip[%s] populated", format(chunk)));
                 }
             }

@@ -19,6 +19,7 @@ Generate rails from spawn to mansion and monument, rare loot in chests and furna
 * Lime-colored stained glass and panels are explosive-resistant
 * 0.01% of appropriate blocks are infested
 * End Ships have Illusioners pre-generated
+* Shooting mobs target the closest player immediately if spawned with direct vision to them
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 
