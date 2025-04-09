@@ -75,6 +75,7 @@ public class EntityListener implements Listener {
         final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
                 fromLocation,
                 getDirection(fromLocation, toLocation),
+                // -1.0D to avoid colliding with the player itself
                 toLocation.distance(fromLocation) - 1.0D,
                 FluidCollisionMode.ALWAYS);
 
