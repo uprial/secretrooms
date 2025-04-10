@@ -5,7 +5,6 @@ import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.*;
 import com.gmail.uprial.railnet.populator.Populator;
-import com.gmail.uprial.railnet.populator.endship.EndShipPopulator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
@@ -49,7 +48,6 @@ public final class RailNet extends JavaPlugin {
                         // Order does matter: RailWay is top priority
                         new RailWayPopulator(this, consoleLogger),
                         new WhirlpoolPopulator(this, consoleLogger),
-                        new EndShipPopulator(consoleLogger),
                         // Order does matter: populate chests in RailWay and Whirlpool.
                         new MineshaftPopulator(this, consoleLogger)
                 )

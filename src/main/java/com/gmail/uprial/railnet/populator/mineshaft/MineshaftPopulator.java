@@ -21,6 +21,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.FurnaceInventory;
@@ -28,8 +30,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -70,6 +72,7 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         final int minY = chunk.getWorld().getMinHeight();
         final int maxY = chunk.getWorld().getMaxHeight();
+        // Takes 3-10ms per chunk
         for(int y = minY; y < maxY; y++) {
             for(int x = 0; x < 16; x++) {
                 for(int z = 0; z < 16; z++) {
@@ -97,6 +100,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.FURNACE, this::populateFurnace)
             .put(Material.BLAST_FURNACE, this::populateFurnace)
             .put(Material.BARREL, this::populateBarrel)
+            .put(Material.BREWING_STAND, this::populateEndShip)
             .build();
 
     private void maybePopulateBlock(final Block block) {
@@ -757,6 +761,24 @@ public class MineshaftPopulator implements ChunkPopulator {
             } else {
                 customLogger.warning(String.format("%s %s kept as %d",
                         title, itemStack.getType(), newAmount));
+            }
+        }
+    }
+
+    final static String endShipWorld = WorldName.END;
+    private void populateEndShip(final Block block) {
+        if(block.getWorld().getName().equalsIgnoreCase(endShipWorld)) {
+
+            final Illusioner illusioner = (Illusioner)block.getWorld().spawnEntity(
+                    block.getWorld().getHighestBlockAt(block.getX(), block.getZ()).getLocation()
+                            // Above the highest block
+                            .add(new Vector(0.0D, 1.01D, 0.0D)),
+                    EntityType.ILLUSIONER);
+            // In case the CustomCreatures plugin is switched off.
+            illusioner.setRemoveWhenFarAway(false);
+
+            if(customLogger.isDebugMode()) {
+                customLogger.debug(String.format("%s populated", format(block)));
             }
         }
     }
