@@ -34,6 +34,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
@@ -90,11 +92,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    private interface BlockPopulator {
-        void populate(final Block block);
-    }
-
-    private final Map<Material, BlockPopulator> blockPopulators = ImmutableMap.<Material, BlockPopulator>builder()
+    private final Map<Material, Consumer<Block>> blockPopulators = ImmutableMap.<Material, Consumer<Block>>builder()
             .put(Material.CHEST, this::populateChest)
             .put(Material.TRAPPED_CHEST, this::populateChest)
             .put(Material.FURNACE, this::populateFurnace)
@@ -104,9 +102,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .build();
 
     private void maybePopulateBlock(final Block block) {
-        final BlockPopulator blockPopulator = blockPopulators.get(block.getType());
+        final Consumer<Block> blockPopulator = blockPopulators.get(block.getType());
         if(blockPopulator != null) {
-            blockPopulator.populate(block);
+            blockPopulator.accept(block);
         }
     }
 
@@ -698,17 +696,9 @@ public class MineshaftPopulator implements ChunkPopulator {
             .build();
 
 
-    private interface ItemStackGetter {
-        ItemStack get();
-    }
-
-    private interface ItemStackSetter {
-        void set(final ItemStack itemStack);
-    }
-
     private void updateItemStack(final String title,
-                                 final ItemStackGetter itemStackGetter,
-                                 final ItemStackSetter itemStackSetter,
+                                 final Supplier<ItemStack> itemStackGetter,
+                                 final Consumer<ItemStack> itemStackSetter,
                                  final Map<Material,Integer> lootTable) {
         ItemStack itemStack = itemStackGetter.get();
         if(itemStack != null) {
@@ -719,7 +709,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
 
         final Material material = RandomUtils.getSetItem(lootTable.keySet());
-        itemStackSetter.set(new ItemStack(material, 1));
+        itemStackSetter.accept(new ItemStack(material, 1));
         // The sequence is needed to properly update the amount
         itemStack = itemStackGetter.get();
         setAmount(title, 0, itemStack, 0, lootTable.get(material));

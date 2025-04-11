@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 class RailWayChunk {
     private final ChunkMap chunkMap;
@@ -590,16 +591,12 @@ class RailWayChunk {
 
     private final Map<Vector,Material> alreadySet = new HashMap<>();
 
-    private interface BlockCallback {
-        Block call();
-    }
-
     static boolean isBorderBlock(final Material material) {
         return material == Material.GLASS || material == Material.STONE_BRICKS;
     }
 
     private Block checkOverrides(final int x, final int y, final int z,
-                                 final Material material, final BlockCallback callback) {
+                                 final Material material, final Supplier<Block> callback) {
         final Vector vector = new Vector(x, y, z);
 
         // Don't replace ladders and torches set in this population with stone bricks
@@ -611,7 +608,7 @@ class RailWayChunk {
             }
         }
 
-        final Block block = callback.call();
+        final Block block = callback.get();
 
         alreadySet.put(vector, material);
 
