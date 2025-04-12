@@ -9,7 +9,6 @@ import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
-import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;

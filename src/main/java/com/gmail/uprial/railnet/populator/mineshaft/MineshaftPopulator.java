@@ -755,9 +755,8 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    final static String endShipWorld = WorldName.END;
     private void populateEndShip(final Block block) {
-        if(block.getWorld().getName().equalsIgnoreCase(endShipWorld)) {
+        if(block.getWorld().getName().equalsIgnoreCase(WorldName.END)) {
 
             final Illusioner illusioner = (Illusioner)block.getWorld().spawnEntity(
                     block.getWorld().getHighestBlockAt(block.getX(), block.getZ()).getLocation()
