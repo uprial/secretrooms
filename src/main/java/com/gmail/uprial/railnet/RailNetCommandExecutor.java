@@ -32,13 +32,7 @@ class RailNetCommandExecutor implements CommandExecutor {
         if (command.getName().equalsIgnoreCase(COMMAND_NS)) {
             final CustomLogger customLogger = new CustomLogger(plugin.getLogger(), sender);
             try {
-                if ((args.length >= 1) && (args[0].equalsIgnoreCase("reload"))) {
-                    if (sender.hasPermission(COMMAND_NS + ".reload")) {
-                        plugin.reloadConfig(customLogger);
-                        customLogger.info("RailNet reloaded config from disk.");
-                        return true;
-                    }
-                } else if ((args.length >= 5) && (args[0].equalsIgnoreCase("repopulate-loaded"))) {
+                if ((args.length >= 5) && (args[0].equalsIgnoreCase("repopulate-loaded"))) {
                     if (sender.hasPermission(COMMAND_NS + ".repopulate-loaded")) {
                         final Map<Integer, String> params = ImmutableMap.<Integer, String>builder()
                                 .put(2, "x")
@@ -104,9 +98,6 @@ class RailNetCommandExecutor implements CommandExecutor {
                 } else if ((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                     String helpString = "==== RailNet help ====\n";
 
-                    if (sender.hasPermission(COMMAND_NS + ".reload")) {
-                        helpString += '/' + COMMAND_NS + " reload - reload config from disk\n";
-                    }
                     if (sender.hasPermission(COMMAND_NS + ".populate-loaded")) {
                         helpString += '/' + COMMAND_NS + " repopulate-loaded <radius> - repopulate loaded terrain around player\n";
                         helpString += '/' + COMMAND_NS + " repopulate-loaded <world> <x> <z> <radius> - repopulate loaded terrain\n";

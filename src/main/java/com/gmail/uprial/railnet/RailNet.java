@@ -4,6 +4,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.*;
+import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
@@ -19,6 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gmail.uprial.railnet.RailNetCommandExecutor.COMMAND_NS;
 
@@ -41,24 +44,25 @@ public final class RailNet extends JavaPlugin {
         cron = new RailNetCron(this);
 
         consoleLogger = new CustomLogger(getLogger());
-        loadConfig(getConfig(), consoleLogger);
+        final RailNetConfig railNetConfig = loadConfig(getConfig(), consoleLogger);
 
-        populator = new Populator(this, consoleLogger,
-                Lists.newArrayList(
-                        // Order does matter: RailWay is top priority
-                        new RailWayPopulator(this, consoleLogger),
-                        new WhirlpoolPopulator(this, consoleLogger),
-                        // Order does matter: populate chests in RailWay and Whirlpool.
-                        new MineshaftPopulator(this, consoleLogger)
-                )
-        );
+        final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
+        if(railNetConfig.hasUndergroundRailways()) {
+            // Order does matter: RailWay is top priority
+            chunkPopulators.add(new RailWayPopulator(this, consoleLogger));
+        }
+        chunkPopulators.add(new WhirlpoolPopulator(this, consoleLogger));
+        // Order does matter: populate chests in RailWay and Whirlpool.
+        chunkPopulators.add(new MineshaftPopulator(this, consoleLogger));
+
+        populator = new Populator(this, consoleLogger, chunkPopulators);
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
         getServer().getPluginManager().registerEvents(new NastyEndermanListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new NastyShooterListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new ExplosiveShooterListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new StrongBlockListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(consoleLogger), this);
+        getServer().getPluginManager().registerEvents(new AngryShooterListener(consoleLogger), this);
 
         fireworkEngine = new FireworkEngine(this, consoleLogger);
         fireworkEngine.enableCraftBook();
@@ -67,11 +71,6 @@ public final class RailNet extends JavaPlugin {
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
-    }
-
-    void reloadConfig(CustomLogger userLogger) {
-        reloadConfig();
-        loadConfig(getConfig(), userLogger, consoleLogger);
     }
 
     int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {
@@ -126,19 +125,25 @@ public final class RailNet extends JavaPlugin {
         return YamlConfiguration.loadConfiguration(configFile);
     }
 
-    static void loadConfig(FileConfiguration config, CustomLogger customLogger) {
-        loadConfig(config, customLogger, null);
+    static RailNetConfig loadConfig(FileConfiguration config, CustomLogger customLogger) {
+        return loadConfig(config, customLogger, null);
     }
 
-    private static void loadConfig(FileConfiguration config, CustomLogger mainLogger, CustomLogger secondLogger) {
+    private static RailNetConfig loadConfig(FileConfiguration config, CustomLogger mainLogger, CustomLogger secondLogger) {
+        RailNetConfig railNetConfig = null;
+
         try {
             final boolean isDebugMode = RailNetConfig.isDebugMode(config, mainLogger);
             mainLogger.setDebugMode(isDebugMode);
             if(secondLogger != null) {
                 secondLogger.setDebugMode(isDebugMode);
             }
+
+            railNetConfig = RailNetConfig.getFromConfig(config, mainLogger);
         } catch (InvalidConfigException e) {
             mainLogger.error(e.getMessage());
         }
+
+        return railNetConfig;
     }
 }

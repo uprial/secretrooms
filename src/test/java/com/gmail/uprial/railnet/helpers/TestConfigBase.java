@@ -1,5 +1,7 @@
 package com.gmail.uprial.railnet.helpers;
 
+import com.gmail.uprial.railnet.RailNetConfig;
+import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.google.common.collect.Lists;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,6 +10,18 @@ import static com.gmail.uprial.railnet.common.Utils.joinStrings;
 
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class TestConfigBase extends TestServerBase {
+    protected static void loadConfig(String content) throws InvalidConfigurationException, InvalidConfigException {
+        loadConfig(new String[]{content});
+    }
+
+    protected static RailNetConfig loadConfig(String... contents) throws InvalidConfigurationException, InvalidConfigException {
+        return loadConfig(getCustomLogger(), contents);
+    }
+
+    protected static RailNetConfig loadConfig(TestCustomLogger testCustomLogger, String... contents) throws InvalidConfigurationException, InvalidConfigException {
+        return RailNetConfig.getFromConfig(getPreparedConfig(contents), testCustomLogger);
+    }
+
     protected static YamlConfiguration getPreparedConfig(String... contents) throws InvalidConfigurationException {
         YamlConfiguration yamlConfiguration = new YamlConfiguration();
         yamlConfiguration.loadFromString(joinStrings(System.lineSeparator(), Lists.newArrayList(contents)));

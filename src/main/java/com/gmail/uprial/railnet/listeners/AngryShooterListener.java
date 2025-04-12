@@ -15,10 +15,10 @@ import org.bukkit.util.Vector;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
-public class EntityListener implements Listener {
+public class AngryShooterListener implements Listener {
     private final CustomLogger customLogger;
 
-    public EntityListener(final CustomLogger customLogger) {
+    public AngryShooterListener(final CustomLogger customLogger) {
         this.customLogger = customLogger;
     }
 

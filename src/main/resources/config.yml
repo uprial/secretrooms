@@ -11,3 +11,12 @@
 # This option can affect the performance.
 #
 debug: false
+
+#
+# Enable underground railways from a spawn location
+# to a woodland mansion and an ocean monument
+# with ladders from above at stations.
+#
+# Possible values: true | false (default = false)
+#
+underground-railways: true
