@@ -62,6 +62,7 @@ public final class RailNet extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ExplosiveShooterListener(this, consoleLogger), this);
         getServer().getPluginManager().registerEvents(new StrongBlockListener(), this);
         getServer().getPluginManager().registerEvents(new AngryShooterListener(consoleLogger), this);
+        getServer().getPluginManager().registerEvents(new NastyEnderDragonListener(this, consoleLogger), this);
 
         fireworkEngine = new FireworkEngine(this, consoleLogger);
         fireworkEngine.enableCraftBook();
@@ -70,6 +71,10 @@ public final class RailNet extends JavaPlugin {
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
+    }
+
+    public void scheduleDelayed(final Runnable runnable, final long delay) {
+        getServer().getScheduler().scheduleSyncDelayedTask(this, runnable, delay);
     }
 
     int repopulateLoaded(final String worldName, final int x, final int z, final int radius) {

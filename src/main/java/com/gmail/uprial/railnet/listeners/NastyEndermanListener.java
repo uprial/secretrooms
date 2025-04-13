@@ -29,12 +29,18 @@ public class NastyEndermanListener implements Listener {
 
         for (final Player player : world.getEntitiesByClass(Player.class)) {
             if ((strongestPlayer == null || strongestPlayer.getHealth() < player.getHealth())
-                    && (!player.isFlying())) {
+                    && (isAppropriatePlayer(player))) {
                 strongestPlayer = player;
             }
         }
 
         return strongestPlayer;
+    }
+
+    private boolean isAppropriatePlayer(final Player player) {
+        return (player.isValid()) && (!player.isFlying()) && (!player.isGliding())
+            && (player.getWorld()
+                .getBlockAt(player.getLocation().clone().add(0.0D, 2.0D, 0.0D)).isPassable());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -45,7 +51,7 @@ public class NastyEndermanListener implements Listener {
 
             final Player player = getStrongestPlayer(event.getEntity().getWorld());
 
-            if((player != null) && (player.isValid()) && (!player.isFlying()) && (!player.isGliding())){
+            if(player != null) {
                 final Enderman enderman = (Enderman) event.getEntity();
 
                 if ((player.getEquipment() != null)

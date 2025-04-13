@@ -5,6 +5,7 @@
 * Added Illusioners to defend End Ships
 * Made shooting mobs target the closest player immediately if spawned with direct vision to them
 * Added config to disable underground railways
+* The End Dragon healing crystals are periodically resurrecting
 # Balance
 * Reduceв probabilities for big groups of loot
 * Removed wither and ender dragon eggs

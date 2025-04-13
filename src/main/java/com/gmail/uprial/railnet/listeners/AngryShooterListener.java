@@ -1,7 +1,7 @@
 package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
-import org.bukkit.Bukkit;
+import com.gmail.uprial.railnet.common.AimHelper;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -9,9 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
@@ -37,11 +35,7 @@ public class AngryShooterListener implements Listener {
             final Player player = getClosestVisiblePlayer(mob);
 
             if(player != null) {
-                mob.setTarget(player);
-                // Fixture for TakeAim
-                Bukkit.getPluginManager().callEvent(
-                        new EntityTargetEvent(mob, player,
-                                EntityTargetEvent.TargetReason.CLOSEST_PLAYER));
+                AimHelper.setTarget(mob, player);
 
                 if (customLogger.isDebugMode()) {
                     customLogger.debug(String.format("%s targeted at %s", format(mob), format(player)));
@@ -74,23 +68,12 @@ public class AngryShooterListener implements Listener {
         // Check for direct vision
         final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
                 fromLocation,
-                getDirection(fromLocation, toLocation),
+                AimHelper.getDirection(fromLocation, toLocation),
                 // -1.0D to avoid colliding with the player itself
                 toLocation.distance(fromLocation) - 1.0D,
                 FluidCollisionMode.ALWAYS);
 
         return (rayTraceResult == null);
-    }
-
-    private Vector getDirection(final Location fromLocation, final Location toLocation) {
-        final Location direction = toLocation.clone().subtract(fromLocation);
-        final double length = direction.length();
-
-        return new Vector(
-                direction.getX() / length,
-                direction.getY() / length,
-                direction.getZ() / length
-        );
     }
 
     // According to TakeAim:ProjectileHoming
