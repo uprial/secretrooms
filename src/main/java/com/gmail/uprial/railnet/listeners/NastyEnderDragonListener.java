@@ -192,8 +192,8 @@ public class NastyEnderDragonListener implements Listener {
                         material = Material.BEDROCK;
                     } else if ((dy < 0) && (getDistance(dx, dz) <= 3.3D)) {
                         material = Material.OBSIDIAN;
-                    } else if ((dy < 0) && (!block.getType().equals(Material.OBSIDIAN))) {
-                        material = Material.AIR;
+                    } else if ((dy < 0)) { // && (!block.getType().equals(Material.OBSIDIAN))) {
+                        material = null;//Material.AIR;
                     } else if ((dy == 3) && (abs(dx) <= 3) && (abs(dz) <= 3)) {
                         material = Material.IRON_BARS;
                     } else if ((dy >= 0) && (dy < 3) &&
@@ -203,7 +203,7 @@ public class NastyEnderDragonListener implements Listener {
                         material = Material.AIR;
                     }
 
-                    if(!block.getType().equals(material)) {
+                    if((material != null) && (!block.getType().equals(material))) {
                         block.setType(material);
                     }
                 }
