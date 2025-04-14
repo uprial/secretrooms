@@ -2,7 +2,7 @@ package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
-import com.gmail.uprial.railnet.common.AimHelper;
+import com.gmail.uprial.railnet.common.TakeAimAdapter;
 import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.common.WorldName;
 import org.bukkit.*;
@@ -12,10 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -222,20 +220,17 @@ public class NastyEnderDragonListener implements Listener {
                     return;
                 }
 
-                AimHelper.setTarget(enderDragon, player);
+                TakeAimAdapter.setTarget(enderDragon, player);
+                enderDragon.launchProjectile(DragonFireball.class);
 
-                final DragonFireball dragonFireball
-                        = enderDragon.launchProjectile(DragonFireball.class);
+                /*
+                    I carefully tested, and TakeAim works without this fixture.
 
-                final Vector direction
-                        = AimHelper.getDirection(enderDragon.getLocation(), player.getEyeLocation());
+                    I decided to keep this comment in case I forget I tested.
 
-                direction.multiply(0.1D);
-                dragonFireball.setVelocity(direction);
-
-                // Fixture for TakeAim
                 Bukkit.getPluginManager().callEvent(
                         new ProjectileLaunchEvent(dragonFireball));
+                 */
 
             }, seconds2ticks(BALLS_INTERVAL * i));
         }

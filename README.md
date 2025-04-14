@@ -6,11 +6,11 @@ Tested on Spigot-1.21.
 
 ## Introduction
 
-Generate rails from spawn to mansion and monument, rare loot in chests and furnaces, allow Bazookas.
+Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
 
 ## Features
 
-* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
+* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations (disabled by default in config.yml)
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
@@ -34,7 +34,7 @@ Fire the bazooka with 120 explosion radius:
 
 ![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.jpg)
 
-Find an entrance, take a minecart, enjoy your ride, discover a struct
+Find an entrance, take a minecart, enjoy your ride, discover a struct (disabled by default in config.yml)
 
 ![Find a monument](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-monument.png)
 
