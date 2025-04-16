@@ -61,6 +61,8 @@ public class WhirlpoolPopulator implements ChunkPopulator {
             .put(Material.FISHING_ROD, new CLT(10.0D, fishingRodItemConfig))
             .build();
 
+    private static final double MINESHAFT_POPULATION_PROBABILITY = 33.0D;
+
     @Override
     public void populate(final Chunk chunk) {
         if(isAppropriate(chunk)) {
@@ -151,8 +153,10 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                                 }
                             }
 
-                            // One more population will happen if no idempotency marker is set.
-                            new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
+                            if(Probability.PASS(MINESHAFT_POPULATION_PROBABILITY, 0)) {
+                                // One more population
+                                new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
+                            }
                         }
                     }
                 }
@@ -192,6 +196,24 @@ public class WhirlpoolPopulator implements ChunkPopulator {
     }
 
     final static String world = WorldName.WORLD;
+    /*
+        version 1.21.3
+        seed -1565193744182814265 (Belongings 2025-01-12)
+        TerraformGenerator-17.0.1
+        WorldBorder 1050 x 1050
+
+        $ grep oceanic- plugins/TerraformGenerator/config.yml
+        oceanic-frequency: 0.11
+        oceanic-threshold: <oceanic-threshold>
+        deep-oceanic-threshold: 27.0
+
+        $ grep "Whirlpool.*] populated" logs/latest.log | wc -l
+        <whirlpools>
+
+        oceanic-threshold | whirlpools | barrels | chests
+                      8.0 | 121              105 | 630
+                     22.0 | 83               102 | 565
+     */
     final static int density = 100;
 
     private boolean isAppropriate(final Chunk chunk) {
