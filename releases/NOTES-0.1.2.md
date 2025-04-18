@@ -7,6 +7,6 @@
 * Added config to disable underground railways
 * The End Dragon healing crystals are periodically resurrecting
 # Balance
-* Reduceв probabilities for big groups of loot
+* Reduced probabilities for big groups of loot
 * Removed wither and ender dragon eggs
 * Removed infinite potions
