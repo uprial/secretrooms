@@ -135,15 +135,13 @@ public class WhirlpoolPopulator implements ChunkPopulator {
                             int i = 0;
 
                             for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-                                if(Probability.PASS(entry.getValue().getProbability(), density)) {
+                                if(entry.getValue().pass(density, chunk.getWorld().getName())) {
                                     final int amount = entry.getValue().getRandomAmount();
 
                                     inventory.setItem(i, new ItemStack(entry.getKey(), amount));
 
-                                    if (entry.getValue().hasItemConfig()) {
-                                        // The fresh getItem() is needed to properly update the amount
-                                        entry.getValue().getItemConfig().apply(inventory.getItem(i));
-                                    }
+                                    // The fresh getItem() is needed to properly update the amount
+                                    entry.getValue().applyItemConfig(inventory.getItem(i));
 
                                     if (customLogger.isDebugMode()) {
                                         customLogger.debug(String.format("%s item #%d %s set to %d",

@@ -609,8 +609,7 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
 
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-            if(Probability.PASS(entry.getValue().getProbability(), density)
-                    && entry.getValue().isAppropriateWorld(worldName)) {
+            if(entry.getValue().pass(density, worldName)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -626,10 +625,8 @@ public class MineshaftPopulator implements ChunkPopulator {
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                if(entry.getValue().hasItemConfig()) {
-                    // The fresh getItem() is needed to properly update the amount
-                    entry.getValue().getItemConfig().apply(inventory.getItem(i));
-                }
+                // The fresh getItem() is needed to properly update the amount
+                entry.getValue().applyItemConfig(inventory.getItem(i));
 
                 setAmount(String.format("%s item #%d", title, i),
                         // The fresh getItem() is needed to properly update the amount

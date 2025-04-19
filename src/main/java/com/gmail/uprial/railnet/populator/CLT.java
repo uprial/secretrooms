@@ -1,6 +1,8 @@
 package com.gmail.uprial.railnet.populator;
 
+import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.WorldName;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -40,8 +42,15 @@ public class CLT {
         this.maxPower = maxPower;
     }
 
-    public double getProbability() {
-        return probability;
+    public boolean pass(final int density, final String worldName) {
+        return Probability.PASS(probability, density)
+                && (worldNames.isEmpty() || worldNames.contains(WorldName.normalize(worldName)));
+    }
+
+    public void applyItemConfig(final ItemStack itemStack) {
+        if (!itemConfigOptions.isEmpty()) {
+            itemConfigOptions.get(RANDOM.nextInt(itemConfigOptions.size())).apply(itemStack);
+        }
     }
 
     public int getMaxPower() {
@@ -57,20 +66,8 @@ public class CLT {
         return this;
     }
 
-    public boolean hasItemConfig() {
-        return !itemConfigOptions.isEmpty();
-    }
-
-    public ItemConfig getItemConfig() {
-        return itemConfigOptions.get(RANDOM.nextInt(itemConfigOptions.size()));
-    }
-
     public CLT onlyInWorld(final String worldName) {
         worldNames.add(WorldName.normalize(worldName));
         return this;
-    }
-
-    public boolean isAppropriateWorld(final String worldName) {
-        return worldNames.isEmpty() || worldNames.contains(WorldName.normalize(worldName));
     }
 }
