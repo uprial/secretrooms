@@ -32,12 +32,14 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator {
         this.density = density;
     }
 
-    protected abstract void populateAppropriateChunk(final Chunk chunk);
+    protected abstract boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history);
 
     @Override
-    public void populate(final Chunk chunk) {
+    public boolean populate(final Chunk chunk, final PopulationHistory history) {
         if (isAppropriate(chunk)) {
-            populateAppropriateChunk(chunk);
+            return populateAppropriateChunk(chunk, history);
+        } else {
+            return false;
         }
     }
 

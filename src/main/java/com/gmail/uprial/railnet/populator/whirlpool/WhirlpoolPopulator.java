@@ -6,7 +6,6 @@ import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.*;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
-import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -24,6 +23,7 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     private final RailNet plugin;
     private final CustomLogger customLogger;
+    private final String conflictingPopulatorName;
 
     private static final double DEPTH_2_DENSITY = 20.0d;
 
@@ -32,11 +32,18 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     final static String WORLD = WorldName.WORLD;
     final static int DENSITY = 100;
 
-    public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger) {
+    public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger,
+                              final String conflictingPopulatorName) {
         super(WORLD, DENSITY);
 
         this.plugin = plugin;
         this.customLogger = customLogger;
+        this.conflictingPopulatorName = conflictingPopulatorName;
+    }
+
+    @Override
+    public String getName() {
+        return "Whirlpool";
     }
 
     private final ItemConfig fishingRodItemConfig = new ItemConfig()
@@ -64,8 +71,13 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
     private static final double MINESHAFT_POPULATION_PROBABILITY = 33.0D;
 
-    protected void populateAppropriateChunk(final Chunk chunk) {
-        vc = new VirtualChunk("Whirlpool", chunk, BlockFace.NORTH);
+    protected boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history) {
+        if(history.contains(conflictingPopulatorName)) {
+            // Don't overlap with other structures
+            return false;
+        }
+
+        vc = new VirtualChunk(getName(), chunk, BlockFace.NORTH);
 
         int minX = 1;
         int minY = vc.getSeaLevel();
@@ -76,10 +88,6 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                 // +1 layer for a chest
                 while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
                     y--;
-                }
-                // Don't overlap with other structures
-                while((y < vc.getSeaLevel()) && (isConflicting(x, y, z))) {
-                    y++;
                 }
                 if(y < minY) {
                     minX = x;
@@ -92,9 +100,9 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
         if(minY >= vc.getSeaLevel()) {
             if(customLogger.isDebugMode()) {
                 // No water
-                customLogger.debug(String.format("Whirlpool[%s] can't be populated", format(chunk)));
+                customLogger.debug(String.format("%s[%s] can't be populated", getName(), format(chunk)));
             }
-            return;
+            return false;
         }
 
         for(int dx = -1; dx <= 1; dx++) {
@@ -104,26 +112,20 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                 while((y > vc.getMinHeight() + 1) && isWater(minX + dx, y,  minZ + dz)) {
                     y--;
                 }
-                // Don't overlap with other structures
-                while((y < vc.getSeaLevel()) && (isConflicting(minX + dx, y,  minZ + dz))) {
-                    y++;
-                }
 
                 if(y < vc.getSeaLevel()) {
                     if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
                         if (customLogger.isDebugMode()) {
                             // Idempotency marker
-                            customLogger.debug(String.format("Whirlpool[%s] is already populated", format(chunk)));
+                            customLogger.debug(String.format("%s[%s] is already populated", getName(), format(chunk)));
                         }
-                        return;
+                        return false;
                     }
 
                     vc.applyPhysicsOnce();
                     vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
 
-                    if ((dx == 0) && (dz == 0)
-                            // Sacrifice a chest when overlaps with other structures
-                            && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
+                    if ((dx == 0) && (dz == 0)) {
                         final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
 
                         final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
@@ -160,8 +162,10 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
         }
 
         if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("Whirlpool[%s] populated", format(chunk)));
+            customLogger.debug(String.format("%s[%s] populated", getName(), format(chunk)));
         }
+
+        return true;
     }
 
     private boolean isWater(final int x, final int y, final int z) {
@@ -177,9 +181,5 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             }
         }
         return true;
-    }
-
-    private boolean isConflicting(final int x, final int y, final int z) {
-        return RailWayPopulator.isBorderBlock(vc.get(x, y, z).getType());
     }
 }

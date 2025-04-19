@@ -109,7 +109,7 @@ class RailWayChunk {
 
     private int getEntranceHeight(final int x, final int z) {
         final int minEntranceY = 3;
-        final AtomicInteger height = new AtomicInteger(vc.getMaxHeight());
+        final AtomicInteger height = new AtomicInteger(vc.getMaxHeight() - 1);
 
         while(height.intValue() > minEntranceY) {
             final AtomicInteger passableBlocks = new AtomicInteger(0);
@@ -591,7 +591,7 @@ class RailWayChunk {
 
     private final Map<Vector,Material> alreadySet = new HashMap<>();
 
-    static boolean isBorderBlock(final Material material) {
+    boolean isBorderBlock(final Material material) {
         return material == Material.GLASS || material == Material.STONE_BRICKS;
     }
 

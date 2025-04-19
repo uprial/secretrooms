@@ -4,6 +4,7 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
+import com.gmail.uprial.railnet.populator.PopulationHistory;
 import com.gmail.uprial.railnet.populator.railway.map.ChunkMap;
 import com.gmail.uprial.railnet.populator.railway.map.InvalidMapException;
 import com.gmail.uprial.railnet.populator.railway.map.RailType;
@@ -11,13 +12,13 @@ import com.gmail.uprial.railnet.populator.railway.schema.SchemaDebug;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.structure.StructureType;
 import org.bukkit.util.StructureSearchResult;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
@@ -187,21 +188,27 @@ public class RailWayPopulator implements ChunkPopulator {
     }
 
     @Override
-    public void populate(final Chunk chunk) {
+    public boolean populate(final Chunk chunk, final PopulationHistory history) {
+        final AtomicBoolean result = new AtomicBoolean(false);
         final ChunkMap chunkMap = map.get(chunk.getWorld());
         if(chunkMap != null) {
             chunkMap.forEach(chunk.getX(), chunk.getZ(), (final RailType railType, final BlockFace blockFace) -> {
                 new RailWayChunk(chunkMap, chunk, railType, blockFace).populate();
 
                 if(customLogger.isDebugMode()) {
-                    customLogger.debug(String.format("RailWay[%s] populated with %s-%s",
-                            format(chunk), railType, blockFace));
+                    customLogger.debug(String.format("%s[%s] populated with %s-%s",
+                            getName(), format(chunk), railType, blockFace));
                 }
+
+                result.set(true);
             });
         }
+
+        return result.get();
     }
 
-    public static boolean isBorderBlock(final Material material) {
-        return RailWayChunk.isBorderBlock(material);
+    @Override
+    public String getName() {
+        return "RailWay";
     }
 }

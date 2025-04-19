@@ -93,7 +93,7 @@ public class NastyEnderDragonListener implements Listener {
             pillars generate between 76 and 103 Y.
          */
         final int minY = max(70, chunk.getWorld().getMinHeight());
-        final int maxY = min(110, chunk.getWorld().getMaxHeight());
+        final int maxY = min(110, chunk.getWorld().getMaxHeight() - 1);
         // Takes 3-10ms per chunk
         for (int y = minY; y < maxY; y++) {
             for (int x = 0; x < 16; x++) {

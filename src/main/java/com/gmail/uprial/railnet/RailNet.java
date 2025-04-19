@@ -34,7 +34,7 @@ public final class RailNet extends JavaPlugin {
 
     private FireworkEngine fireworkEngine = null;
 
-    private RailNetCron cron;
+    private RailNetCron cron = null;
 
     @Override
     public void onEnable() {
@@ -46,11 +46,18 @@ public final class RailNet extends JavaPlugin {
         final RailNetConfig railNetConfig = loadConfig(getConfig(), consoleLogger);
 
         final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
+
+        final String railWayName;
         if(railNetConfig.hasUndergroundRailways()) {
             // Order does matter: RailWay is top priority
-            chunkPopulators.add(new RailWayPopulator(this, consoleLogger));
+            final RailWayPopulator railWayPopulator = new RailWayPopulator(this, consoleLogger);
+            railWayName = railWayPopulator.getName();
+
+            chunkPopulators.add(railWayPopulator);
+        } else {
+            railWayName = null;
         }
-        chunkPopulators.add(new WhirlpoolPopulator(this, consoleLogger));
+        chunkPopulators.add(new WhirlpoolPopulator(this, consoleLogger, railWayName));
         // Order does matter: populate chests in RailWay and Whirlpool.
         chunkPopulators.add(new MineshaftPopulator(this, consoleLogger));
 
@@ -111,7 +118,10 @@ public final class RailNet extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        fireworkEngine.disableCraftBook();
+        // If onEnable() didn't finish, this variable is highly probably null.
+        if(fireworkEngine != null) {
+            fireworkEngine.disableCraftBook();
+        }
         HandlerList.unregisterAll(this);
         cron.cancel();
         consoleLogger.info("Plugin disabled");

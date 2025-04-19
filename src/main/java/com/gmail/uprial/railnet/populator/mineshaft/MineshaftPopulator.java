@@ -9,6 +9,7 @@ import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.CLT;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.ItemConfig;
+import com.gmail.uprial.railnet.populator.PopulationHistory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
@@ -50,7 +51,7 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     @Override
-    public void populate(final Chunk readonlyChunk) {
+    public boolean populate(final Chunk readonlyChunk, final PopulationHistory history) {
         /*
             Fix population in structures with post-generation,
             known examples: Desert Pyramid, Outpost
@@ -61,6 +62,13 @@ public class MineshaftPopulator implements ChunkPopulator {
         final int chunkZ = readonlyChunk.getZ();
 
         RailNetCron.defer(() -> populateDeferred(readonlyWorldUID, chunkX, chunkZ));
+
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return "Mineshaft";
     }
 
     private void populateDeferred(final UUID worldUID, final int chunkX, final int chunkZ) {

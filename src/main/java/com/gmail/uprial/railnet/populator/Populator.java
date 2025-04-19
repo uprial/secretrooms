@@ -82,8 +82,11 @@ public class Populator {
     }
 
     private void populateChunk(final Chunk chunk) {
+        final PopulationHistory history = new PopulationHistory();
         for(final ChunkPopulator chunkPopulator : chunkPopulators) {
-            chunkPopulator.populate(chunk);
+            if(chunkPopulator.populate(chunk, history)) {
+                history.add(chunkPopulator.getName());
+            }
         }
     }
 
