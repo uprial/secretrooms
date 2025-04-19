@@ -29,8 +29,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
     VirtualChunk vc;
 
-    final static String WORLD = WorldName.WORLD;
-    final static int DENSITY = 100;
+    private final static String WORLD = WorldName.WORLD;
+    private final static int DENSITY = 100;
 
     public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger,
                               final String conflictingPopulatorName) {
