@@ -1,16 +1,15 @@
-package com.gmail.uprial.railnet.populator.whirlpool;
+package com.gmail.uprial.railnet.populator;
 
-import com.gmail.uprial.railnet.populator.ChunkXZ;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator.isAppropriate;
+import static com.gmail.uprial.railnet.populator.AbstractSeedSpecificPopulator.isAppropriate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class WhirlpoolPopulatorTest {
+public class AbstractSeedSpecificPopulatorTest {
     @Test
     public void testConsistency() {
         final int seed = 119;

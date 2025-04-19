@@ -4,14 +4,10 @@ import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.WorldName;
-import com.gmail.uprial.railnet.populator.CLT;
-import com.gmail.uprial.railnet.populator.ChunkPopulator;
-import com.gmail.uprial.railnet.populator.VirtualChunk;
-import com.gmail.uprial.railnet.populator.ItemConfig;
+import com.gmail.uprial.railnet.populator.*;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.hash.Hashing;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,7 +21,7 @@ import java.util.Map;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
-public class WhirlpoolPopulator implements ChunkPopulator {
+public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     private final RailNet plugin;
     private final CustomLogger customLogger;
 
@@ -33,7 +29,12 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
     VirtualChunk vc;
 
+    final static String WORLD = WorldName.WORLD;
+    final static int DENSITY = 100;
+
     public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger) {
+        super(WORLD, DENSITY);
+
         this.plugin = plugin;
         this.customLogger = customLogger;
     }
@@ -63,106 +64,103 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
     private static final double MINESHAFT_POPULATION_PROBABILITY = 33.0D;
 
-    @Override
-    public void populate(final Chunk chunk) {
-        if(isAppropriate(chunk)) {
-            vc = new VirtualChunk("Whirlpool", chunk, BlockFace.NORTH);
+    protected void populateAppropriateChunk(final Chunk chunk) {
+        vc = new VirtualChunk("Whirlpool", chunk, BlockFace.NORTH);
 
-            int minX = 1;
-            int minY = vc.getSeaLevel();
-            int minZ = 1;
-            for(int x = 1; x < 15; x++) {
-                for(int z = 1; z < 15; z++) {
-                    int y = vc.getSeaLevel();
-                    // +1 layer for a chest
-                    while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
-                        y--;
-                    }
-                    // Don't overlap with other structures
-                    while((y < vc.getSeaLevel()) && (isConflicting(x, y, z))) {
-                        y++;
-                    }
-                    if(y < minY) {
-                        minX = x;
-                        minY = y;
-                        minZ = z;
-                    }
+        int minX = 1;
+        int minY = vc.getSeaLevel();
+        int minZ = 1;
+        for(int x = 1; x < 15; x++) {
+            for(int z = 1; z < 15; z++) {
+                int y = vc.getSeaLevel();
+                // +1 layer for a chest
+                while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
+                    y--;
+                }
+                // Don't overlap with other structures
+                while((y < vc.getSeaLevel()) && (isConflicting(x, y, z))) {
+                    y++;
+                }
+                if(y < minY) {
+                    minX = x;
+                    minY = y;
+                    minZ = z;
                 }
             }
+        }
 
-            if(minY >= vc.getSeaLevel()) {
-                if(customLogger.isDebugMode()) {
-                    // No water
-                    customLogger.debug(String.format("Whirlpool[%s] can't be populated", format(chunk)));
-                }
-                return;
-            }
-
-            for(int dx = -1; dx <= 1; dx++) {
-                for(int dz = -1; dz <= 1; dz++) {
-                    int y = minY;
-                    // +1 layer for a chest
-                    while((y > vc.getMinHeight() + 1) && isWater(minX + dx, y,  minZ + dz)) {
-                        y--;
-                    }
-                    // Don't overlap with other structures
-                    while((y < vc.getSeaLevel()) && (isConflicting(minX + dx, y,  minZ + dz))) {
-                        y++;
-                    }
-
-                    if(y < vc.getSeaLevel()) {
-                        if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
-                            if (customLogger.isDebugMode()) {
-                                // Idempotency marker
-                                customLogger.debug(String.format("Whirlpool[%s] is already populated", format(chunk)));
-                            }
-                            return;
-                        }
-
-                        vc.applyPhysicsOnce();
-                        vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
-
-                        if ((dx == 0) && (dz == 0)
-                                // Sacrifice a chest when overlaps with other structures
-                                && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
-                            final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
-
-                            final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
-
-                            // The deepest water the more loot in the chest.
-                            int density = (int)Math.floor((vc.getSeaLevel() - y) / DEPTH_2_DENSITY);
-
-                            int i = 0;
-
-                            for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-                                if(entry.getValue().pass(density, chunk.getWorld().getName())) {
-                                    final int amount = entry.getValue().getRandomAmount();
-
-                                    inventory.setItem(i, new ItemStack(entry.getKey(), amount));
-
-                                    // The fresh getItem() is needed to properly update the amount
-                                    entry.getValue().applyItemConfig(inventory.getItem(i));
-
-                                    if (customLogger.isDebugMode()) {
-                                        customLogger.debug(String.format("%s item #%d %s set to %d",
-                                                format(block), i, entry.getKey(), amount));
-                                    }
-                                    i++;
-                                }
-                            }
-
-                            if(Probability.PASS(MINESHAFT_POPULATION_PROBABILITY, 0)) {
-                                // One more population
-                                new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
-                            }
-                        }
-                    }
-                }
-            }
-
+        if(minY >= vc.getSeaLevel()) {
             if(customLogger.isDebugMode()) {
-                customLogger.debug(String.format("Whirlpool[%s] populated", format(chunk)));
+                // No water
+                customLogger.debug(String.format("Whirlpool[%s] can't be populated", format(chunk)));
             }
+            return;
+        }
+
+        for(int dx = -1; dx <= 1; dx++) {
+            for(int dz = -1; dz <= 1; dz++) {
+                int y = minY;
+                // +1 layer for a chest
+                while((y > vc.getMinHeight() + 1) && isWater(minX + dx, y,  minZ + dz)) {
+                    y--;
+                }
+                // Don't overlap with other structures
+                while((y < vc.getSeaLevel()) && (isConflicting(minX + dx, y,  minZ + dz))) {
+                    y++;
+                }
+
+                if(y < vc.getSeaLevel()) {
+                    if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
+                        if (customLogger.isDebugMode()) {
+                            // Idempotency marker
+                            customLogger.debug(String.format("Whirlpool[%s] is already populated", format(chunk)));
+                        }
+                        return;
+                    }
+
+                    vc.applyPhysicsOnce();
+                    vc.set(minX + dx, y, minZ + dz, Material.MAGMA_BLOCK);
+
+                    if ((dx == 0) && (dz == 0)
+                            // Sacrifice a chest when overlaps with other structures
+                            && (!isConflicting(minX + dx, y - 1, minZ + dz))) {
+                        final Block block = vc.set(minX + dx, y - 1, minZ + dz, Material.CHEST);
+
+                        final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
+
+                        // The deepest water the more loot in the chest.
+                        int density = (int)Math.floor((vc.getSeaLevel() - y) / DEPTH_2_DENSITY);
+
+                        int i = 0;
+
+                        for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
+                            if(entry.getValue().pass(density, chunk.getWorld().getName())) {
+                                final int amount = entry.getValue().getRandomAmount();
+
+                                inventory.setItem(i, new ItemStack(entry.getKey(), amount));
+
+                                // The fresh getItem() is needed to properly update the amount
+                                entry.getValue().applyItemConfig(inventory.getItem(i));
+
+                                if (customLogger.isDebugMode()) {
+                                    customLogger.debug(String.format("%s item #%d %s set to %d",
+                                            format(block), i, entry.getKey(), amount));
+                                }
+                                i++;
+                            }
+                        }
+
+                        if(Probability.PASS(MINESHAFT_POPULATION_PROBABILITY, 0)) {
+                            // One more population
+                            new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(customLogger.isDebugMode()) {
+            customLogger.debug(String.format("Whirlpool[%s] populated", format(chunk)));
         }
     }
 
@@ -183,39 +181,5 @@ public class WhirlpoolPopulator implements ChunkPopulator {
 
     private boolean isConflicting(final int x, final int y, final int z) {
         return RailWayPopulator.isBorderBlock(vc.get(x, y, z).getType());
-    }
-
-    static long getHash(final long l) {
-        return Hashing.sha256().hashLong(l).asLong();
-    }
-
-    static boolean isAppropriate(final int x, final int z, final long seed, final long density) {
-        return (getHash(seed * x * z) % density) == 0;
-    }
-
-    final static String world = WorldName.WORLD;
-    /*
-        version 1.21.3
-        seed -1565193744182814265 (Belongings 2025-01-12)
-        TerraformGenerator-17.0.1
-        WorldBorder 1050 x 1050
-
-        $ grep oceanic- plugins/TerraformGenerator/config.yml
-        oceanic-frequency: 0.11
-        oceanic-threshold: <oceanic-threshold>
-        deep-oceanic-threshold: 27.0
-
-        $ grep "Whirlpool.*] populated" logs/latest.log | wc -l
-        <whirlpools>
-
-        oceanic-threshold | whirlpools | barrels | chests
-                      8.0 | 121              105 | 630
-                     22.0 | 83               102 | 565
-     */
-    final static int density = 100;
-
-    private boolean isAppropriate(final Chunk chunk) {
-        return (chunk.getWorld().getName().equalsIgnoreCase(world))
-                && isAppropriate(chunk.getX(), chunk.getZ(), chunk.getWorld().getSeed(), density);
     }
 }
