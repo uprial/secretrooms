@@ -391,9 +391,6 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.LINGERING_POTION, new CLT(0.50D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(1.00D, arrowConfig, CLT.MAX_POWER))
 
-            // 2% / 249 - diamonds
-            .put(Material.DIAMOND, new CLT(2.00D))
-
             /*
                 2% / 534 - bazookas
                 Please, keep consistent with FireworkCraftBook
@@ -701,6 +698,9 @@ public class MineshaftPopulator implements ChunkPopulator {
 
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
+
+            .put(Material.DIAMOND, 1)
+            .put(Material.EMERALD, 1)
 
             .put(Material.NETHERITE_SCRAP, 0)
             .put(Material.SPONGE, 0)

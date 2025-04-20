@@ -6,6 +6,7 @@ import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.*;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.Populator;
+import com.gmail.uprial.railnet.populator.dungeon.DungeonPopulator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
@@ -58,6 +59,7 @@ public final class RailNet extends JavaPlugin {
             railWayName = null;
         }
         chunkPopulators.add(new WhirlpoolPopulator(this, consoleLogger, railWayName));
+        chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayName));
         // Order does matter: populate chests in RailWay and Whirlpool.
         chunkPopulators.add(new MineshaftPopulator(this, consoleLogger));
 

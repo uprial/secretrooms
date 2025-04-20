@@ -47,9 +47,12 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     }
 
     private final ItemConfig fishingRodItemConfig = new ItemConfig()
-            .ench(Enchantment.LUCK_OF_THE_SEA, 0, 3)
-            .ench(Enchantment.LURE, 0, 3)
-            .ench(Enchantment.UNBREAKING, 0, 3);
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.LUCK_OF_THE_SEA, 0, 5)
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.LURE, 0, 5)
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.UNBREAKING, 0, 5);
 
     /*
         Ideated from:
