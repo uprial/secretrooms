@@ -58,7 +58,7 @@ public final class RailNet extends JavaPlugin {
         } else {
             railWayName = null;
         }
-        chunkPopulators.add(new WhirlpoolPopulator(this, consoleLogger, railWayName));
+        chunkPopulators.add(new WhirlpoolPopulator(consoleLogger, railWayName));
         chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayName));
         // Order does matter: populate chests in RailWay and Whirlpool.
         chunkPopulators.add(new MineshaftPopulator(this, consoleLogger));

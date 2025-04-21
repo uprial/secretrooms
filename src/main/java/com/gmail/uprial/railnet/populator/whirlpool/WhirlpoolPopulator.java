@@ -2,10 +2,8 @@ package com.gmail.uprial.railnet.populator.whirlpool;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
-import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.*;
-import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -21,7 +19,6 @@ import java.util.Map;
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
-    private final RailNet plugin;
     private final CustomLogger customLogger;
     private final String conflictingPopulatorName;
 
@@ -32,11 +29,10 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     private final static String WORLD = WorldName.WORLD;
     private final static int DENSITY = 100;
 
-    public WhirlpoolPopulator(final RailNet plugin, final CustomLogger customLogger,
+    public WhirlpoolPopulator(final CustomLogger customLogger,
                               final String conflictingPopulatorName) {
         super(WORLD, DENSITY);
 
-        this.plugin = plugin;
         this.customLogger = customLogger;
         this.conflictingPopulatorName = conflictingPopulatorName;
     }
@@ -72,8 +68,6 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             .put(Material.FISHING_ROD, new CLT(10.0D, fishingRodItemConfig))
             .build();
 
-    private static final double MINESHAFT_POPULATION_PROBABILITY = 33.0D;
-
     protected boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history) {
         if(history.contains(conflictingPopulatorName)) {
             // Don't overlap with other structures
@@ -88,8 +82,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
         for(int x = 1; x < 15; x++) {
             for(int z = 1; z < 15; z++) {
                 int y = vc.getSeaLevel();
-                // +1 layer for a chest
-                while((y > vc.getMinHeight() + 1) && (isWaterLayer(x, y, z))) {
+                // +2 layers for a chest and a magma block under it
+                while((y > vc.getMinHeight() + 2) && (isWaterLayer(x, y, z))) {
                     y--;
                 }
                 if(y < minY) {
@@ -155,10 +149,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                             }
                         }
 
-                        if(Probability.PASS(MINESHAFT_POPULATION_PROBABILITY, 0)) {
-                            // One more population
-                            new MineshaftPopulator(plugin, customLogger).populateChest(block, density);
-                        }
+                        // Will be analyzed in MineshaftPopulator to increase density.
+                        vc.set(minX + dx, y - 2, minZ + dz, Material.MAGMA_BLOCK);
                     }
                 }
             }

@@ -189,39 +189,45 @@ public class MineshaftPopulator implements ChunkPopulator {
     private final static int BASTION_DENSITY = 3 - getWorldDensity(WorldName.NETHER);
     // inherits 0 from WORLD_DENSITIES
     private final static int PYRAMID_DENSITY = 2 - getWorldDensity(WorldName.WORLD);
+    // inherits 0 from WORLD_DENSITIES
+    private final static int WHIRLPOOL_DENSITY = 1 - getWorldDensity(WorldName.WORLD);
 
     private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
-        // Pyramid
-        /*
-            WARNING: WON'T FIX
+            // Woodland mansion
+            .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
+            .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
+            .put(Material.DARK_OAK_STAIRS, MANSION_DENSITY)
 
-            Some trapped chests in Pyramids are generated with delays,
-            so they aren't timely populated.
+            // Bastion
+            .put(Material.BLACKSTONE, BASTION_DENSITY)
+            .put(Material.GILDED_BLACKSTONE, BASTION_DENSITY)
+            .put(Material.POLISHED_BLACKSTONE_BRICKS, BASTION_DENSITY)
+            .put(Material.POLISHED_BLACKSTONE_SLAB, BASTION_DENSITY)
 
-            A known way to fix it is to use PlayerInteractEvent,
-            then check and replace blocks under these trapped chests,
-            making population idempotent.
+            // Pyramid
+            /*
+                WARNING: WON'T FIX
 
-            However, these trapped chests have TNT below,
-            so the typical behaviour of players is to remove blocks under these trapped chests,
-            preventing the solution.
+                Some trapped chests in Pyramids are generated with delays,
+                so they aren't timely populated.
 
-            Considering this a rare case in the probability-based population,
-            I decided it's too expensive to fix this bug.
-         */
-        .put(Material.BLUE_TERRACOTTA, PYRAMID_DENSITY)
+                A known way to fix it is to use PlayerInteractEvent,
+                then check and replace blocks under these trapped chests,
+                making population idempotent.
 
-        // Woodland mansion
-        .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
-        .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
-        .put(Material.DARK_OAK_STAIRS, MANSION_DENSITY)
+                However, these trapped chests have TNT below,
+                so the typical behaviour of players is to remove blocks under these trapped chests,
+                preventing the solution.
 
-        // Bastion
-        .put(Material.BLACKSTONE, BASTION_DENSITY)
-        .put(Material.GILDED_BLACKSTONE, BASTION_DENSITY)
-        .put(Material.POLISHED_BLACKSTONE_BRICKS, BASTION_DENSITY)
-        .put(Material.POLISHED_BLACKSTONE_SLAB, BASTION_DENSITY)
-        .build();
+                Considering this a rare case in the probability-based population,
+                I decided it's too expensive to fix this bug.
+             */
+            .put(Material.BLUE_TERRACOTTA, PYRAMID_DENSITY)
+
+            // Whirlpool
+            .put(Material.MAGMA_BLOCK, WHIRLPOOL_DENSITY)
+
+            .build();
 
     private static int getDensity(final Block basement) {
         return getWorldDensity(WorldName.normalize(basement.getWorld().getName()))
@@ -602,7 +608,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                 - bastions (3)
                 - the end (2)
                 - pyramids (2)
-                - whirlpools (0-2)
+                - whirlpools (1)
                 - the nether (1)
 
                 and there is nothing specific to multiply.
@@ -649,10 +655,8 @@ public class MineshaftPopulator implements ChunkPopulator {
     }
 
     private void populateChest(final Block block) {
-        populateChest(block, getDensity(getBasement(block)));
-    }
+        final int density = getDensity(getBasement(block));
 
-    public void populateChest(final Block block, final int density) {
         populateInventory(format(block), block.getWorld().getName(), ((Chest)block.getState()).getBlockInventory(), density);
 
         if(customLogger.isDebugMode()) {
