@@ -268,10 +268,14 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
         {
             /*
-                WARNING: for ROOM_SIZE less than 4, ROOM_SIZE / 2 gives 1,
-                and we'll need to pick another Y
+                WARNING: for ROOM_SIZE less than 4, ROOM_SIZE / 2 gives 1 for both X/Z,
+                and we'll need to pick another Y or X/Z
                 to avoid the Spawner and the Chest overlapping.
+
+                The bedrock prevents the chest from opening from a distance:
+                the player must beat the enemies around and only then open the chest.
              */
+            vc.set(1, floorY + 5, 1, Material.BEDROCK);
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
 

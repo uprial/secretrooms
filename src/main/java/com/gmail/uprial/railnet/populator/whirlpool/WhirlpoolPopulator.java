@@ -1,6 +1,5 @@
 package com.gmail.uprial.railnet.populator.whirlpool;
 
-import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.*;
