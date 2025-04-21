@@ -26,7 +26,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     VirtualChunk vc;
 
     private final static String WORLD = WorldName.WORLD;
-    private final static int DENSITY = 100;
+    private final static int DENSITY = 200;
 
     public WhirlpoolPopulator(final CustomLogger customLogger,
                               final String conflictingPopulatorName) {

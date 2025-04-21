@@ -32,11 +32,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     VirtualChunk vc;
 
     private final static String WORLD = null;
-    private final static int DENSITY = 300;
+    private final static int DENSITY = 500;
 
     private final static int ROOM_SIZE = 5;
 
-    public DungeonPopulator(final CustomLogger customLogger, final String conflictingPopulatorName) {
+    public DungeonPopulator(final CustomLogger customLogger,
+                            final String conflictingPopulatorName) {
         super(WORLD, DENSITY);
 
         this.customLogger = customLogger;
