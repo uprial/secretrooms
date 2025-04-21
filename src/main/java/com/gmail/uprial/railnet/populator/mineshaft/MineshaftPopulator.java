@@ -373,32 +373,42 @@ public class MineshaftPopulator implements ChunkPopulator {
 
         Test
             version 1.21.3
-            seed 120637665933994616 (0.05 island, 2 outpost, 2.5 mansion, 2.5 ancient)
+            seed -1565193744182814265 (Belongings 2025-01-12)
             TerraformGenerator-17.0.1
             WorldBorder 4050 x 4050
 
-            $ grep "DEBUG.* TNT " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
-            918
+            $ grep oceanic- plugins/TerraformGenerator/config.yml
+            oceanic-frequency: 0.11
+            oceanic-threshold: 8.0
+            deep-oceanic-threshold: 27.0
+
+            $ grep "DEBUG.* POTION " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
+            86
+
+            Got pretty similar numbers also on
+            seed 120637665933994616 (0.05 island, 2 outpost, 2.5 mansion, 2.5 ancient)
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
             /*
-                8% / 918-978 - boring resources.
+                8% / ? - boring resources.
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
+
+                ? - can't check due to an overlap with Dungeon.
              */
             .put(Material.TNT, new CLT(4.00D, 2))
             .put(Material.OBSIDIAN, new CLT(4.00D, 2))
 
-            // 3% / 87 + 52 + 50 + 1878 - potions: 1.0 + 0.5 + 0.5 + 1.0
+            // 3% / 86 + 34 + 39 + 1675 - potions: 1.0 + 0.5 + 0.5 + 1.0
             .put(Material.POTION, new CLT(1.00D, potionConfig))
             .put(Material.SPLASH_POTION, new CLT(0.50D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(0.50D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(1.00D, arrowConfig, CLT.MAX_POWER))
 
             /*
-                2% / 534 - bazookas
+                2% / 461 - bazookas
                 Please, keep consistent with FireworkCraftBook
              */
             .put(Material.FIREWORK_ROCKET, new CLT(2.00D, 2)
@@ -407,11 +417,11 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 
-            // 4% / 206-166 - bonuses
+            // 4% / 172-179 - bonuses
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.00D))
             .put(Material.TOTEM_OF_UNDYING, new CLT(2.00D))
 
-            // 6% / 146-152-156-142 - golden cloths
+            // 6% / 138-154-154-124 - golden cloths
             .put(Material.GOLDEN_HELMET, new CLT(1.50D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
@@ -422,7 +432,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            // 1.5% - golden tools
+            // 1.5% / 50-82 - golden tools
             .put(Material.GOLDEN_PICKAXE, new CLT(0.75D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(0.75D, goldenSwordConfig))
 
