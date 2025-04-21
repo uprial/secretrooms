@@ -145,6 +145,16 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             for (int x = 0; x <= 15 - ROOM_SIZE - 1; x++) {
                 for (int z = 0; z <= 15 - ROOM_SIZE - 1; z++) {
                     int y = getEntranceY(x, z);
+
+                    if(y == vc.getMinHeight()) {
+                        if(customLogger.isDebugMode()) {
+                            customLogger.debug(String.format("%s[%s] can't be populated: void",
+                                    getName(), format(chunk)));
+                        }
+
+                        return false;
+                    }
+
                     if (y < minY) {
                         minX = x;
                         minY = y;
