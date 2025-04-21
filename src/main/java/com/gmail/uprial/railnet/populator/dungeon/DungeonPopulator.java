@@ -276,7 +276,13 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                 The bedrock prevents the chest from opening from a distance:
                 the player must beat the enemies around and only then open the chest.
              */
+            // Horizontal box
+            vc.set(0, floorY + 4, 1, Material.BEDROCK);
+            vc.set(1, floorY + 4, 0, Material.BEDROCK);
+            // Vertical box
             vc.set(1, floorY + 5, 1, Material.BEDROCK);
+            vc.set(1, floorY + 3, 1, Material.BEDROCK);
+
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
 
