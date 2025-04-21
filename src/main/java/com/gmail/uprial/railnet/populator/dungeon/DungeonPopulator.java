@@ -54,8 +54,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             https://minecraft.wiki/w/Non-renewable_resource
      */
     private final int STACK = 64;
-    private final int DYE_COUNT = 32;
-    private final int SAPLING_COUNT = 8;
+    private final int DYE_COUNT = 16;
+    private final int SAPLING_COUNT = 4;
+    private final int SEED_COUNT = 3;
 
     // This must be a unique count for a magic comparison
     private final int TOOL_COUNT = 2;
@@ -82,9 +83,10 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.REDSTONE, STACK * 9)
                     .put(Material.LAPIS_LAZULI, STACK * 9)
                     .build())
+            // https://minecraft.wiki/w/Ore Gold:Diamond = 82:14
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.GOLD_INGOT, STACK * 9)
-                    .put(Material.DIAMOND, STACK * 3)
+                    .put(Material.GOLD_INGOT, STACK * 6)
+                    .put(Material.DIAMOND, STACK * 2)
                     .build())
             // https://minecraft.wiki/w/Dye
             .add(ImmutableMap.<Material, Integer>builder()
@@ -115,6 +117,31 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.DARK_OAK_SAPLING, SAPLING_COUNT)
                     .put(Material.CHERRY_SAPLING, SAPLING_COUNT)
                     //.put(Material.PALE_OAK_SAPLING, SAPLING_COUNT)
+                    .build())
+            // https://minecraft.wiki/w/Crops
+            .add(ImmutableMap.<Material, Integer>builder()
+                    .put(Material.WHEAT_SEEDS, SEED_COUNT)
+                    .put(Material.BEETROOT_SEEDS, SEED_COUNT)
+                    .put(Material.CARROT, SEED_COUNT)
+                    .put(Material.POTATO, SEED_COUNT)
+                    .put(Material.MELON_SEEDS, SEED_COUNT)
+                    .put(Material.PUMPKIN_SEEDS, SEED_COUNT)
+                    .put(Material.TORCHFLOWER_SEEDS, SEED_COUNT)
+                    .put(Material.PITCHER_POD, SEED_COUNT)
+                    .put(Material.BAMBOO, SEED_COUNT)
+                    .put(Material.COCOA_BEANS, SEED_COUNT)
+                    .put(Material.SUGAR_CANE, SEED_COUNT)
+                    .put(Material.SWEET_BERRIES, SEED_COUNT)
+                    .put(Material.CACTUS, SEED_COUNT)
+                    .put(Material.BROWN_MUSHROOM, SEED_COUNT)
+                    .put(Material.RED_MUSHROOM, SEED_COUNT)
+                    .put(Material.KELP, SEED_COUNT)
+                    .put(Material.SEA_PICKLE, SEED_COUNT)
+                    .put(Material.GLOW_BERRIES, SEED_COUNT)
+                    .put(Material.NETHER_WART, SEED_COUNT)
+                    .put(Material.CRIMSON_FUNGUS, SEED_COUNT)
+                    .put(Material.WARPED_FUNGUS, SEED_COUNT)
+                    .put(Material.CHORUS_FRUIT, SEED_COUNT)
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.IRON_AXE, TOOL_COUNT)
@@ -296,7 +323,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
 
-            final long code = chunk.getWorld().getSeed() * chunk.getX() * chunk.getZ();
+            final long code = chunk.getX() + chunk.getZ();
             final int index = (int)(Math.abs(HashUtils.getHash(code)) % chestLootTable.size());
 
             int i = 0;

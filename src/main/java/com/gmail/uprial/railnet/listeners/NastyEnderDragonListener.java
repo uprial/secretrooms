@@ -109,7 +109,7 @@ public class NastyEnderDragonListener implements Listener {
         return null;
     }
 
-    private static final int RESURRECTION_INTERVAL = 60_000; // 1 minute
+    private static final int RESURRECTION_INTERVAL = 30_000; // 1 minute
     private long lastResurrection = 0;
 
     @EventHandler(priority = EventPriority.NORMAL)
