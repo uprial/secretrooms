@@ -128,6 +128,7 @@ class FireworkCraftBook {
         for(NamespacedKey key : addedKeys) {
             plugin.getServer().removeRecipe(key);
         }
+        addedKeys.clear();
     }
 
     private void addRecipe(

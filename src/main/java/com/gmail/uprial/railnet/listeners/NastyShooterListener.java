@@ -133,7 +133,7 @@ public class NastyShooterListener implements Listener {
 
                             if(customLogger.isDebugMode()) {
                                 customLogger.debug(String.format("%s of %s got %s",
-                                        projectile.getType(), format(entity), entry.getKey()));
+                                        projectile.getType(), format(entity), entry.getKey().getName()));
                             }
                         }
                     }
