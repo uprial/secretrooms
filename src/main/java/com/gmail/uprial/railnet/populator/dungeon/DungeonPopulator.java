@@ -79,14 +79,21 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.TNT, STACK * 9)
                     .put(Material.OBSIDIAN, STACK * 9)
                     .build())
+            /*
+                According to https://minecraft.wiki/w/Ore,
+                Redstone:Lapis:Diamond = 603:247:14 = 43:18:1 = 43/9b:18/9b:1 = 5b:2b:1
+             */
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.REDSTONE, STACK * 9)
-                    .put(Material.LAPIS_LAZULI, STACK * 9)
+                    .put(Material.REDSTONE_BLOCK, STACK * 5)
+                    .put(Material.LAPIS_BLOCK, STACK * 2)
                     .build())
-            // https://minecraft.wiki/w/Ore Gold:Diamond = 82:14
+            /*
+                According to https://minecraft.wiki/w/Ore,
+                Gold:Diamond = 82:14 = 6:1
+             */
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.GOLD_INGOT, STACK * 6)
-                    .put(Material.DIAMOND, STACK * 2)
+                    .put(Material.DIAMOND, STACK * 1)
                     .build())
             // https://minecraft.wiki/w/Dye
             .add(ImmutableMap.<Material, Integer>builder()
