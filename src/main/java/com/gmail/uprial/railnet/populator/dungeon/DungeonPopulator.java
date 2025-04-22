@@ -116,7 +116,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.ACACIA_SAPLING, SAPLING_COUNT)
                     .put(Material.DARK_OAK_SAPLING, SAPLING_COUNT)
                     .put(Material.CHERRY_SAPLING, SAPLING_COUNT)
-                    //.put(Material.PALE_OAK_SAPLING, SAPLING_COUNT)
+                    .put(Material.PALE_OAK_SAPLING, SAPLING_COUNT)
                     .build())
             // https://minecraft.wiki/w/Crops
             .add(ImmutableMap.<Material, Integer>builder()

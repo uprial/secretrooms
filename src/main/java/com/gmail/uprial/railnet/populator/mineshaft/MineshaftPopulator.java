@@ -456,9 +456,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_PICKAXE, new CLT(0.25D, netheriteToolConfig))
             .put(Material.NETHERITE_SWORD, new CLT(0.25D, netheriteSwordConfig))
 
-            // 4.2% - hostile mobs from https://minecraft.fandom.com/wiki/Mob
+            // 4.4% - hostile mobs from https://minecraft.fandom.com/wiki/Mob
             .put(Material.BOGGED_SPAWN_EGG, new CLT(0.20D))
             .put(Material.BREEZE_SPAWN_EGG, new CLT(0.20D))
+            .put(Material.CREAKING_SPAWN_EGG, new CLT(0.20D))
             .put(Material.DROWNED_SPAWN_EGG, new CLT(0.20D))
             .put(Material.ELDER_GUARDIAN_SPAWN_EGG, new CLT(0.20D))
             .put(Material.ENDERMAN_SPAWN_EGG, new CLT(0.20D))
