@@ -58,17 +58,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final int SAPLING_COUNT = 4;
     private final int SEED_COUNT = 3;
 
-    // This must be a unique count for a magic comparison
-    private final int TOOL_COUNT = 2;
-    private final ItemConfig ironToolConfig =  new ItemConfig()
-            // Survival maximum level is 5, here it's 10
-            .ench(Enchantment.EFFICIENCY, 5, 10)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.UNBREAKING, 3, 5)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.FORTUNE, 3, 5)
-            .ench(Enchantment.VANISHING_CURSE);
-
     private final List<Map<Material, Integer>> chestLootTable
             = ImmutableList.<Map<Material, Integer>>builder()
 
@@ -76,24 +65,31 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.BIRCH_LOG, STACK * 27)
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
+                    .put(Material.COOKED_BEEF, STACK * 27)
+                    .build())
+            .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.TNT, STACK * 9)
                     .put(Material.OBSIDIAN, STACK * 9)
                     .build())
             /*
                 According to https://minecraft.wiki/w/Ore,
-                Redstone:Lapis:Diamond = 603:247:14 = 43:18:1 = 43/9b:18/9b:1 = 5b:2b:1
+                            Regular Deepslate
+                Hardness    1.5     3.0
+
+                Coal        642     40
+                Redstone    91      512
+                Lapis       114     133
+                Gold        82      173
+                Diamond     14      226
              */
             .add(ImmutableMap.<Material, Integer>builder()
+                    .put(Material.COAL_BLOCK, STACK * 12)
                     .put(Material.REDSTONE_BLOCK, STACK * 5)
                     .put(Material.LAPIS_BLOCK, STACK * 2)
                     .build())
-            /*
-                According to https://minecraft.wiki/w/Ore,
-                Gold:Diamond = 82:14 = 6:1
-             */
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.GOLD_INGOT, STACK * 6)
-                    .put(Material.DIAMOND, STACK * 1)
+                    .put(Material.GOLD_BLOCK, STACK * 2)
+                    .put(Material.DIAMOND_BLOCK, STACK * 2)
                     .build())
             // https://minecraft.wiki/w/Dye
             .add(ImmutableMap.<Material, Integer>builder()
@@ -149,11 +145,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.CRIMSON_FUNGUS, SEED_COUNT)
                     .put(Material.WARPED_FUNGUS, SEED_COUNT)
                     .put(Material.CHORUS_FRUIT, SEED_COUNT)
-                    .build())
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.IRON_AXE, TOOL_COUNT)
-                    .put(Material.IRON_SHOVEL, TOOL_COUNT)
-                    .put(Material.IRON_PICKAXE, TOOL_COUNT)
                     .build())
             .build();
 
@@ -338,13 +329,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                 int count = entry.getValue();
                 while(count > 0) {
                     final int amount = Math.min(entry.getKey().getMaxStackSize(), count);
-                    final ItemStack itemStack = new ItemStack(entry.getKey(), amount);
-
-                    if(entry.getValue() == TOOL_COUNT) {
-                        ironToolConfig.apply(itemStack);
-                    }
-
-                    inventory.setItem(i, itemStack);
+                    inventory.setItem(i, new ItemStack(entry.getKey(), amount));
 
                     if (customLogger.isDebugMode()) {
                         customLogger.debug(String.format("%s item #%d %s set to %d",
