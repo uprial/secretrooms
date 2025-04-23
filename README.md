@@ -48,6 +48,10 @@ Find furnaces in mineshaft, check your luck
 
 ![Find furnaces](https://raw.githubusercontent.com/uprial/railnet/master/images/find-furnaces.png)
 
+Find a soul torch, go down, go up, loot
+
+![Find a dungeon](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-dungeon.png)
+
 
 ## Commands
 
