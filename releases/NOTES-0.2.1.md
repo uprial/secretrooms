@@ -1,5 +1,5 @@
 # New features
-* Added underground dungeons with spawners and rate building blocks
+* Added underground dungeons with spawners and rare building blocks
 * Added support of 1.21.5
 * Fixed village trading imbalance: Villagers don't sell clothes with environmental protection and mending
 # Bug fixes

@@ -21,7 +21,7 @@ Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
 * End Ships have Illusioners pre-generated
 * Shooting mobs target the closest player immediately if spawned with direct vision to them
 * The End Dragon healing crystals are periodically resurrecting
-* Underground dungeons with spawners and rate building blocks
+* Underground dungeons with spawners and rare building blocks
 * Fixed village trading imbalance: Villagers don't sell clothes with environmental protection and mending
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
