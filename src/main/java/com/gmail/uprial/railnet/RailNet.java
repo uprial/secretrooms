@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.*;
@@ -40,6 +41,12 @@ public final class RailNet extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        for(final String worldName : WorldName.getAll()) {
+            if(getServer().getWorld(worldName) == null) {
+                throw new RuntimeException(String.format("World '%s' not found", worldName));
+            }
+        }
 
         cron = new RailNetCron(this);
 

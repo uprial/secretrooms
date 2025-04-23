@@ -41,10 +41,7 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator {
     }
 
     public AbstractSeedSpecificPopulator(final String worldName, final int density) {
-        if((worldName != null)
-                && (!WorldName.WORLD.equalsIgnoreCase(worldName))
-                && (!WorldName.NETHER.equalsIgnoreCase(worldName))
-                && (!WorldName.END.equalsIgnoreCase(worldName))) {
+        if((worldName != null) && (!WorldName.getAll().contains(worldName))) {
             throw new InternalPopulatorConfigurationError(String.format("Unknown world: %s", worldName));
         }
         this.worldName = worldName;
