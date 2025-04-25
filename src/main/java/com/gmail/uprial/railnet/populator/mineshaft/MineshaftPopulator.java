@@ -699,8 +699,13 @@ public class MineshaftPopulator implements ChunkPopulator {
         populateInventory(format(player), player.getWorld().getName(), player.getInventory(), density);
     }
 
-    // Ideated from https://minecraft.wiki/w/Smelting
-    // Material -> max power of drop
+    /*
+        Ideated from: https://minecraft.wiki/w/Smelting
+
+        Removed ideas:
+            Player must kill an Elder guardian, not just find a sponge
+            .put(Material.SPONGE, 0)
+     */
     private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
@@ -715,7 +720,6 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.EMERALD, 1)
 
             .put(Material.NETHERITE_SCRAP, 0)
-            .put(Material.SPONGE, 0)
             .build();
 
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
