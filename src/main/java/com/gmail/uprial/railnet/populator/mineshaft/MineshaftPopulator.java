@@ -705,26 +705,52 @@ public class MineshaftPopulator implements ChunkPopulator {
         Removed ideas:
             Player must kill an Elder guardian, not just find a sponge
             .put(Material.SPONGE, 0)
+
+        Test
+            version 1.21.3
+            seed -1565193744182814265 (Belongings 2025-01-12)
+            TerraformGenerator-17.0.1
+            WorldBorder 4050 x 4050
+
+            $ grep oceanic- plugins/TerraformGenerator/config.yml
+            oceanic-frequency: 0.11
+            oceanic-threshold: 8.0
+            deep-oceanic-threshold: 27.0
+
+            $ grep "DEBUG.* GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
+            10723
      */
     private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
+            // 10,723
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
+            // 9,858
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
 
+            // 5,981
             .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
+            // 5,028
             .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
 
+            // 3,827
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
+            // 3,621
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
 
+            // 905
             .put(Material.DIAMOND, 1)
+            // 826
             .put(Material.EMERALD, 1)
 
+            // 570
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
+            // 31,492
             .put(Material.COAL, CLT.MAX_POWER)
+            // 10,716
             .put(Material.COAL_BLOCK, CLT.MAX_POWER - 2)
+            // 1,697
             .put(Material.LAVA_BUCKET, 0)
             .build();
 
