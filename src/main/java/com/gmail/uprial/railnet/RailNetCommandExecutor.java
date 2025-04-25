@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 class RailNetCommandExecutor implements CommandExecutor {
@@ -95,6 +97,23 @@ class RailNetCommandExecutor implements CommandExecutor {
                         customLogger.info(String.format("%d blocks broken.", counter));
                         return true;
                     }
+                } else if ((args.length >= 2) && (args[0].equalsIgnoreCase("loaded-stats"))) {
+                    if (sender.hasPermission(COMMAND_NS + ".loaded-stats")) {
+
+                        final Material material;
+                        try {
+                            material = Enum.valueOf(Material.class, args[1].toUpperCase(Locale.getDefault()));
+                        } catch (IllegalArgumentException ignored) {
+                            customLogger.error(String.format("Invalid material '%s'", args[1]));
+                            return false;
+                        }
+
+                        customLogger.info(String.format("Getting %s stats in loaded terrain...", material));
+                        for(final Map.Entry<String,Integer> entry : plugin.getLoadedStats(material).entrySet()) {
+                            customLogger.info(String.format("%s: %,d", entry.getKey(), entry.getValue()));
+                        }
+                        return true;
+                    }
                 } else if ((args.length == 0) || (args[0].equalsIgnoreCase("help"))) {
                     String helpString = "==== RailNet help ====\n";
 
@@ -108,6 +127,9 @@ class RailNetCommandExecutor implements CommandExecutor {
                     if (sender.hasPermission(COMMAND_NS + ".break")) {
                         helpString += '/' + COMMAND_NS + " break <radius> - break terrain around player\n";
                         helpString += '/' + COMMAND_NS + " break <world> <x> <y> <z> <radius> - break terrain\n";
+                    }
+                    if (sender.hasPermission(COMMAND_NS + ".loaded-stats")) {
+                        helpString += '/' + COMMAND_NS + " loaded-stats <material> - show material stats in loaded terrain\n";
                     }
 
                     customLogger.info(helpString);

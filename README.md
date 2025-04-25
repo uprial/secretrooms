@@ -65,6 +65,8 @@ Find a soul torch, go down, go up, loot
 
 `railnet break <world> <x> <y> <z> <radius>` - break terrain
 
+`railnet loaded-stats <material>` - show material stats in loaded terrain
+
 ## Permissions
 
 * Access to 'repopulate-loaded' command:
@@ -73,6 +75,8 @@ Find a soul torch, go down, go up, loot
 `railnet.claim` (default: op)
 * Access to 'break' command:
 `railnet.break` (default: op)
+* Access to 'loaded-stats' command:
+`railnet.loaded-stats` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)

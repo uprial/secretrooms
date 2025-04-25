@@ -11,8 +11,10 @@ import com.gmail.uprial.railnet.populator.dungeon.DungeonPopulator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,8 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.gmail.uprial.railnet.RailNetCommandExecutor.COMMAND_NS;
 
@@ -124,6 +125,28 @@ public final class RailNet extends JavaPlugin {
 
     void populatePlayer(final Player player, final int density) {
         new MineshaftPopulator(this, consoleLogger).populatePlayer(player, density);
+    }
+
+    Map<String,Integer> getLoadedStats(final Material material) {
+        final Map<String,Integer> stats = new HashMap<>();
+        for(final World world : getServer().getWorlds()) {
+            for (final Chunk chunk : world.getLoadedChunks()) {
+                final int minY = chunk.getWorld().getMinHeight();
+                final int maxY = chunk.getWorld().getMaxHeight();
+                for(int y = minY; y < maxY; y++) {
+                    for(int x = 0; x < 16; x++) {
+                        for(int z = 0; z < 16; z++) {
+                            final Block block = chunk.getBlock(x, y, z);
+                            if(block.getType().equals(material)) {
+                                stats.merge(world.getName(), 1, Integer::sum);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return stats;
     }
 
     @Override
