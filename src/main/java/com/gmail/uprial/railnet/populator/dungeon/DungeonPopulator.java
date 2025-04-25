@@ -55,8 +55,15 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
      */
     private final int STACK = 64;
     private final int DYE_COUNT = 16;
-    private final int SAPLING_COUNT = 4;
-    private final int SEED_COUNT = 3;
+
+    // This must be a unique count for a magic comparison
+    private final int NETHERITE_TOOL_COUNT = 3;
+    private final ItemConfig netheriteToolConfig = new ItemConfig()
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.EFFICIENCY, 10, 10)
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.UNBREAKING, 5, 5)
+            .ench(Enchantment.VANISHING_CURSE);
 
     private final List<Map<Material, Integer>> chestLootTable
             = ImmutableList.<Map<Material, Integer>>builder()
@@ -72,24 +79,32 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.OBSIDIAN, STACK * 9)
                     .build())
             /*
-                According to https://minecraft.wiki/w/Ore,
-                            Regular Deepslate
-                Hardness    1.5     3.0
+                            Regular*1   Deepslate*1 Regular*2   Deepslate*2 Max mining
+                Hardness    1.5         3.0         -           -           efficiency*3
 
-                Coal        642     40
-                Redstone    91      512
-                Lapis       114     133
-                Gold        82      173
-                Diamond     14      226
+                Coal        642         40          158,964     1,999       642/1.5=428
+                Redstone    91          512         1,801       36,115      512/3*4.5=768
+                Lapis       114         133         17,137      20,579      114/1.5*6.5=494
+                Gold        82          173         7,548       27,462      173/3=58
+                Diamond     14          226         569         15,443      226/3=75
+                Obsidian    -           -           40,499      -
+
+                *1 According to https://minecraft.wiki/w/Ore
+
+                *2 According to "loaded-stats" command with view-distance 32
+
+                *3 According to https://minecraft.wiki/w/Ore,
+                Redstone ore and its deepslate variant drop 4–5 redstone dust.
+                Lapis lazuli ore and its deepslate variant drop 4–9 lapis lazuli.
+
              */
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.COAL_BLOCK, STACK * 12)
-                    .put(Material.REDSTONE_BLOCK, STACK * 5)
-                    .put(Material.LAPIS_BLOCK, STACK * 2)
+                    .put(Material.REDSTONE_BLOCK, STACK * 4)
+                    .put(Material.LAPIS_BLOCK, STACK * 4)
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.GOLD_BLOCK, STACK * 2)
-                    .put(Material.DIAMOND_BLOCK, STACK * 2)
+                    .put(Material.GOLD_BLOCK, STACK)
+                    .put(Material.DIAMOND_BLOCK, STACK)
                     .build())
             // https://minecraft.wiki/w/Dye
             .add(ImmutableMap.<Material, Integer>builder()
@@ -110,41 +125,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.PURPLE_DYE, DYE_COUNT)
                     .put(Material.PINK_DYE, DYE_COUNT)
                     .build())
-            // https://minecraft.wiki/w/Sapling
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.OAK_SAPLING, SAPLING_COUNT)
-                    .put(Material.SPRUCE_SAPLING, SAPLING_COUNT)
-                    .put(Material.BIRCH_SAPLING, SAPLING_COUNT)
-                    .put(Material.JUNGLE_SAPLING, SAPLING_COUNT)
-                    .put(Material.ACACIA_SAPLING, SAPLING_COUNT)
-                    .put(Material.DARK_OAK_SAPLING, SAPLING_COUNT)
-                    .put(Material.CHERRY_SAPLING, SAPLING_COUNT)
-                    .put(Material.PALE_OAK_SAPLING, SAPLING_COUNT)
-                    .build())
-            // https://minecraft.wiki/w/Crops
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.WHEAT_SEEDS, SEED_COUNT)
-                    .put(Material.BEETROOT_SEEDS, SEED_COUNT)
-                    .put(Material.CARROT, SEED_COUNT)
-                    .put(Material.POTATO, SEED_COUNT)
-                    .put(Material.MELON_SEEDS, SEED_COUNT)
-                    .put(Material.PUMPKIN_SEEDS, SEED_COUNT)
-                    .put(Material.TORCHFLOWER_SEEDS, SEED_COUNT)
-                    .put(Material.PITCHER_POD, SEED_COUNT)
-                    .put(Material.BAMBOO, SEED_COUNT)
-                    .put(Material.COCOA_BEANS, SEED_COUNT)
-                    .put(Material.SUGAR_CANE, SEED_COUNT)
-                    .put(Material.SWEET_BERRIES, SEED_COUNT)
-                    .put(Material.CACTUS, SEED_COUNT)
-                    .put(Material.BROWN_MUSHROOM, SEED_COUNT)
-                    .put(Material.RED_MUSHROOM, SEED_COUNT)
-                    .put(Material.KELP, SEED_COUNT)
-                    .put(Material.SEA_PICKLE, SEED_COUNT)
-                    .put(Material.GLOW_BERRIES, SEED_COUNT)
-                    .put(Material.NETHER_WART, SEED_COUNT)
-                    .put(Material.CRIMSON_FUNGUS, SEED_COUNT)
-                    .put(Material.WARPED_FUNGUS, SEED_COUNT)
-                    .put(Material.CHORUS_FRUIT, SEED_COUNT)
+                    .put(Material.NETHERITE_PICKAXE, NETHERITE_TOOL_COUNT)
                     .build())
             .build();
 
@@ -329,7 +311,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                 int count = entry.getValue();
                 while(count > 0) {
                     final int amount = Math.min(entry.getKey().getMaxStackSize(), count);
-                    inventory.setItem(i, new ItemStack(entry.getKey(), amount));
+                    final ItemStack itemStack = new ItemStack(entry.getKey(), amount);
+
+                    if(entry.getValue() == NETHERITE_TOOL_COUNT) {
+                        netheriteToolConfig.apply(itemStack);
+                    }
+                    inventory.setItem(i, itemStack);
 
                     if (customLogger.isDebugMode()) {
                         customLogger.debug(String.format("%s item #%d %s set to %d",
