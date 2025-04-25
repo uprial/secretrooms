@@ -16,18 +16,13 @@ import org.bukkit.Chunk;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Barrel;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Furnace;
+import org.bukkit.block.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Illusioner;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -93,19 +88,32 @@ public class MineshaftPopulator implements ChunkPopulator {
             }
         }
 
+        // Ideated from InventoryHolder & Entity
         for(final Entity entity : chunk.getEntities()) {
             if(entity instanceof StorageMinecart) {
-                populateStorageMinecart((StorageMinecart)entity);
+                populateInventoryHolder((StorageMinecart)entity);
+            /*
+                Removed ideas:
+                    ChestBoat and HopperMinecart are never generated naturally.
+            } else if (entity instanceof ChestBoat){
+                populateInventoryHolder((ChestBoat) entity);
+            } else if (entity instanceof HopperMinecart){
+                populateInventoryHolder((HopperMinecart) entity);
+             */
             }
         }
     }
 
     private final Map<Material, Consumer<Block>> blockPopulators = ImmutableMap.<Material, Consumer<Block>>builder()
-            .put(Material.CHEST, this::populateChest)
-            .put(Material.TRAPPED_CHEST, this::populateChest)
+            // Ideated from BlockInventoryHolder
+            .put(Material.CHEST, this::populateContainer)
+            .put(Material.TRAPPED_CHEST, this::populateContainer)
+            .put(Material.BARREL, this::populateContainer)
+            // Ideated from Furnace
             .put(Material.FURNACE, this::populateFurnace)
             .put(Material.BLAST_FURNACE, this::populateFurnace)
-            .put(Material.BARREL, this::populateBarrel)
+            // No Smoker, because the loot table is ore-based
+            //.put(Material.SMOKER, this::populateFurnace)
             .put(Material.BREWING_STAND, this::populateEndShip)
             .build();
 
@@ -665,10 +673,10 @@ public class MineshaftPopulator implements ChunkPopulator {
         return entity.getWorld().getBlockAt((int)entity.getLocation().getX(), (int)entity.getLocation().getY() - 1, (int)entity.getLocation().getZ());
     }
 
-    private void populateChest(final Block block) {
+    private void populateContainer(final Block block) {
         final int density = getDensity(getBasement(block));
 
-        populateInventory(format(block), block.getWorld().getName(), ((Chest)block.getState()).getBlockInventory(), density);
+        populateInventory(format(block), block.getWorld().getName(), ((Container)block.getState()).getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
@@ -676,25 +684,14 @@ public class MineshaftPopulator implements ChunkPopulator {
         }
     }
 
-    private void populateStorageMinecart(final StorageMinecart storageMinecart) {
-        final int density = getDensity(getBasement(storageMinecart));
+    private <T extends InventoryHolder & Entity> void populateInventoryHolder(final T inventoryHolder) {
+        final int density = getDensity(getBasement(inventoryHolder));
 
-        populateInventory(format(storageMinecart), storageMinecart.getWorld().getName(), storageMinecart.getInventory(), density);
-
-        if(customLogger.isDebugMode()) {
-            customLogger.debug(String.format("%s populated with density %d and %s under",
-                    format(storageMinecart), density, format(getBasement(storageMinecart))));
-        }
-    }
-
-    private void populateBarrel(final Block block) {
-        final int density = getDensity(getBasement(block));
-
-        populateInventory(format(block), block.getWorld().getName(), ((Barrel)block.getState()).getInventory(), density);
+        populateInventory(format(inventoryHolder), inventoryHolder.getWorld().getName(), inventoryHolder.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
-                    format(block), density, format(getBasement(block))));
+                    format(inventoryHolder), density, format(getBasement(inventoryHolder))));
         }
     }
 
