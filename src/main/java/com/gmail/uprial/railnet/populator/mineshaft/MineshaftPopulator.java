@@ -379,6 +379,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.WITHER_SPAWN_EGG, ...onlyInWorld(WorldName.NETHER))
             .put(Material.ENDER_DRAGON_SPAWN_EGG, ...onlyInWorld(WorldName.END))
 
+            Some heads are good late-game achievements:
+            .put(Material.DRAGON_HEAD, ...)
+            .put(Material.WITHER_SKELETON_SKULL, ...)
+
         Test
             version 1.21.3
             seed -1565193744182814265 (Belongings 2025-01-12)

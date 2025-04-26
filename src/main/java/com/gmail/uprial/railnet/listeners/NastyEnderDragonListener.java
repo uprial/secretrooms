@@ -1,10 +1,7 @@
 package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.RailNet;
-import com.gmail.uprial.railnet.common.CustomLogger;
-import com.gmail.uprial.railnet.common.TakeAimAdapter;
-import com.gmail.uprial.railnet.common.RandomUtils;
-import com.gmail.uprial.railnet.common.WorldName;
+import com.gmail.uprial.railnet.common.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -109,7 +106,7 @@ public class NastyEnderDragonListener implements Listener {
         return null;
     }
 
-    private static final int RESURRECTION_INTERVAL = 30_000; // 1 minute
+    private static final int RESURRECTION_INTERVAL_MS = 30_000; // 1 minute
     private long lastResurrection = 0;
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -119,7 +116,7 @@ public class NastyEnderDragonListener implements Listener {
                 && (isAppropriateWorld(event.getEntity().getWorld()))) {
 
             final long currentTime = System.currentTimeMillis();
-            if(currentTime - lastResurrection < RESURRECTION_INTERVAL) {
+            if(currentTime - lastResurrection < RESURRECTION_INTERVAL_MS) {
                 // Ender Dragon was attacked, but the resurrection interval hasn't passed
                 return;
             }
@@ -163,7 +160,19 @@ public class NastyEnderDragonListener implements Listener {
 
             final Entity damager = getRealSource(event.getDamager());
             if(damager instanceof Player) {
-                launch((EnderDragon)event.getEntity(), (Player)damager);
+                final Player player = (Player)damager;
+
+                launch((EnderDragon)event.getEntity(), player);
+
+                if(EndermanUtils.isAppropriatePlayer(player)) {
+                    final Enderman enderman
+                            = (Enderman)world.spawnEntity(player.getLocation(), EntityType.ENDERMAN);
+                    enderman.setTarget(player);
+                    if (customLogger.isDebugMode()) {
+                        customLogger.debug(String.format("%s spawned near and targeted at %s",
+                                format(enderman), format(player)));
+                    }
+                }
             }
         }
     }
@@ -211,8 +220,8 @@ public class NastyEnderDragonListener implements Listener {
         world.spawnEntity(bedrock2crystal(bedrock), EntityType.END_CRYSTAL);
     }
 
-    private static final int BALLS_COUNT    = 10;
-    private static final int BALLS_INTERVAL = 3;
+    private static final int BALLS_INTERVAL_S = 3;
+    private static final int BALLS_COUNT = RESURRECTION_INTERVAL_MS / 1_000 / BALLS_INTERVAL_S;
     private void launch(final EnderDragon enderDragon, final Player player) {
         for(int i = 0; i < BALLS_COUNT; i++) {
             plugin.scheduleDelayed(() -> {
@@ -232,7 +241,7 @@ public class NastyEnderDragonListener implements Listener {
                         new ProjectileLaunchEvent(dragonFireball));
                  */
 
-            }, seconds2ticks(BALLS_INTERVAL * i));
+            }, seconds2ticks(BALLS_INTERVAL_S * i));
         }
     }
 

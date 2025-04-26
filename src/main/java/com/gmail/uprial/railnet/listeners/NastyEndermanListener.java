@@ -1,6 +1,7 @@
 package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.gmail.uprial.railnet.common.EndermanUtils;
 import com.gmail.uprial.railnet.common.Probability;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -29,18 +30,12 @@ public class NastyEndermanListener implements Listener {
 
         for (final Player player : world.getEntitiesByClass(Player.class)) {
             if ((strongestPlayer == null || strongestPlayer.getHealth() < player.getHealth())
-                    && (isAppropriatePlayer(player))) {
+                    && (EndermanUtils.isAppropriatePlayer(player))) {
                 strongestPlayer = player;
             }
         }
 
         return strongestPlayer;
-    }
-
-    private boolean isAppropriatePlayer(final Player player) {
-        return (player.isValid()) && (!player.isFlying()) && (!player.isGliding())
-            && (player.getWorld()
-                .getBlockAt(player.getLocation().clone().add(0.0D, 2.0D, 0.0D)).isPassable());
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -56,6 +51,16 @@ public class NastyEndermanListener implements Listener {
 
                 if ((player.getEquipment() != null)
                         && (player.getEquipment().getHelmet() != null)
+                        /*
+                            I tested other heads, and they don't protect from Endermans:
+                                CREEPER_HEAD
+                                DRAGON_HEAD
+                                PIGLIN_HEAD
+                                PLAYER_HEAD
+                                SKELETON_SKULL
+                                ZOMBIE_HEAD
+                                WITHER_SKELETON_SKULL
+                         */
                         && (player.getEquipment().getHelmet().getType().equals(Material.CARVED_PUMPKIN))) {
 
                     // Enderman takes the player helmet
