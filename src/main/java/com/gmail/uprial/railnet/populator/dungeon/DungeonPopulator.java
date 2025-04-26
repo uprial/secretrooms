@@ -16,6 +16,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +67,19 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             .ench(Enchantment.UNBREAKING, 5, 5)
             // Survival maximum level is 3, here it's 5
             .ench(Enchantment.FORTUNE, 5, 5);
+
+    // This must be a unique count for a magic comparison
+    private final int SPLASH_POTION_COUNT = 6;
+    private final ItemConfig splashPotionConfig = new ItemConfig()
+            .effects(
+                    ImmutableSet.<Integer>builder()
+                            .add(0)
+                            .build(),
+                    ImmutableMap.<PotionEffectType, Integer>builder()
+                            // The highest potion amplifier that has a name
+                            .put(PotionEffectType.INSTANT_DAMAGE, 5)
+                            .put(PotionEffectType.INSTANT_HEALTH, 5)
+                            .build());
 
     private final List<Map<Material, Integer>> chestLootTable
             = ImmutableList.<Map<Material, Integer>>builder()
@@ -124,6 +139,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.DIAMOND_PICKAXE, DIAMOND_TOOL_COUNT)
+                    .build())
+            .add(ImmutableMap.<Material, Integer>builder()
+                    .put(Material.SPLASH_POTION, SPLASH_POTION_COUNT)
                     .build())
             .build();
 
@@ -312,6 +330,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
                     if(entry.getValue() == DIAMOND_TOOL_COUNT) {
                         diamondToolConfig.apply(itemStack);
+                    } else if (entry.getValue() == SPLASH_POTION_COUNT) {
+                        splashPotionConfig.apply(itemStack);
                     }
 
                     inventory.setItem(i, itemStack);
