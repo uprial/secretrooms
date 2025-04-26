@@ -57,26 +57,23 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final int DYE_COUNT = 16;
 
     // This must be a unique count for a magic comparison
-    private final int NETHERITE_TOOL_COUNT = 3;
-    private final ItemConfig netheriteToolConfig = new ItemConfig()
+    private final int DIAMOND_TOOL_COUNT = 1;
+    private final ItemConfig diamondToolConfig = new ItemConfig()
             // Survival maximum level is 5, here it's 10
             .ench(Enchantment.EFFICIENCY, 10, 10)
             // Survival maximum level is 3, here it's 5
             .ench(Enchantment.UNBREAKING, 5, 5)
-            .ench(Enchantment.VANISHING_CURSE);
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.FORTUNE, 5, 5);
 
     private final List<Map<Material, Integer>> chestLootTable
             = ImmutableList.<Map<Material, Integer>>builder()
 
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.BIRCH_LOG, STACK * 27)
+                    .put(Material.BAMBOO_BLOCK, STACK * 27)
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.COOKED_BEEF, STACK * 27)
-                    .build())
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.TNT, STACK * 9)
-                    .put(Material.OBSIDIAN, STACK * 9)
+                    .put(Material.SEA_LANTERN, STACK * 18)
                     .build())
             /*
                             Regular*1   Deepslate*1 Regular*2   Deepslate*2 Max mining
@@ -126,7 +123,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.PINK_DYE, DYE_COUNT)
                     .build())
             .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.NETHERITE_PICKAXE, NETHERITE_TOOL_COUNT)
+                    .put(Material.DIAMOND_PICKAXE, DIAMOND_TOOL_COUNT)
                     .build())
             .build();
 
@@ -313,9 +310,10 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     final int amount = Math.min(entry.getKey().getMaxStackSize(), count);
                     final ItemStack itemStack = new ItemStack(entry.getKey(), amount);
 
-                    if(entry.getValue() == NETHERITE_TOOL_COUNT) {
-                        netheriteToolConfig.apply(itemStack);
+                    if(entry.getValue() == DIAMOND_TOOL_COUNT) {
+                        diamondToolConfig.apply(itemStack);
                     }
+
                     inventory.setItem(i, itemStack);
 
                     if (customLogger.isDebugMode()) {
