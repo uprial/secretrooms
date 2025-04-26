@@ -109,7 +109,13 @@ class RailNetCommandExecutor implements CommandExecutor {
                         }
 
                         customLogger.info(String.format("Getting %s stats in loaded terrain...", material));
-                        for(final Map.Entry<String,Integer> entry : plugin.getLoadedStats(material).entrySet()) {
+                        final Map<String,Integer> stats = plugin.getLoadedStats(material);
+                        if(stats.isEmpty()) {
+                            customLogger.error(String.format("Material '%s' not found.", args[1]));
+                            return false;
+                        }
+
+                        for (final Map.Entry<String, Integer> entry : stats.entrySet()) {
                             customLogger.info(String.format("%s: %,d", entry.getKey(), entry.getValue()));
                         }
                         return true;
