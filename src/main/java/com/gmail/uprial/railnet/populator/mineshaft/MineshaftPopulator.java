@@ -383,7 +383,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.DRAGON_HEAD, ...)
             .put(Material.WITHER_SKELETON_SKULL, ...)
 
-        Test
+        ==== Test ====
             version 1.21.3
             seed -1565193744182814265 (Belongings 2025-01-12)
             TerraformGenerator-19.1.0
@@ -404,7 +404,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
             /*
-                8% / ? - boring resources.
+                8% / 644 + 628 - boring resources.
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
 
@@ -429,11 +429,11 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 
-            // 4% / 172-179 - bonuses
+            // 4% / 172 + 179 - bonuses
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.00D))
             .put(Material.TOTEM_OF_UNDYING, new CLT(2.00D))
 
-            // 6% / 138-154-154-124 - golden cloths
+            // 6% / 138 + 154 + 154 + 124 - golden cloths
             .put(Material.GOLDEN_HELMET, new CLT(1.50D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
@@ -444,7 +444,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            // 1.5% / 50-82 - golden tools
+            // 1.5% / 50 + 82 - golden tools
             .put(Material.GOLDEN_PICKAXE, new CLT(0.75D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(0.75D, goldenSwordConfig))
 
@@ -710,7 +710,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             Player must kill an Elder guardian, not just find a sponge
             .put(Material.SPONGE, 0)
 
-        Test
+        ==== Test ====
             version 1.21.3
             seed -1565193744182814265 (Belongings 2025-01-12)
             TerraformGenerator-19.1.0
@@ -721,7 +721,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             oceanic-threshold: 8.0
             deep-oceanic-threshold: 27.0
 
-            $ grep "DEBUG.* GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
+            $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
             7702
      */
     private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
@@ -743,7 +743,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
             // 2,645
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
-            // 33,482
+            // 2,632
             .put(Material.COAL, CLT.MAX_POWER - 2)
 
             // 598
@@ -773,6 +773,10 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.COOKED_SALMON, FOOD_FURNACE_POWER)
             .build();
 
+    /*
+            $ grep "DEBUG.* fuel COAL " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
+            30850
+     */
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
             // 31,492
             .put(Material.COAL, CLT.MAX_POWER)
