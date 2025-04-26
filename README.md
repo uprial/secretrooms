@@ -20,7 +20,7 @@ Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
 * 0.01% of appropriate blocks are infested
 * End Ships have Illusioners pre-generated
 * Shooting mobs target the closest player immediately if spawned with direct vision to them
-* The End Dragon healing crystals are periodically resurrecting
+* The End Dragon periodically resurrects healing crystals, and targets random endermans to aggressive players
 * Underground dungeons with spawners and rare building blocks
 * Fixed village trading imbalance: Villagers don't sell clothes with environmental protection and mending
 

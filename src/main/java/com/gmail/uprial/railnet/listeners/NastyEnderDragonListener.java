@@ -154,7 +154,7 @@ public class NastyEnderDragonListener implements Listener {
                 }
             } else {
                 if (customLogger.isDebugMode()) {
-                    customLogger.debug("Ender Dragon attacked, but all crystals are in place");
+                    customLogger.debug(String.format("%s attacked, but all crystals are in place", format(event.getEntity())));
                 }
             }
 
@@ -164,13 +164,17 @@ public class NastyEnderDragonListener implements Listener {
 
                 launch((EnderDragon)event.getEntity(), player);
 
-                if(EndermanUtils.isAppropriatePlayer(player)) {
-                    final Enderman enderman
-                            = (Enderman)world.spawnEntity(player.getLocation(), EntityType.ENDERMAN);
-                    enderman.setTarget(player);
-                    if (customLogger.isDebugMode()) {
-                        customLogger.debug(String.format("%s spawned near and targeted at %s",
-                                format(enderman), format(player)));
+                // Target a random enderman to the player
+                if (EndermanUtils.isAppropriatePlayer(player)) {
+                    for (final Enderman enderman : world.getEntitiesByClass(Enderman.class)) {
+                        if (enderman.isValid() && Probability.PASS(10.0D, 0)) {
+                            enderman.setTarget(player);
+                            if (customLogger.isDebugMode()) {
+                                customLogger.debug(String.format("Targeted %s at %s",
+                                        format(enderman), format(player)));
+                            }
+                            break;
+                        }
                     }
                 }
             }

@@ -50,7 +50,7 @@ public class AngryShooterListener implements Listener {
         Double closestDistance = null;
 
         for (final Player player : mob.getWorld().getEntitiesByClass(Player.class)) {
-            if(isMonsterSeeingPlayer(mob, player)) {
+            if(player.isValid() && isMonsterSeeingPlayer(mob, player)) {
                 final double distance = getAimPoint(player).distance(getAimPoint(mob));
 
                 if ((closestPlayer == null) || (distance < closestDistance)) {

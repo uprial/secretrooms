@@ -758,7 +758,6 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.LAVA_BUCKET, 0)
             .build();
 
-
     private void updateItemStack(final String title,
                                  final Supplier<ItemStack> itemStackGetter,
                                  final Consumer<ItemStack> itemStackSetter,
