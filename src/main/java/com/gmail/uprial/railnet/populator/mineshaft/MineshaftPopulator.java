@@ -112,8 +112,8 @@ public class MineshaftPopulator implements ChunkPopulator {
             // Ideated from Furnace
             .put(Material.FURNACE, this::populateFurnace)
             .put(Material.BLAST_FURNACE, this::populateFurnace)
-            // No Smoker, because the loot table is ore-based
-            //.put(Material.SMOKER, this::populateFurnace)
+            .put(Material.SMOKER, this::populateFurnace)
+            // Ideated from Illusioner
             .put(Material.BREWING_STAND, this::populateEndShip)
             .build();
 
@@ -755,6 +755,24 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
+    private final int FOOD_FURNACE_POWER = CLT.MAX_POWER - 1;
+    private final Map<Material,Integer> foodFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
+            // 4
+            .put(Material.BAKED_POTATO, FOOD_FURNACE_POWER)
+            // 8
+            .put(Material.DRIED_KELP, FOOD_FURNACE_POWER)
+            // 1
+            .put(Material.COOKED_BEEF, FOOD_FURNACE_POWER)
+            // Conclusion: Smoker is an insanely rare block on 4050 x 4050 map in the overworld.
+
+            .put(Material.COOKED_PORKCHOP, FOOD_FURNACE_POWER)
+            .put(Material.COOKED_MUTTON, FOOD_FURNACE_POWER)
+            .put(Material.COOKED_CHICKEN, FOOD_FURNACE_POWER)
+            .put(Material.COOKED_RABBIT, FOOD_FURNACE_POWER)
+            .put(Material.COOKED_COD, FOOD_FURNACE_POWER)
+            .put(Material.COOKED_SALMON, FOOD_FURNACE_POWER)
+            .build();
+
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
             // 31,492
             .put(Material.COAL, CLT.MAX_POWER)
@@ -793,10 +811,15 @@ public class MineshaftPopulator implements ChunkPopulator {
                 inventory::setFuel,
                 furnaceFuelTable);
 
+        final Map<Material,Integer> lootTable
+                = furnace instanceof Smoker
+                ? foodFurnaceResultTable
+                : oreFurnaceResultTable;
+
         updateItemStack(String.format("%s result", format(block)),
                 inventory::getResult,
                 inventory::setResult,
-                furnaceResultTable);
+                lootTable);
     }
 
     private void setAmount(final String title, final int oldAmount, final ItemStack itemStack,
