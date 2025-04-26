@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.*;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -9,12 +10,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
@@ -177,6 +177,51 @@ public class NastyEnderDragonListener implements Listener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private final Set<EntityDamageEvent.DamageCause> explosionReasons = ImmutableSet.<EntityDamageEvent.DamageCause>builder()
+            .add(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
+            .add(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)
+            .build();
+
+    private final Map<UUID, Map<Integer,Double>> explosionLimits = new HashMap<>();
+
+    /*
+        According to https://minecraft.fandom.com/wiki/Ender_Dragon,
+        the Ender Dragon has 200.0 health.
+     */
+    private final double EXPLOSION_DAMAGE_LIMIT_PER_S = 50.0D;
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if(!event.isCancelled()
+                && (event.getEntity() instanceof EnderDragon)
+                && (isAppropriateWorld(event.getEntity().getWorld()))
+                && (explosionReasons.contains(event.getCause()))) {
+
+            final Map<Integer,Double> explosionLimit
+                    = explosionLimits.computeIfAbsent(event.getEntity().getUniqueId(), (k) -> new HashMap<>());
+
+            final Integer second = (int)(System.currentTimeMillis() / 1_000);
+
+            final double limit
+                    = explosionLimit.computeIfAbsent(second, (k) -> EXPLOSION_DAMAGE_LIMIT_PER_S);
+
+            final double oldDamage = event.getDamage();
+            final double newDamage = Math.min(oldDamage, limit);
+
+            explosionLimit.clear();
+            explosionLimit.put(second, limit - newDamage);
+
+            event.setDamage(newDamage);
+            if (customLogger.isDebugMode()
+                    && (newDamage < oldDamage)
+                    // Otherwise, too many log messages will be produced.
+                    && (newDamage > 0.0D)) {
+                customLogger.debug(String.format("Changed explosive damage to %s from %.2f to %.2f",
+                        format(event.getEntity()), oldDamage, newDamage));
             }
         }
     }
