@@ -11,7 +11,7 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator {
 
             version 1.21.3
             seed -1565193744182814265 (Belongings 2025-01-12)
-            TerraformGenerator-17.0.1
+            TerraformGenerator-19.1.0
             WorldBorder 4050 x 4050
 
             $ grep oceanic- plugins/TerraformGenerator/config.yml
