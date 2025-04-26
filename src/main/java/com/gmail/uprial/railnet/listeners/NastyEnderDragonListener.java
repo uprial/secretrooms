@@ -225,7 +225,8 @@ public class NastyEnderDragonListener implements Listener {
     private void launch(final EnderDragon enderDragon, final Player player) {
         for(int i = 0; i < BALLS_COUNT; i++) {
             plugin.scheduleDelayed(() -> {
-                if(!enderDragon.isValid() || !player.isValid()) {
+                if(!enderDragon.isValid() || !player.isValid()
+                        || !enderDragon.getWorld().equals(player.getWorld())) {
                     return;
                 }
 

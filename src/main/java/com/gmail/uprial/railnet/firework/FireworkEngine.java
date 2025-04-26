@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
@@ -189,14 +190,15 @@ public class FireworkEngine {
         if(magic.getType() == MAGIC_TYPE_EXPLOSIVE) {
             final int explosionPower = magic.getAmount();
 
+            final Entity source = firework.getShooter() instanceof Entity ? (Entity)firework.getShooter() : null;
             if (explosionPower <= Nuke.MAX_ENGINE_POWER) {
-                firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true);
+                firework.getWorld().createExplosion(firework.getLocation(), explosionPower, true, true, source);
                 if (customLogger.isDebugMode()) {
                     customLogger.debug(String.format("Firework exploded at %s with power %d",
                             format(firework.getLocation()), explosionPower));
                 }
             } else {
-                new Nuke(plugin).explode(firework.getLocation(), explosionPower, 1, 2);
+                new Nuke(plugin).explode(firework.getLocation(), source, explosionPower, 1, 2);
                 customLogger.info(String.format("Firework exploded at %s with power %d",
                         format(firework.getLocation()), explosionPower));
             }

@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -57,11 +58,12 @@ public class Nuke {
      */
     public void explode(
             final Location fromLocation,
+            final Entity source,
             final float explosionRadius,
             final int initialDelay,
             final int period) {
 
-        schedule(() -> explode(fromLocation), initialDelay);
+        schedule(() -> explode(fromLocation, source), initialDelay);
 
         final int spheres = Math.round(explosionRadius / STEP);
         /*
@@ -73,7 +75,7 @@ public class Nuke {
          */
         for(int i = 1; i < spheres; i++) {
             final float sphereRadius = i * STEP;
-            schedule(() -> explode(fromLocation, explosionRadius, sphereRadius), initialDelay + i * period);
+            schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), initialDelay + i * period);
         }
     }
 
@@ -81,7 +83,7 @@ public class Nuke {
         The main generation method idea:
         https://stackoverflow.com/questions/63726093/how-to-easily-make-a-mesh-of-sphere-3d-points-over-a-vector
      */
-    void explode(final Location fromLocation, final float explosionRadius, final float sphereRadius) {
+    void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius) {
         /*
             To distribute angles evenly,
             must be a number not equal to 1.0D nor 0.0D, closer to 1.0D.
@@ -111,7 +113,7 @@ public class Nuke {
                 toLocation.subtract(direction);
             }
 
-            explode(toLocation);
+            explode(toLocation, source);
         }
     }
 
@@ -158,9 +160,9 @@ public class Nuke {
         return getDensity(sphereRadius, getExplosionDistance(explosionRadius, sphereRadius));
     }
 
-    void explode(final Location fromLocation) {
+    void explode(final Location fromLocation, final Entity source) {
         witherFluids(fromLocation);
-        fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true);
+        fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true, source);
     }
 
     private static final double EPSILON = 0.01d;

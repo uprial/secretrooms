@@ -3,6 +3,7 @@ package com.gmail.uprial.railnet.common;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class NukeTest {
         }
 
         void explode(final float radius) {
-            super.explode(zeroLocation, radius, 0, 0);
+            super.explode(zeroLocation, null, radius, 0, 0);
         }
     }
 
@@ -46,12 +47,12 @@ public class NukeTest {
         }
 
         @Override
-        void explode(final Location fromLocation, final float explosionRadius, final float sphereRadius) {
+        void explode(final Location fromLocation, final Entity source, final float explosionRadius, final float sphereRadius) {
             layers++;
         }
 
         @Override
-        void explode(final Location fromLocation) {
+        void explode(final Location fromLocation, final Entity source) {
             // nop
         }
     }
@@ -72,7 +73,7 @@ public class NukeTest {
         }
 
         @Override
-        void explode(final Location fromLocation) {
+        void explode(final Location fromLocation, final Entity source) {
             explosions++;
         }
     }
