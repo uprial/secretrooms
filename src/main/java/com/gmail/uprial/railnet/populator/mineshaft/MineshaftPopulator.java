@@ -722,30 +722,36 @@ public class MineshaftPopulator implements ChunkPopulator {
             deep-oceanic-threshold: 27.0
 
             $ grep "DEBUG.* GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
-            10723
+            7702
      */
-    private final Map<Material,Integer> furnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // 10,723
+    private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
+            // 7,702
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
-            // 9,858
+            // 7,752
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
+            // 7,130
+            .put(Material.QUARTZ, CLT.MAX_POWER)
 
-            // 5,981
+            // 4,075
             .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
-            // 5,028
+            // 4,086
             .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
+            // 4,241
+            .put(Material.COPPER_INGOT, CLT.MAX_POWER - 1)
 
-            // 3,827
+            // 2,416
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
-            // 3,621
+            // 2,645
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
+            // 33,482
+            .put(Material.COAL, CLT.MAX_POWER - 2)
 
-            // 905
+            // 598
             .put(Material.DIAMOND, 1)
-            // 826
+            // 615
             .put(Material.EMERALD, 1)
 
-            // 570
+            // 405
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
