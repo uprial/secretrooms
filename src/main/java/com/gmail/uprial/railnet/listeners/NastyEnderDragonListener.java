@@ -69,15 +69,14 @@ public class NastyEnderDragonListener implements Listener {
                         final Location bedrock = searchBedrock(world.getChunkAt(x, z, true));
                         if(bedrock != null) {
                             bedrocks.add(bedrock);
-
-                            if (customLogger.isDebugMode()) {
-                                customLogger.debug(String.format("Detected a bedrock at %s", format(bedrock)));
-                            }
                         }
                     }
                 }
             }
-            if(bedrocks.size() != PILLARS_COUNT) {
+            if(bedrocks.size() == PILLARS_COUNT) {
+                customLogger.info(String.format("Detected %d/%d bedrocks",
+                        bedrocks.size(), PILLARS_COUNT));
+            } else {
                 customLogger.error(String.format("Detected %d bedrocks instead of %d",
                         bedrocks.size(), PILLARS_COUNT));
             }
