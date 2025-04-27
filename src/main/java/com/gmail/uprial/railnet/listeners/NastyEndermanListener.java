@@ -30,7 +30,9 @@ public class NastyEndermanListener implements Listener {
 
         for (final Player player : world.getEntitiesByClass(Player.class)) {
             if ((strongestPlayer == null || strongestPlayer.getHealth() < player.getHealth())
-                    && (EndermanUtils.isAppropriatePlayer(player))) {
+                    && (EndermanUtils.isAppropriatePlayer(player))
+                    && (!player.isFlying()) && (!player.isGliding())
+                    && (!player.isInvisible()) && (!player.isInvulnerable())) {
                 strongestPlayer = player;
             }
         }

@@ -124,6 +124,7 @@ public class NastyEnderDragonListener implements Listener {
             final World world = event.getEntity().getWorld();
 
             final Collection<EnderCrystal> crystals = world.getEntitiesByClass(EnderCrystal.class);
+            crystals.removeIf(crystal -> !crystal.isValid());
 
             final Set<Location> bedrocksWithoutCrystals = new HashSet<>();
             for(final Location bedrock : bedrocks) {
