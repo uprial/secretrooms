@@ -167,7 +167,11 @@ public class NastyEnderDragonListener implements Listener {
                 // Target a random enderman to the player
                 if (EndermanUtils.isAppropriatePlayer(player)) {
                     for (final Enderman enderman : world.getEntitiesByClass(Enderman.class)) {
-                        if (enderman.isValid() && Probability.PASS(10.0D, 0)) {
+                        if (enderman.isValid()
+                                // Any distance 100 >> X >> 0 works for a random pick
+                                && Probability.PASS(10.0D, 0)
+                                // Any distance << 200 works to avoid other islands
+                                && (enderman.getLocation().distance(player.getLocation()) < 100.D)) {
                             enderman.setTarget(player);
                             if (customLogger.isDebugMode()) {
                                 customLogger.debug(String.format("Targeted %s at %s",
