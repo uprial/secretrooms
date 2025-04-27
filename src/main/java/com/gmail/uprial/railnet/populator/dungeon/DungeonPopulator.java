@@ -108,18 +108,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             .build();
 
     private final ItemConfig damageSplashPotionConfig = new ItemConfig()
-            .effects(zeroDurationOptions,
-                    ImmutableMap.<PotionEffectType, Integer>builder()
-                            // The highest potion amplifier that has a name
-                            .put(PotionEffectType.INSTANT_DAMAGE, 5)
-                            .build());
+            // The highest potion amplifier that has a name
+            .effect(PotionEffectType.INSTANT_DAMAGE, 0, 5);
 
     private final ItemConfig healthSplashPotionConfig = new ItemConfig()
-            .effects(zeroDurationOptions,
-                    ImmutableMap.<PotionEffectType, Integer>builder()
-                            // The highest potion amplifier that has a name
-                            .put(PotionEffectType.INSTANT_HEALTH, 5)
-                            .build());
+            // The highest potion amplifier that has a name
+            .effect(PotionEffectType.INSTANT_HEALTH, 0, 5);
 
     /*
         ==== Test ====

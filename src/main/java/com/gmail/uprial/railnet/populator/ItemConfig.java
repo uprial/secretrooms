@@ -92,30 +92,47 @@ public class ItemConfig {
     }
 
     private static class effects implements VirtualItemConfig {
-        final Map<PotionEffectType,Integer> effectTypeOptions;
+        final Map<PotionEffectType, Integer> effectTypeOptions;
         final Set<Integer> durationOptions;
 
-        effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
+        effects(final Set<Integer> durationOptions, final Map<PotionEffectType, Integer> effectTypeOptions) {
             this.durationOptions = durationOptions;
             this.effectTypeOptions = effectTypeOptions;
         }
 
         @Override
         public void apply(final ItemStack itemStack) {
-            final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
-
             final PotionEffectType effectType = RandomUtils.getSetItem(effectTypeOptions.keySet());
 
             final int amplifier = effectTypeOptions.get(effectType);
 
             int duration = RandomUtils.getSetItem(durationOptions);
-            if(itemStack.getType().equals(Material.TIPPED_ARROW)) {
+            if (itemStack.getType().equals(Material.TIPPED_ARROW)) {
                 /*
                     According to https://minecraft.wiki/w/Tipped_Arrow,
                     The duration of the effect is 1⁄8 that of the corresponding potion.
                  */
                 duration *= 8;
             }
+
+            new effect(effectType, duration, amplifier).apply(itemStack);
+        }
+    }
+
+    private static class effect implements VirtualItemConfig {
+        final PotionEffectType effectType;
+        final Integer duration;
+        final Integer amplifier;
+
+        effect(final PotionEffectType effectType, final Integer duration, final Integer amplifier) {
+            this.effectType = effectType;
+            this.duration = duration;
+            this.amplifier = amplifier;
+        }
+
+        @Override
+        public void apply(final ItemStack itemStack) {
+            final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
             potionMeta.addCustomEffect(new PotionEffect(effectType, duration, amplifier), true);
             itemStack.setItemMeta(potionMeta);
@@ -177,6 +194,10 @@ public class ItemConfig {
 
     public ItemConfig firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
         return addConfig(new firework(type, fireworkPower, explosionPower));
+    }
+
+    public ItemConfig effect(final PotionEffectType effectType, final Integer duration, final Integer amplifier) {
+        return addConfig(new effect(effectType, duration, amplifier));
     }
 
     public void apply(final ItemStack itemStack) {
