@@ -148,7 +148,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.DIAMOND_PICKAXE, DIAMOND_TOOL_COUNT)
                     .build())
-            // # 443
+            // # ??? can't count due to an overlap with Mineshaft
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.SPLASH_POTION, SPLASH_POTION_COUNT)
                     .build())
