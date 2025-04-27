@@ -50,8 +50,16 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
         }
     }
 
-    static boolean isAppropriate(final int x, final int z, final long seed, final long density) {
-        return (HashUtils.getHash(seed * x * z) % density) == 0;
+    static boolean isAppropriate(final long x, final long z, final long seed, final long density) {
+        /*
+            The method must be
+            - consistent
+            - evenly distributed
+            - asymmetric
+         */
+        return (HashUtils.getHash(seed * x * z
+                + (seed % density) * x
+                + (seed / density + density / seed) * z) % density) == 0;
     }
 
     private boolean isAppropriate(final Chunk chunk) {

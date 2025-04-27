@@ -74,7 +74,7 @@ public class NastyEnderDragonListener implements Listener {
                 }
             }
             if(bedrocks.size() == PILLARS_COUNT) {
-                customLogger.info(String.format("Detected %d/%d bedrocks",
+                customLogger.info(String.format("Detected %d of %d bedrocks",
                         bedrocks.size(), PILLARS_COUNT));
             } else {
                 customLogger.error(String.format("Detected %d bedrocks instead of %d",
