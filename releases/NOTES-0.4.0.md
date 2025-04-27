@@ -9,3 +9,4 @@
 * Added missing ores for FURNACE and BLAST_FURNACE loot
 * Fixed Dungeon loot duplicates with other loot tables
 * Fixed Dungeon asymmetry
+* Fixed targeting of shooters and endermans towards invisible and invulnerable players
