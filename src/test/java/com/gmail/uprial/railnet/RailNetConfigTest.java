@@ -27,7 +27,7 @@ public class RailNetConfigTest extends TestConfigBase {
     @Test
     public void testEmpty() throws Exception {
         e.expect(RuntimeException.class);
-        e.expectMessage("Empty 'underground-railways' flag. Use default value true");
+        e.expectMessage("Empty 'underground-railways' flag. Use default value false");
         loadConfig(getDebugFearingCustomLogger(), "");
     }
 
@@ -38,10 +38,21 @@ public class RailNetConfigTest extends TestConfigBase {
         loadConfig("x");
     }
 
+
+    @Test
+    public void testDynamicLootDensity() throws Exception {
+        e.expect(RuntimeException.class);
+        e.expectMessage("Empty 'dynamic-loot-density' flag. Use default value true");
+        loadConfig(getDebugFearingCustomLogger(), "underground-railways: true");
+    }
+
     @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
-                "underground-railways: true",
-                loadConfig(getCustomLogger(), "underground-railways: true").toString());
+                "underground-railways: true," +
+                        " dynamic-loot-density: true",
+                loadConfig(getCustomLogger(),
+                        "underground-railways: true",
+                        "dynamic-loot-density: true").toString());
     }
 }

@@ -69,7 +69,7 @@ public final class RailNet extends JavaPlugin {
         chunkPopulators.add(new WhirlpoolPopulator(consoleLogger, railWayName));
         chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayName));
         // Order does matter: populate chests in RailWay and Whirlpool.
-        chunkPopulators.add(new MineshaftPopulator(this, consoleLogger));
+        chunkPopulators.add(new MineshaftPopulator(this, consoleLogger, railNetConfig.hasDynamicLootDensity()));
 
         populator = new Populator(this, consoleLogger, chunkPopulators);
 
@@ -124,7 +124,7 @@ public final class RailNet extends JavaPlugin {
     }
 
     void populatePlayer(final Player player, final int density) {
-        new MineshaftPopulator(this, consoleLogger).populatePlayer(player, density);
+        new MineshaftPopulator(this, consoleLogger, false).populatePlayer(player, density);
     }
 
     Map<String,Integer> getLoadedStats(final Material material) {

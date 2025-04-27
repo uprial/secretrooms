@@ -36,10 +36,14 @@ import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final RailNet plugin;
     private final CustomLogger customLogger;
+    private final boolean dynamicLootDensity;
 
-    public MineshaftPopulator(final RailNet plugin, final CustomLogger customLogger) {
+    public MineshaftPopulator(final RailNet plugin,
+                              final CustomLogger customLogger,
+                              final boolean dynamicLootDensity) {
         this.plugin = plugin;
         this.customLogger = customLogger;
+        this.dynamicLootDensity = dynamicLootDensity;
     }
 
     @Override
@@ -178,6 +182,19 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         return WORLD_DENSITIES.getOrDefault(worldName, 0);
     }
 
+    // Increase density according to distance from the map center
+    private static final int DISTANCE_DENSITY_MULTIPLIER = 2_000;
+    private int getDistanceDensity(final Block block) {
+        if(dynamicLootDensity) {
+            return (int) Math.floor(
+                    Math.sqrt(Math.pow(block.getX(), 2.0D) + Math.pow(block.getZ(), 2.0D))
+                            / DISTANCE_DENSITY_MULTIPLIER
+            );
+        } else {
+            return 0;
+        }
+    }
+
     /*
         Increase density above some blocks.
 
@@ -234,9 +251,10 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
             .build();
 
-    private static int getDensity(final Block basement) {
+    private int getDensity(final Block basement) {
         return getWorldDensity(WorldName.normalize(basement.getWorld().getName()))
-                + MATERIAL_DENSITIES.getOrDefault(basement.getType(), 0);
+                + MATERIAL_DENSITIES.getOrDefault(basement.getType(), 0)
+                + getDistanceDensity(basement);
     }
 
     /*
@@ -392,24 +410,34 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
             /*
-                8% # 644 + 628 - boring resources.
+                8% - boring resources.
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
 
-                ? - can't check due to an overlap with Dungeon.
+                # 644 + 628
+                ## 1,248 + 1,276
              */
             .put(Material.TNT, new CLT(4.00D, 2))
             .put(Material.OBSIDIAN, new CLT(4.00D, 2))
 
-            // 3% # 86 + 34 + 39 + 1675 - potions: 1.0 + 0.5 + 0.5 + 1.0
+            /*
+                3% - potions: 1.0 + 0.5 + 0.5 + 1.0
+                # 86 + 34 + 39 + 1,675
+                ## 133 + ??? + 69 + 2,486
+
+                ??? - can't count due to an overlap with Dungeon
+             */
             .put(Material.POTION, new CLT(1.00D, potionConfig))
             .put(Material.SPLASH_POTION, new CLT(0.50D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(0.50D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(1.00D, arrowConfig, CLT.MAX_POWER))
 
             /*
-                2% # 461 - bazookas
+                2% - bazookas
                 Please, keep consistent with FireworkCraftBook
+
+                # 461
+                # 615
              */
             .put(Material.FIREWORK_ROCKET, new CLT(2.00D, 2)
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BURST, 3, 5))
@@ -417,11 +445,19 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 
-            // 4% # 172 + 179 - bonuses
+            /*
+                4% - bonuses
+                # 172 + 179
+                ## 218 + 231
+             */
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.00D))
             .put(Material.TOTEM_OF_UNDYING, new CLT(2.00D))
 
-            // 6% # 138 + 154 + 154 + 124 - golden cloths
+            /*
+                6% - golden cloths
+                # 138 + 154 + 154 + 124
+                ## 186 + 195 + 190 + 195
+             */
             .put(Material.GOLDEN_HELMET, new CLT(1.50D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
@@ -432,11 +468,19 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            // 1.5% # 50 + 82 - golden tools
+            /*
+                1.5% - golden tools
+                # 50 + 82
+                ## 91 + 91
+             */
             .put(Material.GOLDEN_PICKAXE, new CLT(0.75D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(0.75D, goldenSwordConfig))
 
-            // Conclusion: 1% ~= 100 per 4050 x 4050 map in the overworld.
+            /*
+                Conclusions:
+                # 1% probability gives approx. 100 items per a 4050 x 4050 map in the overworld
+                ## 2_000 distance density multiplier gives approx. x2 in total
+             */
 
             // 1%
             .put(Material.OMINOUS_BOTTLE, new CLT(1.00D, new ItemConfig().amplify(4)))
@@ -823,12 +867,15 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         if (customLogger.isDebugMode()) {
             if(oldAmount == 0) {
+                // WARNING: ConsistencyReference#1
                 customLogger.debug(String.format("%s %s set to %d",
                         title, itemStack.getType(), newAmount));
             } else if(newAmount > oldAmount) {
-                customLogger.debug(String.format("%s %s updated from %d to %d",
-                        title, itemStack.getType(), oldAmount, newAmount));
+                // WARNING: ConsistencyReference#1
+                customLogger.debug(String.format("%s %s updated to %d from %d",
+                        title, itemStack.getType(), newAmount, oldAmount));
             } else {
+                // WARNING: ConsistencyReference#1
                 customLogger.warning(String.format("%s %s kept as %d",
                         title, itemStack.getType(), newAmount));
             }

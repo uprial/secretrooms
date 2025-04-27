@@ -23,6 +23,7 @@ Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
 * The End Dragon has explosion damage limit per second, periodically resurrects healing crystals, and targets random endermans to aggressive players
 * Underground dungeons with spawners and rare building blocks
 * Fixed village trading imbalance: Villagers don't sell clothes with environmental protection and mending
+* Loot density increases according to distance from the map center
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 

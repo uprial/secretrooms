@@ -8,9 +8,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 public final class RailNetConfig {
 
     private final boolean undergroundRailways;
+    private final boolean dynamicLootDensity;
 
-    private RailNetConfig(boolean undergroundRailways) {
+    private RailNetConfig(boolean undergroundRailways,
+                          boolean dynamicLootDensity) {
         this.undergroundRailways = undergroundRailways;
+        this.dynamicLootDensity = dynamicLootDensity;
     }
 
     static boolean isDebugMode(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
@@ -21,14 +24,20 @@ public final class RailNetConfig {
         return undergroundRailways;
     }
 
-    public static RailNetConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
-        boolean enabled = ConfigReaderSimple.getBoolean(config, customLogger, "underground-railways", "'underground-railways' flag", true);
+    public boolean hasDynamicLootDensity() {
+        return dynamicLootDensity;
+    }
 
-        return new RailNetConfig(enabled);
+    public static RailNetConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
+        boolean undergroundRailways = ConfigReaderSimple.getBoolean(config, customLogger, "underground-railways", "'underground-railways' flag", false);
+        boolean dynamicLootDensity = ConfigReaderSimple.getBoolean(config, customLogger, "dynamic-loot-density", "'dynamic-loot-density' flag", true);
+
+        return new RailNetConfig(undergroundRailways, dynamicLootDensity);
     }
 
     public String toString() {
-        return String.format("underground-railways: %b", undergroundRailways);
+        return String.format("underground-railways: %b, dynamic-loot-density: %b",
+                undergroundRailways, dynamicLootDensity);
     }
 
 }

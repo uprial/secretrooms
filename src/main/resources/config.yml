@@ -20,3 +20,10 @@ debug: false
 # Possible values: true | false (default = false)
 #
 underground-railways: false
+
+#
+# Loot density increases according to distance from the map center.
+#
+# Possible values: true | false (default = true)
+#
+dynamic-loot-density: true
