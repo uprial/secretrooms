@@ -2,10 +2,7 @@ package com.gmail.uprial.railnet.populator.dungeon;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.HashUtils;
-import com.gmail.uprial.railnet.populator.AbstractSeedSpecificPopulator;
-import com.gmail.uprial.railnet.populator.ItemConfig;
-import com.gmail.uprial.railnet.populator.PopulationHistory;
-import com.gmail.uprial.railnet.populator.VirtualChunk;
+import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -26,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
-public class DungeonPopulator extends AbstractSeedSpecificPopulator {
+public class DungeonPopulator extends AbstractSeedSpecificPopulator implements Tested_On_1_21_5 {
     private final CustomLogger customLogger;
     private final String conflictingPopulatorName;
 
@@ -82,15 +79,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
     /*
         ==== Test ====
-            version 1.21.3
-            seed -1565193744182814265 (Belongings 2025-01-12)
-            TerraformGenerator-19.1.0
-            WorldBorder 4050 x 4050
-
-            $ grep oceanic- plugins/TerraformGenerator/config.yml
-            oceanic-frequency: 0.11
-            oceanic-threshold: 8.0
-            deep-oceanic-threshold: 27.0
 
             $ grep "DEBUG.* BAMBOO_BLOCK " logs/1/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
             143424
@@ -98,11 +86,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final List<Map<Material, Integer>> chestLootTable
             = ImmutableList.<Map<Material, Integer>>builder()
 
-            // 143,424
+            // # 143,424
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.BAMBOO_BLOCK, STACK * 27)
                     .build())
-            // 88,704
+            // # 88,704
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.SEA_LANTERN, STACK * 18)
                     .build())
@@ -126,18 +114,18 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                 Lapis lazuli ore and its deepslate variant drop 4–9 lapis lazuli.
 
              */
-            // 12,288 * 2
+            // # 12,288 * 2
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.REDSTONE_BLOCK, STACK * 4)
                     .put(Material.LAPIS_BLOCK, STACK * 4)
                     .build())
-            // 4,288 * 2
+            // # 4,288 * 2
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.GOLD_BLOCK, STACK)
                     .put(Material.DIAMOND_BLOCK, STACK)
                     .build())
             // https://minecraft.wiki/w/Dye
-            // 1,760 / 1,696 / 1,744 / 1,776 / ...
+            // # 1,760 + 1,696 + 1,744 + 1,776 + ...
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.WHITE_DYE, DYE_COUNT)
                     .put(Material.GRAY_DYE, DYE_COUNT)
@@ -156,11 +144,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .put(Material.PURPLE_DYE, DYE_COUNT)
                     .put(Material.PINK_DYE, DYE_COUNT)
                     .build())
-            // 86
+            // # 86
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.DIAMOND_PICKAXE, DIAMOND_TOOL_COUNT)
                     .build())
-            // 443
+            // # 443
             .add(ImmutableMap.<Material, Integer>builder()
                     .put(Material.SPLASH_POTION, SPLASH_POTION_COUNT)
                     .build())

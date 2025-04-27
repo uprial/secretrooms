@@ -4,25 +4,15 @@ import com.gmail.uprial.railnet.common.HashUtils;
 import com.gmail.uprial.railnet.common.WorldName;
 import org.bukkit.Chunk;
 
-public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator {
+public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     final String worldName;
     /*
         ==== Test ====
 
-            version 1.21.3
-            seed -1565193744182814265 (Belongings 2025-01-12)
-            TerraformGenerator-19.1.0
-            WorldBorder 4050 x 4050
-
-            $ grep oceanic- plugins/TerraformGenerator/config.yml
-            oceanic-frequency: 0.11
-            oceanic-threshold: 8.0
-            deep-oceanic-threshold: 27.0
+            My guess was that the prime numbers are more stable, but they are not.
 
             $ grep "Whirlpool.*] populated" logs/latest.log | wc -l
             14
-
-            My guess was that the prime numbers are more stable, but they are not.
 
             density-1 | density-2 | Whirlpool | Dungeon
                   100 | 300                34 | 21

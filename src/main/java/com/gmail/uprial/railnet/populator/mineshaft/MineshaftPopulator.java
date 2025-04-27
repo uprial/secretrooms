@@ -6,10 +6,7 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.Probability;
 import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.common.WorldName;
-import com.gmail.uprial.railnet.populator.CLT;
-import com.gmail.uprial.railnet.populator.ChunkPopulator;
-import com.gmail.uprial.railnet.populator.ItemConfig;
-import com.gmail.uprial.railnet.populator.PopulationHistory;
+import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
@@ -36,7 +33,7 @@ import java.util.function.Supplier;
 import static com.gmail.uprial.railnet.common.Formatter.format;
 import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 
-public class MineshaftPopulator implements ChunkPopulator {
+public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final RailNet plugin;
     private final CustomLogger customLogger;
 
@@ -384,15 +381,6 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.WITHER_SKELETON_SKULL, ...)
 
         ==== Test ====
-            version 1.21.3
-            seed -1565193744182814265 (Belongings 2025-01-12)
-            TerraformGenerator-19.1.0
-            WorldBorder 4050 x 4050
-
-            $ grep oceanic- plugins/TerraformGenerator/config.yml
-            oceanic-frequency: 0.11
-            oceanic-threshold: 8.0
-            deep-oceanic-threshold: 27.0
 
             $ grep "DEBUG.* POTION " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
             86
@@ -404,7 +392,7 @@ public class MineshaftPopulator implements ChunkPopulator {
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
             /*
-                8% / 644 + 628 - boring resources.
+                8% # 644 + 628 - boring resources.
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
 
@@ -413,14 +401,14 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.TNT, new CLT(4.00D, 2))
             .put(Material.OBSIDIAN, new CLT(4.00D, 2))
 
-            // 3% / 86 + 34 + 39 + 1675 - potions: 1.0 + 0.5 + 0.5 + 1.0
+            // 3% # 86 + 34 + 39 + 1675 - potions: 1.0 + 0.5 + 0.5 + 1.0
             .put(Material.POTION, new CLT(1.00D, potionConfig))
             .put(Material.SPLASH_POTION, new CLT(0.50D, potionConfig))
             .put(Material.LINGERING_POTION, new CLT(0.50D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(1.00D, arrowConfig, CLT.MAX_POWER))
 
             /*
-                2% / 461 - bazookas
+                2% # 461 - bazookas
                 Please, keep consistent with FireworkCraftBook
              */
             .put(Material.FIREWORK_ROCKET, new CLT(2.00D, 2)
@@ -429,11 +417,11 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
             )
 
-            // 4% / 172 + 179 - bonuses
+            // 4% # 172 + 179 - bonuses
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(2.00D))
             .put(Material.TOTEM_OF_UNDYING, new CLT(2.00D))
 
-            // 6% / 138 + 154 + 154 + 124 - golden cloths
+            // 6% # 138 + 154 + 154 + 124 - golden cloths
             .put(Material.GOLDEN_HELMET, new CLT(1.50D, goldenClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
@@ -444,7 +432,7 @@ public class MineshaftPopulator implements ChunkPopulator {
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
-            // 1.5% / 50 + 82 - golden tools
+            // 1.5% # 50 + 82 - golden tools
             .put(Material.GOLDEN_PICKAXE, new CLT(0.75D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(0.75D, goldenSwordConfig))
 
@@ -711,57 +699,48 @@ public class MineshaftPopulator implements ChunkPopulator {
             .put(Material.SPONGE, 0)
 
         ==== Test ====
-            version 1.21.3
-            seed -1565193744182814265 (Belongings 2025-01-12)
-            TerraformGenerator-19.1.0
-            WorldBorder 4050 x 4050
-
-            $ grep oceanic- plugins/TerraformGenerator/config.yml
-            oceanic-frequency: 0.11
-            oceanic-threshold: 8.0
-            deep-oceanic-threshold: 27.0
 
             $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
             7702
      */
     private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // 7,702
+            // # 7,702
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
-            // 7,752
+            // # 7,752
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
-            // 7,130
+            // # 7,130
             .put(Material.QUARTZ, CLT.MAX_POWER)
 
-            // 4,075
+            // # 4,075
             .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
-            // 4,086
+            // # 4,086
             .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
-            // 4,241
+            // # 4,241
             .put(Material.COPPER_INGOT, CLT.MAX_POWER - 1)
 
-            // 2,416
+            // # 2,416
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
-            // 2,645
+            // # 2,645
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
-            // 2,632
+            // # 2,632
             .put(Material.COAL, CLT.MAX_POWER - 2)
 
-            // 598
+            // # 598
             .put(Material.DIAMOND, 1)
-            // 615
+            // # 615
             .put(Material.EMERALD, 1)
 
-            // 405
+            // # 405
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
     private final int FOOD_FURNACE_POWER = CLT.MAX_POWER - 1;
     private final Map<Material,Integer> foodFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // 4
+            // # 4
             .put(Material.BAKED_POTATO, FOOD_FURNACE_POWER)
-            // 8
+            // # 8
             .put(Material.DRIED_KELP, FOOD_FURNACE_POWER)
-            // 1
+            // # 1
             .put(Material.COOKED_BEEF, FOOD_FURNACE_POWER)
             // Conclusion: Smoker is an insanely rare block on 4050 x 4050 map in the overworld.
 
@@ -774,15 +753,17 @@ public class MineshaftPopulator implements ChunkPopulator {
             .build();
 
     /*
+        ==== Test ====
+
             $ grep "DEBUG.* fuel COAL " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
             30850
      */
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
-            // 31,492
+            // # 31,492
             .put(Material.COAL, CLT.MAX_POWER)
-            // 10,716
+            // # 10,716
             .put(Material.COAL_BLOCK, CLT.MAX_POWER - 2)
-            // 1,697
+            // # 1,697
             .put(Material.LAVA_BUCKET, 0)
             .build();
 
