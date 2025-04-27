@@ -91,21 +91,30 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             // Survival maximum level is 3, here it's 5
             .ench(Enchantment.UNBREAKING, 5, 5)
             // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.FORTUNE, 5, 5);
+            .ench(Enchantment.FORTUNE, 5, 5)
+            .ench(Enchantment.VANISHING_CURSE);
 
     private final ItemConfig tridentConfig = new ItemConfig()
             // Survival maximum level is 3, here it's 5
             .ench(Enchantment.LOYALTY, 5, 5)
-            // Survival maximum level is 1
-            .ench(Enchantment.CHANNELING, 1, 1)
             // Survival maximum level is 5, here it's 10
             .ench(Enchantment.IMPALING, 10, 10)
             // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.UNBREAKING, 5, 5);
+            .ench(Enchantment.UNBREAKING, 5, 5)
+            .ench(Enchantment.CHANNELING)
+            .ench(Enchantment.VANISHING_CURSE);
 
-    private final Set<Integer> zeroDurationOptions = ImmutableSet.<Integer>builder()
-            .add(0)
-            .build();
+    private final ItemConfig crossbowConfig = new ItemConfig()
+            // Survival maximum level is 4, here it's 7
+            .ench(Enchantment.PIERCING, 7, 7)
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.POWER, 10, 10)
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.UNBREAKING, 5, 5)
+            // Survival maximum level is 3
+            .ench(Enchantment.QUICK_CHARGE, 3, 3)
+            .ench(Enchantment.INFINITY)
+            .ench(Enchantment.VANISHING_CURSE);
 
     private final ItemConfig damageSplashPotionConfig = new ItemConfig()
             // The highest potion amplifier that has a name
@@ -193,6 +202,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.TRIDENT, 1, tridentConfig))
+                    .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.CROSSBOW, 1, crossbowConfig))
                     .build())
             .build();
 
