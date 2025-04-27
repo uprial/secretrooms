@@ -346,6 +346,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     inventory.setItem(i, itemStack);
 
                     if (customLogger.isDebugMode()) {
+                        // WARNING: ConsistencyReference#1
                         customLogger.debug(String.format("%s item #%d %s set to %d",
                                 format(chest), i, entry.getKey(), amount));
                     }

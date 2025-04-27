@@ -625,6 +625,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 and there is nothing specific to multiply.
              */
             if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (Probability.PASS(MULTIPLY_PROBABILITY, 0))) {
+                // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
                         itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
@@ -650,6 +651,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 // The fresh getItem() is needed to properly update the amount
                 entry.getValue().applyItemConfig(inventory.getItem(i));
 
+                // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
                         // The fresh getItem() is needed to properly update the amount
                         0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
@@ -700,7 +702,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         ==== Test ====
 
-            $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
+            $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
             7702
      */
     private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
@@ -755,7 +757,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     /*
         ==== Test ====
 
-            $ grep "DEBUG.* fuel COAL " logs/latest.log | cut -d' ' -f11 | awk '{s+=$1} END {print s}'
+            $ grep "DEBUG.* fuel COAL " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
             30850
      */
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
@@ -791,7 +793,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         final FurnaceInventory inventory = furnace.getInventory();
 
-        updateItemStack(String.format("%s fuel", format(block)),
+        // WARNING: ConsistencyReference#1
+        updateItemStack(String.format("%s fuel item", format(block)),
                 inventory::getFuel,
                 inventory::setFuel,
                 furnaceFuelTable);
@@ -801,7 +804,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 ? foodFurnaceResultTable
                 : oreFurnaceResultTable;
 
-        updateItemStack(String.format("%s result", format(block)),
+        // WARNING: ConsistencyReference#1
+        updateItemStack(String.format("%s result item", format(block)),
                 inventory::getResult,
                 inventory::setResult,
                 lootTable);
