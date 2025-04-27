@@ -34,9 +34,10 @@ public class GreedyVillagerListener implements Listener {
             final Villager villager = (Villager)event.getRightClicked();
 
             final List<MerchantRecipe> updatedRecipes = new ArrayList<>();
-            boolean updated = false;
+            boolean updatedAny = false;
             for(final MerchantRecipe recipe : villager.getRecipes()) {
 
+                boolean updatedOne = false;
                 final ItemStack result = recipe.getResult();
                 final Map<Enchantment,Integer> enchantments
                         = ((result.getItemMeta() instanceof EnchantmentStorageMeta))
@@ -63,25 +64,38 @@ public class GreedyVillagerListener implements Listener {
                             result.addEnchantment(mutator, entry.getValue());
                         }
 
-                        updated = true;
+                        updatedOne = true;
                     }
                 }
 
-                final MerchantRecipe updatedRecipe = new MerchantRecipe(
-                        result,
-                        recipe.getUses(),
-                        recipe.getMaxUses(),
-                        recipe.hasExperienceReward(),
-                        recipe.getVillagerExperience(),
-                        recipe.getPriceMultiplier(),
-                        recipe.getDemand(),
-                        recipe.getSpecialPrice()
-                );
-                updatedRecipe.setIngredients(recipe.getIngredients());
+                /*
+                    One potential "updated" boolean value
+                    is split into updatedOne and updatedAny
+                    for performance considerations,
+                    to avoid creating big classes
+                    on each Villager inventory opening.
+                 */
+                if(updatedOne) {
+                    final MerchantRecipe updatedRecipe = new MerchantRecipe(
+                            result,
+                            recipe.getUses(),
+                            recipe.getMaxUses(),
+                            recipe.hasExperienceReward(),
+                            recipe.getVillagerExperience(),
+                            recipe.getPriceMultiplier(),
+                            recipe.getDemand(),
+                            recipe.getSpecialPrice()
+                    );
+                    updatedRecipe.setIngredients(recipe.getIngredients());
 
-                updatedRecipes.add(updatedRecipe);
+                    updatedRecipes.add(updatedRecipe);
+
+                    updatedAny = true;
+                } else {
+                    updatedRecipes.add(recipe);
+                }
             }
-            if(updated) {
+            if(updatedAny) {
                 villager.setRecipes(updatedRecipes);
 
                 if(customLogger.isDebugMode()) {
