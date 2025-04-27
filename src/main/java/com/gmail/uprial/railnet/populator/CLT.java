@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-// ChestLootConfig
+// ChestLootTable
 public class CLT {
     private final static Random RANDOM = new Random();
 

@@ -47,6 +47,37 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         return "Dungeon";
     }
 
+    // DungeonChestLootTable
+    private static class D {
+        private final Material material;
+        private final Integer count;
+        private final ItemConfig itemConfig;
+
+        D(final Material material, final Integer count) {
+            this(material, count, null);
+        }
+
+        D(final Material material, final Integer count, final ItemConfig itemConfig) {
+            this.material = material;
+            this.count = count;
+            this.itemConfig = itemConfig;
+        }
+
+        Material getMaterial() {
+            return material;
+        }
+
+        Integer getCount() {
+            return count;
+        }
+
+        void applyItemConfig(final ItemStack itemStack) {
+            if(itemConfig != null) {
+                itemConfig.apply(itemStack);
+            }
+        }
+    }
+
     /*
         Ideated from:
             https://minecraft.wiki/w/Non-renewable_resource
@@ -54,8 +85,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
     private final int STACK = 64;
     private final int DYE_COUNT = 16;
 
-    // This must be a unique count for a magic comparison
-    private final int DIAMOND_TOOL_COUNT = 1;
     private final ItemConfig diamondToolConfig = new ItemConfig()
             // Survival maximum level is 5, here it's 10
             .ench(Enchantment.EFFICIENCY, 10, 10)
@@ -64,16 +93,31 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             // Survival maximum level is 3, here it's 5
             .ench(Enchantment.FORTUNE, 5, 5);
 
-    // This must be a unique count for a magic comparison
-    private final int SPLASH_POTION_COUNT = 6;
-    private final ItemConfig splashPotionConfig = new ItemConfig()
-            .effects(
-                    ImmutableSet.<Integer>builder()
-                            .add(0)
-                            .build(),
+    private final ItemConfig tridentConfig = new ItemConfig()
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.LOYALTY, 5, 5)
+            // Survival maximum level is 1
+            .ench(Enchantment.CHANNELING, 1, 1)
+            // Survival maximum level is 5, here it's 10
+            .ench(Enchantment.IMPALING, 10, 10)
+            // Survival maximum level is 3, here it's 5
+            .ench(Enchantment.UNBREAKING, 5, 5);
+
+    private final Set<Integer> zeroDurationOptions = ImmutableSet.<Integer>builder()
+            .add(0)
+            .build();
+
+    private final ItemConfig damageSplashPotionConfig = new ItemConfig()
+            .effects(zeroDurationOptions,
                     ImmutableMap.<PotionEffectType, Integer>builder()
                             // The highest potion amplifier that has a name
                             .put(PotionEffectType.INSTANT_DAMAGE, 5)
+                            .build());
+
+    private final ItemConfig healthSplashPotionConfig = new ItemConfig()
+            .effects(zeroDurationOptions,
+                    ImmutableMap.<PotionEffectType, Integer>builder()
+                            // The highest potion amplifier that has a name
                             .put(PotionEffectType.INSTANT_HEALTH, 5)
                             .build());
 
@@ -83,16 +127,16 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             $ grep "DEBUG.* BAMBOO_BLOCK " logs/1/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
             143424
      */
-    private final List<Map<Material, Integer>> chestLootTable
-            = ImmutableList.<Map<Material, Integer>>builder()
+    private final List<List<D>> chestLootTable
+            = ImmutableList.<List<D>>builder()
 
             // # 143,424
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.BAMBOO_BLOCK, STACK * 27)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.BAMBOO_BLOCK, STACK * 27))
                     .build())
             // # 88,704
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.SEA_LANTERN, STACK * 18)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.SEA_LANTERN, STACK * 18))
                     .build())
             /*
                             Regular*1   Deepslate*1 Regular*2   Deepslate*2 Max mining
@@ -115,42 +159,46 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
              */
             // # 12,288 * 2
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.REDSTONE_BLOCK, STACK * 4)
-                    .put(Material.LAPIS_BLOCK, STACK * 4)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.REDSTONE_BLOCK, STACK * 4))
+                    .add(new D(Material.LAPIS_BLOCK, STACK * 4))
                     .build())
             // # 4,288 * 2
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.GOLD_BLOCK, STACK)
-                    .put(Material.DIAMOND_BLOCK, STACK)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.GOLD_BLOCK, STACK))
+                    .add(new D(Material.DIAMOND_BLOCK, STACK))
                     .build())
             // https://minecraft.wiki/w/Dye
             // # 1,760 + 1,696 + 1,744 + 1,776 + ...
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.WHITE_DYE, DYE_COUNT)
-                    .put(Material.GRAY_DYE, DYE_COUNT)
-                    .put(Material.BROWN_DYE, DYE_COUNT)
-                    .put(Material.ORANGE_DYE, DYE_COUNT)
-                    .put(Material.LIME_DYE, DYE_COUNT)
-                    .put(Material.CYAN_DYE, DYE_COUNT)
-                    .put(Material.BLUE_DYE, DYE_COUNT)
-                    .put(Material.MAGENTA_DYE, DYE_COUNT)
-                    .put(Material.LIGHT_GRAY_DYE, DYE_COUNT)
-                    .put(Material.BLACK_DYE, DYE_COUNT)
-                    .put(Material.RED_DYE, DYE_COUNT)
-                    .put(Material.YELLOW_DYE, DYE_COUNT)
-                    .put(Material.GREEN_DYE, DYE_COUNT)
-                    .put(Material.LIGHT_BLUE_DYE, DYE_COUNT)
-                    .put(Material.PURPLE_DYE, DYE_COUNT)
-                    .put(Material.PINK_DYE, DYE_COUNT)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.WHITE_DYE, DYE_COUNT))
+                    .add(new D(Material.GRAY_DYE, DYE_COUNT))
+                    .add(new D(Material.BROWN_DYE, DYE_COUNT))
+                    .add(new D(Material.ORANGE_DYE, DYE_COUNT))
+                    .add(new D(Material.LIME_DYE, DYE_COUNT))
+                    .add(new D(Material.CYAN_DYE, DYE_COUNT))
+                    .add(new D(Material.BLUE_DYE, DYE_COUNT))
+                    .add(new D(Material.MAGENTA_DYE, DYE_COUNT))
+                    .add(new D(Material.LIGHT_GRAY_DYE, DYE_COUNT))
+                    .add(new D(Material.BLACK_DYE, DYE_COUNT))
+                    .add(new D(Material.RED_DYE, DYE_COUNT))
+                    .add(new D(Material.YELLOW_DYE, DYE_COUNT))
+                    .add(new D(Material.GREEN_DYE, DYE_COUNT))
+                    .add(new D(Material.LIGHT_BLUE_DYE, DYE_COUNT))
+                    .add(new D(Material.PURPLE_DYE, DYE_COUNT))
+                    .add(new D(Material.PINK_DYE, DYE_COUNT))
                     .build())
             // # 86
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.DIAMOND_PICKAXE, DIAMOND_TOOL_COUNT)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.DIAMOND_PICKAXE, 1, diamondToolConfig))
                     .build())
             // # ??? can't count due to an overlap with Mineshaft
-            .add(ImmutableMap.<Material, Integer>builder()
-                    .put(Material.SPLASH_POTION, SPLASH_POTION_COUNT)
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.SPLASH_POTION, 3, damageSplashPotionConfig))
+                    .add(new D(Material.SPLASH_POTION, 3, healthSplashPotionConfig))
+                    .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.TRIDENT, 1, tridentConfig))
                     .build())
             .build();
 
@@ -331,24 +379,20 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             final int index = (int)(Math.abs(HashUtils.getHash(code)) % chestLootTable.size());
 
             int i = 0;
-            for(Map.Entry<Material, Integer> entry : chestLootTable.get(index).entrySet()) {
-                int count = entry.getValue();
+            for(D d : chestLootTable.get(index)) {
+                int count = d.getCount();
                 while(count > 0) {
-                    final int amount = Math.min(entry.getKey().getMaxStackSize(), count);
-                    final ItemStack itemStack = new ItemStack(entry.getKey(), amount);
+                    final int amount = Math.min(d.getMaterial().getMaxStackSize(), count);
+                    final ItemStack itemStack = new ItemStack(d.getMaterial(), amount);
 
-                    if(entry.getValue() == DIAMOND_TOOL_COUNT) {
-                        diamondToolConfig.apply(itemStack);
-                    } else if (entry.getValue() == SPLASH_POTION_COUNT) {
-                        splashPotionConfig.apply(itemStack);
-                    }
+                    d.applyItemConfig(itemStack);
 
                     inventory.setItem(i, itemStack);
 
                     if (customLogger.isDebugMode()) {
                         // WARNING: ConsistencyReference#1
                         customLogger.debug(String.format("%s item #%d %s set to %d",
-                                format(chest), i, entry.getKey(), amount));
+                                format(chest), i, d.getMaterial(), amount));
                     }
 
                     count -= amount;
