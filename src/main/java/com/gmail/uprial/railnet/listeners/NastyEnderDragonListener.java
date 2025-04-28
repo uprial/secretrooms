@@ -196,7 +196,9 @@ public class NastyEnderDragonListener implements Listener {
         According to https://minecraft.fandom.com/wiki/Ender_Dragon,
         the Ender Dragon has 200.0 health.
      */
-    private final double EXPLOSION_DAMAGE_LIMIT_PER_S = 50.0D;
+    private static final double EXPLOSION_DAMAGE_LIMIT_PER_S = 50.0D;
+
+    private static final double EXPLOSION_DAMAGE_REDUCTION = 5.0D;
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEntityDamage(EntityDamageEvent event) {
@@ -214,7 +216,7 @@ public class NastyEnderDragonListener implements Listener {
                     = explosionLimit.computeIfAbsent(second, (k) -> EXPLOSION_DAMAGE_LIMIT_PER_S);
 
             final double oldDamage = event.getDamage();
-            final double newDamage = Math.min(oldDamage, limit);
+            final double newDamage = Math.min(oldDamage / EXPLOSION_DAMAGE_REDUCTION, limit);
 
             explosionLimit.clear();
             explosionLimit.put(second, limit - newDamage);

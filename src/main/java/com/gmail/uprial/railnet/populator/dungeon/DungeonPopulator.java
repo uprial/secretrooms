@@ -85,36 +85,62 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
     private final int STACK = 64;
     private final int DYE_COUNT = 16;
 
+    /*
+        The idea is to give items with only enchantments
+        unavailable in Survival mode, with potential for extension.
+     */
     private final ItemConfig diamondToolConfig = new ItemConfig()
-            // Survival maximum level is 5, here it's 10
-            .ench(Enchantment.EFFICIENCY, 10, 10)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.UNBREAKING, 5, 5)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.FORTUNE, 5, 5)
-            .ench(Enchantment.VANISHING_CURSE);
+            /*
+                Survival maximum level is 3, here it's 5.
+
+                diamond_pickaxe[minecraft:enchantments={"minecraft:fortune":5}]
+
+                A potential EFFICIENCY(5) and UNBREAKING(3)
+                upgrade would cost 11 levels.
+             */
+            .ench(Enchantment.FORTUNE, 5, 5);
 
     private final ItemConfig tridentConfig = new ItemConfig()
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.LOYALTY, 5, 5)
-            // Survival maximum level is 5, here it's 10
-            .ench(Enchantment.IMPALING, 10, 10)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.UNBREAKING, 5, 5)
-            .ench(Enchantment.CHANNELING)
-            .ench(Enchantment.VANISHING_CURSE);
+            /*
+                Survival maximum level is 5, here it's 10.
+
+                trident[minecraft:enchantments={"minecraft:impaling":10}]
+
+                A potential LOYALTY(3), UNBREAKING(3) and CHANNELING(1)
+                upgrade would cost 20 levels.
+
+                A potential RIPTIDE(3) and UNBREAKING(3)
+                upgrade would cost 18 levels.
+             */
+            .ench(Enchantment.IMPALING, 10, 10);
 
     private final ItemConfig crossbowConfig = new ItemConfig()
-            // Survival maximum level is 4, here it's 7
-            .ench(Enchantment.PIERCING, 7, 7)
-            // Survival maximum level is 5, here it's 10
+            /*
+                Survival maximum level is 5, here it's 10.
+
+                crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
+
+                A potential PIERCING(4), UNBREAKING(3) and QUICK_CHARGE(3)
+                upgrade would cost 18 levels.
+
+                A potential MULTISHOT(1), UNBREAKING(3) and QUICK_CHARGE(3)
+                upgrade would cost 16 levels.
+             */
             .ench(Enchantment.POWER, 10, 10)
-            // Survival maximum level is 3, here it's 5
-            .ench(Enchantment.UNBREAKING, 5, 5)
-            // Survival maximum level is 3
-            .ench(Enchantment.QUICK_CHARGE, 3, 3)
-            .ench(Enchantment.INFINITY)
-            .ench(Enchantment.VANISHING_CURSE);
+            .ench(Enchantment.PUNCH, 2, 2)
+            .ench(Enchantment.FLAME)
+            .ench(Enchantment.INFINITY);
+
+    private final ItemConfig diamondSwordConfig = new ItemConfig()
+            /*
+                Survival maximum level is 3, here it's 5.
+
+                diamond_sword[minecraft:enchantments={"minecraft:looting":5}]
+
+                A potential SHARPNESS(5), KNOCKBACK(2), FIRE_ASPECT(2) and SWEEPING_EDGE(3)
+                upgrade would cost 29 levels.
+             */
+            .ench(Enchantment.LOOTING, 5, 5);
 
     private final ItemConfig damageSplashPotionConfig = new ItemConfig()
             // The highest potion amplifier that has a name
@@ -205,6 +231,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.CROSSBOW, 1, crossbowConfig))
+                    .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.DIAMOND_SWORD, 1, diamondSwordConfig))
                     .build())
             .build();
 
