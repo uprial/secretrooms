@@ -30,7 +30,9 @@ public class AngryShooterListener implements Listener {
                         || event.getEntity() instanceof Bogged
                         || event.getEntity() instanceof Breeze
                         || event.getEntity() instanceof Ghast
-                        || event.getEntity() instanceof Blaze)) {
+                        || event.getEntity() instanceof Blaze
+                        || event.getEntity() instanceof Creeper
+                        || event.getEntity() instanceof Witch)) {
 
             final Mob mob = (Mob)event.getEntity();
             final Player player = getClosestVisiblePlayer(mob);
