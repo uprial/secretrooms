@@ -29,6 +29,7 @@ class FireworkCraftBook {
             .put(Material.CAMEL_SPAWN_EGG, EntityType.CAMEL)
             .put(Material.CAVE_SPIDER_SPAWN_EGG, EntityType.CAVE_SPIDER)
             .put(Material.CHICKEN_SPAWN_EGG, EntityType.CHICKEN)
+            .put(Material.CREAKING_SPAWN_EGG, EntityType.CREAKING)
             .put(Material.COD_SPAWN_EGG, EntityType.COD)
             .put(Material.COW_SPAWN_EGG, EntityType.COW)
             .put(Material.CREEPER_SPAWN_EGG, EntityType.CREEPER)
