@@ -29,7 +29,6 @@ class FireworkCraftBook {
             .put(Material.CAMEL_SPAWN_EGG, EntityType.CAMEL)
             .put(Material.CAVE_SPIDER_SPAWN_EGG, EntityType.CAVE_SPIDER)
             .put(Material.CHICKEN_SPAWN_EGG, EntityType.CHICKEN)
-            .put(Material.CREAKING_SPAWN_EGG, EntityType.CREAKING)
             .put(Material.COD_SPAWN_EGG, EntityType.COD)
             .put(Material.COW_SPAWN_EGG, EntityType.COW)
             .put(Material.CREEPER_SPAWN_EGG, EntityType.CREEPER)
@@ -98,6 +97,8 @@ class FireworkCraftBook {
             .put(Material.ZOMBIE_HORSE_SPAWN_EGG, EntityType.ZOMBIE_HORSE)
             .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, EntityType.ZOMBIE_VILLAGER)
             .put(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, EntityType.ZOMBIFIED_PIGLIN)
+
+            .put(Material.CREAKING_SPAWN_EGG, EntityType.CREAKING)
             .build();
 
     private final Set<NamespacedKey> addedKeys = new HashSet<>();

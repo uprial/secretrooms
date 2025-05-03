@@ -103,6 +103,8 @@ public class FireworkEngine {
             .put(78, EntityType.ZOMBIE_HORSE)
             .put(79, EntityType.ZOMBIE_VILLAGER)
             .put(80, EntityType.ZOMBIFIED_PIGLIN)
+
+            .put(81, EntityType.CREAKING)
             .build();
 
     private final static Map<EntityType, Integer> ENTITY_TYPE_2_MAGIC_TYPE = invert(MAGIC_TYPE_2_ENTITY_TYPE);
