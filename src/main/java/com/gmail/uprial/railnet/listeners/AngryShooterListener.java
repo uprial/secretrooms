@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.listeners;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.TakeAimAdapter;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -12,6 +13,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.util.Set;
+
 import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class AngryShooterListener implements Listener {
@@ -21,18 +24,23 @@ public class AngryShooterListener implements Listener {
         this.customLogger = customLogger;
     }
 
+    private final Set<EntityType> entityTypes = ImmutableSet.<EntityType>builder()
+            .add(EntityType.BLAZE)
+            .add(EntityType.BOGGED)
+            .add(EntityType.BREEZE)
+            .add(EntityType.CREEPER)
+            .add(EntityType.GHAST)
+            .add(EntityType.SKELETON)
+            .add(EntityType.STRAY)
+            .add(EntityType.WITCH)
+            .build();
+
     @SuppressWarnings("unused")
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (!event.isCancelled() && (
-                event.getEntity() instanceof Skeleton
-                        || event.getEntity() instanceof Stray
-                        || event.getEntity() instanceof Bogged
-                        || event.getEntity() instanceof Breeze
-                        || event.getEntity() instanceof Ghast
-                        || event.getEntity() instanceof Blaze
-                        || event.getEntity() instanceof Creeper
-                        || event.getEntity() instanceof Witch)) {
+        if (!event.isCancelled()
+                && (event.getEntity() instanceof Mob)
+                && entityTypes.contains(event.getEntity().getType())) {
 
             final Mob mob = (Mob)event.getEntity();
             final Player player = getClosestVisiblePlayer(mob);
