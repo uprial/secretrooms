@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
@@ -229,6 +230,31 @@ public class NastyEnderDragonListener implements Listener {
                 customLogger.debug(String.format("Changed explosive damage to %s from %.2f to %.2f",
                         format(event.getEntity()), oldDamage, newDamage));
             }
+        }
+    }
+
+    private static final double REGEN_MULTIPLIER = 2.0D;
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+        if(!event.isCancelled()
+                && (event.getEntity() instanceof EnderDragon)
+                && (isAppropriateWorld(event.getEntity().getWorld()))) {
+
+            event.setAmount(event.getAmount() * REGEN_MULTIPLIER);
+            /*
+            Commented because too frequent
+
+            final double oldRegen = event.getAmount();
+            final double newRegen = oldRegen * REGEN_MULTIPLIER;
+
+            event.setAmount(newRegen);
+
+            if (customLogger.isDebugMode()) {
+                customLogger.debug(String.format("Changed regen of %s from %.2f to %.2f",
+                        format(event.getEntity()), oldRegen, newRegen));
+            }
+             */
         }
     }
 
