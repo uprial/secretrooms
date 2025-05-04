@@ -1,7 +1,6 @@
 package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.Probability;
-import com.gmail.uprial.railnet.common.WorldName;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -44,7 +43,7 @@ public class CLT {
 
     public boolean pass(final int density, final String worldName) {
         return Probability.PASS(probability, density)
-                && (worldNames.isEmpty() || worldNames.contains(WorldName.normalize(worldName)));
+                && (worldNames.isEmpty() || worldNames.contains(worldName));
     }
 
     public void applyItemConfig(final ItemStack itemStack) {
@@ -67,7 +66,7 @@ public class CLT {
     }
 
     public CLT onlyInWorld(final String worldName) {
-        worldNames.add(WorldName.normalize(worldName));
+        worldNames.add(worldName);
         return this;
     }
 }

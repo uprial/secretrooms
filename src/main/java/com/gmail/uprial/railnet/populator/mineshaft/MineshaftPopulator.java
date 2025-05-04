@@ -252,7 +252,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .build();
 
     private int getDensity(final Block basement) {
-        return getWorldDensity(WorldName.normalize(basement.getWorld().getName()))
+        return getWorldDensity(basement.getWorld().getName())
                 + MATERIAL_DENSITIES.getOrDefault(basement.getType(), 0)
                 + getDistanceDensity(basement);
     }
@@ -883,7 +883,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     private void populateEndShip(final Block block) {
-        if(block.getWorld().getName().equalsIgnoreCase(WorldName.END)) {
+        if(block.getWorld().getName().equals(WorldName.END)) {
 
             final Illusioner illusioner = (Illusioner)block.getWorld().spawnEntity(
                     block.getWorld().getHighestBlockAt(block.getX(), block.getZ()).getLocation()

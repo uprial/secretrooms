@@ -2,7 +2,6 @@ package com.gmail.uprial.railnet.common;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Locale;
 import java.util.Set;
 
 public class WorldName {
@@ -15,11 +14,6 @@ public class WorldName {
             .add(NETHER)
             .add(END)
             .build();
-
-    public static String normalize(final String worldName) {
-        return worldName.toLowerCase(Locale.ROOT);
-    }
-
 
     public static Set<String> getAll() {
         return all;

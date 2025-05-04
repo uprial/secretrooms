@@ -4,7 +4,6 @@ import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.HashUtils;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -221,7 +220,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.DIAMOND_PICKAXE, 1, diamondToolConfig))
                     .build())
-            // # ??? can't count due to an overlap with Mineshaft
+            // # ??? can't be counted due to an overlap with Mineshaft
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.SPLASH_POTION, 3, damageSplashPotionConfig))
                     .add(new D(Material.SPLASH_POTION, 3, healthSplashPotionConfig))

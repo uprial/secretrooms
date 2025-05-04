@@ -63,7 +63,7 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
     }
 
     private boolean isAppropriate(final Chunk chunk) {
-        return (worldName == null || chunk.getWorld().getName().equalsIgnoreCase(worldName))
+        return (worldName == null || chunk.getWorld().getName().equals(worldName))
                 && isAppropriate(chunk.getX(), chunk.getZ(), chunk.getWorld().getSeed(), density);
     }
 }

@@ -333,7 +333,7 @@ public class NastyEnderDragonListener implements Listener {
     }
 
     private static boolean isAppropriateWorld(final World world) {
-        return world.getName().equalsIgnoreCase(WorldName.END);
+        return world.getName().equals(WorldName.END);
     }
 
     private static Entity getRealSource(final Entity source) {
