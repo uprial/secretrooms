@@ -27,7 +27,7 @@ public class NukeTest {
         }
 
         void explode(final float radius) {
-            super.explode(zeroLocation, null, radius, 0, 0);
+            super.explode(zeroLocation, null, radius, 0, () -> 0);
         }
     }
 

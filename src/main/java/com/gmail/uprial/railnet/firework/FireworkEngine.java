@@ -200,7 +200,7 @@ public class FireworkEngine {
                             format(firework.getLocation()), explosionPower));
                 }
             } else {
-                new Nuke(plugin).explode(firework.getLocation(), source, explosionPower, 1, 2);
+                new Nuke(plugin).explode(firework.getLocation(), source, explosionPower, 1, () -> 2);
                 customLogger.info(String.format("Firework exploded at %s with power %d",
                         format(firework.getLocation()), explosionPower));
             }

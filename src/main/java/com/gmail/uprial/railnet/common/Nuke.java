@@ -12,6 +12,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class Nuke {
     /*
@@ -61,9 +62,10 @@ public class Nuke {
             final Entity source,
             final float explosionRadius,
             final int initialDelay,
-            final int period) {
+            final Supplier<Integer> nextDelayGenerator) {
 
-        schedule(() -> explode(fromLocation, source), initialDelay);
+        int delay = initialDelay;
+        schedule(() -> explode(fromLocation, source), delay);
 
         final int spheres = Math.round(explosionRadius / STEP);
         /*
@@ -74,8 +76,9 @@ public class Nuke {
             spheres should be 8 and 16 but not 0 or 24.
          */
         for(int i = 1; i < spheres; i++) {
+            delay += nextDelayGenerator.get();
             final float sphereRadius = i * STEP;
-            schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), initialDelay + i * period);
+            schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), delay);
         }
     }
 
