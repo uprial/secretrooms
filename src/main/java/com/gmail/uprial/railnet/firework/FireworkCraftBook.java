@@ -118,6 +118,9 @@ class FireworkCraftBook {
             // With i = 1, generates the same as MineshaftPopulator: 10 and 20
             addRecipe(Material.NETHER_STAR, i,
                     FireworkEffect.Type.BALL_LARGE, 10 * i, 20 * i);
+            // With i = 1, generates the same as MineshaftPopulator: 20 and 50
+            addRecipe(Material.HEAVY_CORE, i,
+                    FireworkEffect.Type.CREEPER, 20 * i, 50 * i);
 
             for(Map.Entry<Material, EntityType> entry : egg2entity.entrySet()) {
                 addRecipe(entry.getKey(), i,

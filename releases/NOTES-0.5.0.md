@@ -1,3 +1,5 @@
+# New features
+* Added Heavy Core recipes for bazookas
 # Bug fixes
 * Added missing CREAKING firework
 * Added missing immediate target of Creeper and Witch

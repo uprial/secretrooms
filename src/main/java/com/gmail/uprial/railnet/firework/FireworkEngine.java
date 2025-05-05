@@ -105,6 +105,7 @@ public class FireworkEngine {
             .put(80, EntityType.ZOMBIFIED_PIGLIN)
 
             .put(81, EntityType.CREAKING)
+            // 84 is the max number in the current design
             .build();
 
     private final static Map<EntityType, Integer> ENTITY_TYPE_2_MAGIC_TYPE = invert(MAGIC_TYPE_2_ENTITY_TYPE);
