@@ -468,7 +468,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             GOLDEN_PICKAXE          0.50    31
             GOLDEN_SWORD            0.50    35
 
-            Conclusions based on items with zero max power:
+            Conclusion based on items with zero max power:
             1% probability gives approx. 100 items per a 4050 x 4050 map in the overworld.
 
             Got pretty similar numbers also on

@@ -64,6 +64,8 @@ public class Nuke {
             final int initialDelay,
             final Supplier<Integer> nextDelayGenerator) {
 
+        // final long start = System.currentTimeMillis();
+
         int delay = initialDelay;
         schedule(() -> explode(fromLocation, source), delay);
 
@@ -80,6 +82,14 @@ public class Nuke {
             final float sphereRadius = i * STEP;
             schedule(() -> explode(fromLocation, source, explosionRadius, sphereRadius), delay);
         }
+
+        /*
+        schedule(() -> {
+            final long end = System.currentTimeMillis();
+            System.out.println(String.format("A Nuke with %.0f explosion radius took %,d ms.",
+                    explosionRadius, end - start));
+        }, delay + nextDelayGenerator.get());
+         */
     }
 
     /*
@@ -164,6 +174,19 @@ public class Nuke {
     }
 
     void explode(final Location fromLocation, final Entity source) {
+        /*
+        Based on explosion radius 400 test:
+
+        setFire sample time
+          false 143,438
+          false 137,296
+           true 163,705
+           true 158,700
+
+        setFire=true brings 15% performance drawback.
+
+        I decided to set the beautiful fire. :-)
+         */
         witherFluids(fromLocation);
         fromLocation.getWorld().createExplosion(fromLocation, MAX_ENGINE_POWER, true, true, source);
     }
