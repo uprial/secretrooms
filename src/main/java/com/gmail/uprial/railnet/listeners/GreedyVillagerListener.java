@@ -25,6 +25,11 @@ public class GreedyVillagerListener implements Listener {
 
     private final Map<Enchantment,Enchantment> enchantmentMutators = ImmutableMap.<Enchantment,Enchantment>builder()
             .put(Enchantment.PROTECTION, Enchantment.THORNS)
+            /*
+                According to https://minecraft.wiki/w/Mending,
+                Mending can be obtained by trading with a librarian,
+                which means no weapons or tools with it can be traded.
+             */
             .put(Enchantment.MENDING, Enchantment.THORNS)
             .build();
 
