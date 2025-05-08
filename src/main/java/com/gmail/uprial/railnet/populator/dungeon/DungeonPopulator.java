@@ -29,6 +29,13 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
     VirtualChunk vc;
 
     private final static String WORLD = null;
+
+    /*
+        ==== Test ====
+
+            $ grep "Dungeon.* populated" logs/latest.log | wc -l
+            591
+     */
     private final static int DENSITY = 500;
 
     private final static int ROOM_SIZE = 5;
@@ -153,20 +160,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             // The highest potion amplifier that has a name
             .effect(PotionEffectType.INSTANT_HEALTH, 0, 5);
 
-    /*
-        ==== Test ====
-
-            $ grep "DEBUG.* BAMBOO_BLOCK " logs/1/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
-            143424
-     */
     private final List<List<D>> chestLootTable
             = ImmutableList.<List<D>>builder()
 
-            // # 143,424
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.BAMBOO_BLOCK, STACK * 27))
                     .build())
-            // # 88,704
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.SEA_LANTERN, STACK * 18))
                     .build())
@@ -190,12 +189,10 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                 Lapis lazuli ore and its deepslate variant drop 4–9 lapis lazuli.
 
              */
-            // # 12,288 * 2
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.REDSTONE_BLOCK, STACK * 4))
                     .add(new D(Material.LAPIS_BLOCK, STACK * 4))
                     .build())
-            // # 4,288 * 2
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.GOLD_BLOCK, STACK))
                     .add(new D(Material.DIAMOND_BLOCK, STACK))
@@ -204,7 +201,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .add(new D(Material.BEDROCK, STACK))
                     .build())
             // https://minecraft.wiki/w/Dye
-            // # 1,760 + 1,696 + 1,744 + 1,776 + ...
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.WHITE_DYE, DYE_COUNT))
                     .add(new D(Material.GRAY_DYE, DYE_COUNT))
@@ -223,11 +219,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .add(new D(Material.PURPLE_DYE, DYE_COUNT))
                     .add(new D(Material.PINK_DYE, DYE_COUNT))
                     .build())
-            // # 86
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.DIAMOND_PICKAXE, 1, diamondToolConfig))
                     .build())
-            // # ??? can't be counted due to an overlap with Mineshaft
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.SPLASH_POTION, 3, damageSplashPotionConfig))
                     .add(new D(Material.SPLASH_POTION, 3, healthSplashPotionConfig))
