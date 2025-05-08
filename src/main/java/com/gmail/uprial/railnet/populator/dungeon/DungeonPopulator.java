@@ -101,21 +101,22 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
     private final ItemConfig tridentConfig = new ItemConfig()
             /*
-                Survival maximum level is 5, here it's 10.
+                Survival maximum level is 3, here it's 5.
 
-                trident[minecraft:enchantments={"minecraft:impaling":10}]
+                trident[minecraft:enchantments={"minecraft:loyalty":5}]
 
-                A potential LOYALTY(3), UNBREAKING(3) and CHANNELING(1)
-                upgrade would cost 20 levels.
+                A potential UNBREAKING(3) and CHANNELING(1)
+                upgrade would cost 14 levels.
 
-                A potential RIPTIDE(3) and UNBREAKING(3)
-                upgrade would cost 18 levels.
+                IMO, impaling is just useless, and isn't a potential upgrade.
+
+                In fact, riptide isn't compatible ith loyalty.
              */
-            .ench(Enchantment.IMPALING, 10, 10);
+            .ench(Enchantment.LOYALTY, 5, 5);
 
     private final ItemConfig crossbowConfig = new ItemConfig()
             /*
-                Survival maximum level is 5, here it's 10.
+                Survival maximum levels are ZERO.
 
                 crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
 
@@ -136,8 +137,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
                 diamond_sword[minecraft:enchantments={"minecraft:looting":5}]
 
-                A potential SHARPNESS(5), KNOCKBACK(2), FIRE_ASPECT(2) and SWEEPING_EDGE(3)
-                upgrade would cost 29 levels.
+                A potential UNBREAKING(3), SHARPNESS(5), FIRE_ASPECT(2) and SWEEPING_EDGE(3)
+                upgrade would cost 31 levels.
+
+                IMO, knockback prevents swords from dealing a lot of melee damage per second,
+                and isn't a potential upgrade.
              */
             .ench(Enchantment.LOOTING, 5, 5);
 
