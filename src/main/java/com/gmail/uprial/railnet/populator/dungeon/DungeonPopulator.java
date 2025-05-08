@@ -200,6 +200,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .add(new D(Material.GOLD_BLOCK, STACK))
                     .add(new D(Material.DIAMOND_BLOCK, STACK))
                     .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.BEDROCK, STACK))
+                    .build())
             // https://minecraft.wiki/w/Dye
             // # 1,760 + 1,696 + 1,744 + 1,776 + ...
             .add(ImmutableList.<D>builder()
