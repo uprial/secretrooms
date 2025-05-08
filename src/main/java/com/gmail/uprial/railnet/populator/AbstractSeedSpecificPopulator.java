@@ -6,22 +6,6 @@ import org.bukkit.Chunk;
 
 public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     final String worldName;
-    /*
-        ==== Test ====
-
-            My guess was that the prime numbers are more stable, but they are not.
-
-            $ grep "Whirlpool.*] populated" logs/latest.log | wc -l
-            14
-
-            density-1 | density-2 | Whirlpool | Dungeon
-                  100 | 300                34 | 21
-                   99 | 333                76 | 34
-                  101 | 307                50 | 12
-                   97 | 293                58 | 3
-
-                  200 | 500                14 | 8
-     */
     final int density;
 
     static class InternalPopulatorConfigurationError extends RuntimeException {

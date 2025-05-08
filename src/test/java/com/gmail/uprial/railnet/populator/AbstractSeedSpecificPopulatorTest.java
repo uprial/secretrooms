@@ -2,10 +2,7 @@ package com.gmail.uprial.railnet.populator;
 
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.gmail.uprial.railnet.populator.AbstractSeedSpecificPopulator.isAppropriate;
 import static org.junit.Assert.*;
@@ -101,6 +98,35 @@ public class AbstractSeedSpecificPopulatorTest {
                             symmetric.size() < 2);
                 }
             }
+        }
+    }
+
+    @Test
+    public void testPrimeNumbers() {
+        // My guess was that the prime numbers are more stable, but they are not
+        Map<Integer,Integer> density2count = new LinkedHashMap<>();
+        density2count.put(97, 4298);
+        density2count.put(100, 3982);
+        density2count.put(101, 3831);
+
+        density2count.put(293, 1381);
+        density2count.put(300, 1312);
+        density2count.put(307, 1341);
+
+        for(Map.Entry<Integer,Integer> entry : density2count.entrySet()) {
+            int density = entry.getKey();
+            Integer counter = 0;
+
+            for (int seed = 19; seed < 1119; seed += 119) {
+                for (int x = -99; x < 100; x++) {
+                    for (int z = -99; z < 100; z++) {
+                        if (isAppropriate(x, z, seed, density)) {
+                            counter++;
+                        }
+                    }
+                }
+            }
+            assertEquals(counter, entry.getValue());
         }
     }
 }
