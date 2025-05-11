@@ -6,7 +6,7 @@ Tested on Spigot-1.21.5.
 
 ## Introduction
 
-Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
+Underground railways, rare loot, Bazookas.
 
 ## Features
 
@@ -14,15 +14,10 @@ Underground railways, rare loot, Bazookas, stronger mob AI and weapon.
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
-* 0.1% of Endermans ignore carved pumpkins on players
-* Skeletons have a chance to add both positive and negative effects to their arrows
 * Lime-colored stained glass and panels are explosive-resistant
 * 0.01% of appropriate blocks are infested
 * End Ships have Illusioners pre-generated
-* Shooting mobs target the closest player immediately if spawned with direct vision to them
-* The End Dragon has increased regen, explosion resistance and damage limit per second, periodically resurrects healing crystals, and targets random endermans to aggressive players
 * Underground dungeons with spawners and rare building blocks
-* Fixed village trading imbalance: Villagers don't sell clothes with environmental protection and mending
 * Loot density increases according to distance from the map center
 * Bazooka recipes based on fireworks with TNT or Nether Star
 
@@ -96,4 +91,5 @@ I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 * CustomNukes: [Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/customnukes/), [GitHub](https://github.com/uprial/customnukes), [Spigot](https://www.spigotmc.org/resources/customnukes.68710/)
 * CustomRecipes: [Bukkit Dev](https://dev.bukkit.org/projects/custom-recipes), [GitHub](https://github.com/uprial/customrecipes/), [Spigot](https://www.spigotmc.org/resources/customrecipes.89435/)
 * CustomVillage: [Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/customvillage/), [GitHub](https://github.com/uprial/customvillage/), [Spigot](https://www.spigotmc.org/resources/customvillage.69170/)
+* MasochisticSurvival: [Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/masochisticsurvival/), [GitHub](https://github.com/uprial/masochisticsurvival/), [Spigot](https://www.spigotmc.org/resources/masochisticsurvival.124943/)
 * TakeAim: [Bukkit Dev](https://dev.bukkit.org/projects/takeaim), [GitHub](https://github.com/uprial/takeaim), [Spigot](https://www.spigotmc.org/resources/takeaim.68713/)

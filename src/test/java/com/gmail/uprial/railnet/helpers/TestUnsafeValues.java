@@ -62,7 +62,7 @@ public class TestUnsafeValues implements UnsafeValues {
     }
 
     @Override
-    public void checkSupported(PluginDescriptionFile pdf) throws InvalidPluginException {
+    public void checkSupported(PluginDescriptionFile pdf) {
 
     }
 

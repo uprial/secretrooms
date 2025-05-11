@@ -12,7 +12,7 @@ public class FireworkMagicColorTest {
     public final ExpectedException e = ExpectedException.none();
 
     @Test
-    public void testMaxTypeAndAmount() throws Exception {
+    public void testMaxTypeAndAmount() {
         final Color color = FireworkMagicColor.encode(new FireworkMagic(84, 767));
         final FireworkMagic fmc = FireworkMagicColor.decode(color);
 
@@ -21,14 +21,14 @@ public class FireworkMagicColorTest {
     }
 
     @Test
-    public void testTypeTooBig() throws Exception {
+    public void testTypeTooBig() {
         e.expect(FireworkError.class);
         e.expectMessage("Type too big: 85");
         FireworkMagicColor.encode(new FireworkMagic(85, 767));
     }
 
     @Test
-    public void testAmountTooBig() throws Exception {
+    public void testAmountTooBig() {
         e.expect(FireworkError.class);
         e.expectMessage("Amount too big: 768");
         FireworkMagicColor.encode(new FireworkMagic(84, 768));
