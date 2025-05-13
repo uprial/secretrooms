@@ -494,17 +494,6 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.LINGERING_POTION, new CLT(0.25D, potionConfig))
             .put(Material.TIPPED_ARROW, new CLT(0.75D, arrowConfig, CLT.MAX_POWER))
 
-            /*
-                0.5% - bazookas
-
-                Please, keep consistent with FireworkCraftBook
-             */
-            .put(Material.FIREWORK_ROCKET, new CLT(0.50D, 1)
-                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BURST, 3, 5))
-                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL, 7, 12))
-                    .addItemConfigOption(new ItemConfig().firework(FireworkEffect.Type.BALL_LARGE, 10, 20))
-            )
-
             // 1% - bonuses
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(0.45D))
             .put(Material.OMINOUS_BOTTLE, new CLT(0.45D, new ItemConfig().amplify(4)))

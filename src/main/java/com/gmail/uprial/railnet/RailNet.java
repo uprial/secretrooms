@@ -3,7 +3,6 @@ package com.gmail.uprial.railnet;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.config.InvalidConfigException;
-import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.gmail.uprial.railnet.listeners.*;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.Populator;
@@ -34,8 +33,6 @@ public final class RailNet extends JavaPlugin {
     private CustomLogger consoleLogger = null;
 
     private Populator populator = null;
-
-    private FireworkEngine fireworkEngine = null;
 
     private RailNetCron cron = null;
 
@@ -75,11 +72,6 @@ public final class RailNet extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
         getServer().getPluginManager().registerEvents(new StrongBlockListener(), this);
-
-        fireworkEngine = new FireworkEngine(this, consoleLogger);
-        fireworkEngine.enableCraftBook();
-
-        getServer().getPluginManager().registerEvents(new ExplosiveFireworkListener(fireworkEngine), this);
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
@@ -141,10 +133,6 @@ public final class RailNet extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // If onEnable() didn't finish, this variable is highly probably null.
-        if(fireworkEngine != null) {
-            fireworkEngine.disableCraftBook();
-        }
         HandlerList.unregisterAll(this);
         cron.cancel();
         consoleLogger.info("Plugin disabled");

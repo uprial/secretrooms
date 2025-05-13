@@ -1,7 +1,6 @@
 package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.common.RandomUtils;
-import com.gmail.uprial.railnet.firework.FireworkEngine;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -139,23 +138,6 @@ public class ItemConfig {
         }
     }
 
-    private static class firework implements VirtualItemConfig {
-        final FireworkEffect.Type type;
-        final int fireworkPower;
-        final int explosionPower;
-
-        firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
-            this.type = type;
-            this.fireworkPower = fireworkPower;
-            this.explosionPower = explosionPower;
-        }
-
-        @Override
-        public void apply(final ItemStack itemStack) {
-            FireworkEngine.apply(itemStack, type, fireworkPower, explosionPower);
-        }
-    }
-
     public ItemConfig() {
         configs = ImmutableList.<VirtualItemConfig>builder().build();
     }
@@ -190,10 +172,6 @@ public class ItemConfig {
 
     public ItemConfig effects(final Set<Integer> durationOptions, final Map<PotionEffectType,Integer> effectTypeOptions) {
         return addConfig(new effects(durationOptions, effectTypeOptions));
-    }
-
-    public ItemConfig firework(final FireworkEffect.Type type, final int fireworkPower, final int explosionPower) {
-        return addConfig(new firework(type, fireworkPower, explosionPower));
     }
 
     public ItemConfig effect(final PotionEffectType effectType, final Integer duration, final Integer amplifier) {

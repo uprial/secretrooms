@@ -6,7 +6,7 @@ Tested on Spigot-1.21.5.
 
 ## Introduction
 
-Underground railways, rare loot, Bazookas.
+Underground railways, rare loot.
 
 ## Features
 
@@ -19,19 +19,10 @@ Underground railways, rare loot, Bazookas.
 * End Ships have Illusioners pre-generated
 * Underground dungeons with spawners and rare building blocks
 * Loot density increases according to distance from the map center
-* Bazooka recipes based on fireworks with TNT or Nether Star
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 
 #### Use cases
-
-Make a bazooka:
-
-![Recipes](https://raw.githubusercontent.com/uprial/railnet/master/images/bazookas.png)
-
-Fire the bazooka with 120 explosion radius:
-
-![120 explosion radius](https://raw.githubusercontent.com/uprial/railnet/master/images/nuke-120r.jpg)
 
 Find an entrance, take a minecart, enjoy your ride, discover a struct (disabled by default in config.yml)
 
@@ -83,8 +74,8 @@ I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 
 ## Useful links
 * [Project on GitHub](https://github.com/uprial/railnet)
-* [Project on Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/rails-chests-bazookas)
-* [Project on Spigot](https://www.spigotmc.org/resources/rails-chests-bazookas.121505/)
+* [Project on Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/rails-chests/)
+* [Project on Spigot](https://www.spigotmc.org/resources/rails-chests.121505/)
 
 ## Related projects
 * CustomCreatures: [Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/customcreatures/), [GitHub](https://github.com/uprial/customcreatures), [Spigot](https://www.spigotmc.org/resources/customcreatures.68711/)
