@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet;
 
+import com.gmail.uprial.railnet.config.InvalidConfigException;
 import com.gmail.uprial.railnet.helpers.TestConfigBase;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.junit.Rule;
@@ -26,8 +27,8 @@ public class RailNetConfigTest extends TestConfigBase {
 
     @Test
     public void testEmpty() throws Exception {
-        e.expect(RuntimeException.class);
-        e.expectMessage("Empty 'underground-railways' flag. Use default value false");
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Empty 'underground-railways' flag");
         loadConfig(getDebugFearingCustomLogger(), "");
     }
 
@@ -41,8 +42,8 @@ public class RailNetConfigTest extends TestConfigBase {
 
     @Test
     public void testDynamicLootDensity() throws Exception {
-        e.expect(RuntimeException.class);
-        e.expectMessage("Empty 'dynamic-loot-density' flag. Use default value true");
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Empty 'dynamic-loot-density' flag");
         loadConfig(getDebugFearingCustomLogger(), "underground-railways: true");
     }
 
