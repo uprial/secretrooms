@@ -2,6 +2,8 @@ package com.gmail.uprial.railnet.populator;
 
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.common.CustomLogger;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -66,17 +68,24 @@ public class Populator {
         so I mark the checked chunks via specific secret block.
 
         The best specific secret block is a block unavailable even in the creative code.
-        According to https://minecraft.wiki/w/Creative, I picked Barrier.
+        According to https://minecraft.wiki/w/Creative, I picked Barrier and Light
      */
-    final Material secretMaterial = Material.BARRIER;
+    final Map<Material,Material> idempotencyMap = ImmutableMap.<Material,Material>builder()
+            .put(Material.BEDROCK, Material.BARRIER)
+            .put(Material.AIR, Material.LIGHT)
+            .build();
+
+    final Set<Material> finalMaterials = ImmutableSet.<Material>builder()
+            .addAll(idempotencyMap.values())
+            .build();
 
     public void onChunkLoadOncePerServerSession(final Chunk chunk) {
         final Block block = chunk.getBlock(0, chunk.getWorld().getMinHeight(), 0);
-        if (!block.getType().equals(secretMaterial)) {
+        if (!finalMaterials.contains(block.getType())) {
             try {
                 populateChunk(chunk);
             } finally {
-                block.setType(secretMaterial, false);
+                block.setType(idempotencyMap.get(block.getType()), false);
             }
         }
     }
