@@ -10,7 +10,7 @@ Underground railways, rare loot.
 
 ## Features
 
-* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations (disabled by default in config.yml)
+* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
@@ -24,7 +24,7 @@ That plugin combines all the fun I had with my friends that I didn't find in oth
 
 #### Use cases
 
-Find an entrance, take a minecart, enjoy your ride, discover a struct (disabled by default in config.yml)
+Find an entrance, take a minecart, enjoy your ride, discover a struct
 
 ![Find a monument](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-monument.png)
 

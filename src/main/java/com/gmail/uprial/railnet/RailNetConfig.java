@@ -29,8 +29,8 @@ public final class RailNetConfig {
     }
 
     public static RailNetConfig getFromConfig(FileConfiguration config, CustomLogger customLogger) throws InvalidConfigException {
-        boolean undergroundRailways = ConfigReaderSimple.getBoolean(config, customLogger, "underground-railways", "'underground-railways' flag", false);
-        boolean dynamicLootDensity = ConfigReaderSimple.getBoolean(config, customLogger, "dynamic-loot-density", "'dynamic-loot-density' flag", true);
+        boolean undergroundRailways = ConfigReaderSimple.getBoolean(config, customLogger, "underground-railways", "'underground-railways' flag");
+        boolean dynamicLootDensity = ConfigReaderSimple.getBoolean(config, customLogger, "dynamic-loot-density", "'dynamic-loot-density' flag");
 
         return new RailNetConfig(undergroundRailways, dynamicLootDensity);
     }
