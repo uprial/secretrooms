@@ -17,13 +17,13 @@ debug: false
 # to a woodland mansion and an ocean monument
 # with ladders from above at stations.
 #
-# Possible values: true | false (default = false)
+# Possible values: true | false
 #
 underground-railways: true
 
 #
 # Loot density increases according to distance from the map center.
 #
-# Possible values: true | false (default = true)
+# Possible values: true | false
 #
 dynamic-loot-density: true
