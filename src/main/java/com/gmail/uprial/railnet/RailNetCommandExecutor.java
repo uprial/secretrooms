@@ -81,7 +81,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                         for (Map.Entry<Integer, String> param : params.entrySet()) {
                             values.put(param.getValue(), getInt(args[param.getKey()]));
                         }
-                        final int counter = plugin.breakTerrain(args[1],
+                        final int counter = new RailNetExecutor(plugin).breakTerrain(args[1],
                                 values.get("x"), values.get("y"), values.get("z"), values.get("radius"));
                         customLogger.info(String.format("%d blocks broken.", counter));
                         return true;
@@ -90,7 +90,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                         && (sender instanceof Player)) {
                     if (sender.hasPermission(COMMAND_NS + ".break")) {
                         final Player player = (Player) sender;
-                        final int counter = plugin.breakTerrain(player.getWorld().getName(),
+                        final int counter = new RailNetExecutor(plugin).breakTerrain(player.getWorld().getName(),
                                 player.getLocation().getBlockX(),
                                 player.getLocation().getBlockY(),
                                 player.getLocation().getBlockZ(), getInt(args[1]));
@@ -109,7 +109,7 @@ class RailNetCommandExecutor implements CommandExecutor {
                         }
 
                         customLogger.info(String.format("Getting %s stats in loaded terrain...", material));
-                        final Map<String,Integer> stats = plugin.getLoadedStats(material);
+                        final Map<String,Integer> stats = new RailNetExecutor(plugin).getLoadedStats(material);
                         if(stats.isEmpty()) {
                             customLogger.error(String.format("Material '%s' not found.", args[1]));
                             return false;

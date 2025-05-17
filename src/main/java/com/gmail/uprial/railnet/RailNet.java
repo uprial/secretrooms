@@ -10,15 +10,10 @@ import com.gmail.uprial.railnet.populator.dungeon.DungeonPopulator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
 import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -81,54 +76,8 @@ public final class RailNet extends JavaPlugin {
         return populator.repopulateLoaded(worldName, x, z, radius);
     }
 
-    int breakTerrain(final String worldName, final int x, final int y, final int z, final int radius) {
-        final World world = getServer().getWorld(worldName);
-        int counter = 0;
-        if(world != null) {
-            final ItemStack tool = new ItemStack(Material.NETHERITE_PICKAXE);
-            //tool.addEnchantment(Enchantment.FORTUNE, 3);
-            /*
-                Since we're breaking blocks
-                it's better to s tart from top layers that may affect lower levels.
-             */
-            for(int dy = radius; dy >= -radius; dy--) {
-                for (int dx = -radius; dx <= radius; dx++) {
-                    for (int dz = -radius; dz <= radius; dz++) {
-                        if(world.getBlockAt(x + dx, y + dy, z + dz).breakNaturally(tool)) {
-                            counter++;
-                        }
-                    }
-                }
-            }
-        }
-
-        return counter;
-    }
-
     void populatePlayer(final Player player, final int density) {
         new MineshaftPopulator(this, consoleLogger, false).populatePlayer(player, density);
-    }
-
-    Map<String,Integer> getLoadedStats(final Material material) {
-        final Map<String,Integer> stats = new HashMap<>();
-        for(final World world : getServer().getWorlds()) {
-            for (final Chunk chunk : world.getLoadedChunks()) {
-                final int minY = chunk.getWorld().getMinHeight();
-                final int maxY = chunk.getWorld().getMaxHeight();
-                for(int y = minY; y < maxY; y++) {
-                    for(int x = 0; x < 16; x++) {
-                        for(int z = 0; z < 16; z++) {
-                            final Block block = chunk.getBlock(x, y, z);
-                            if(block.getType().equals(material)) {
-                                stats.merge(world.getName(), 1, Integer::sum);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return stats;
     }
 
     @Override

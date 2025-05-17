@@ -10,7 +10,6 @@ import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Chunk;
-import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.*;
