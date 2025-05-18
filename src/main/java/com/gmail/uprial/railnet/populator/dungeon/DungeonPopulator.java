@@ -198,7 +198,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .add(new D(Material.DIAMOND_BLOCK, STACK))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.BEDROCK, STACK))
+                    /*
+                        According to https://minecraft.wiki/w/Wither,
+                        Reinforced Deepslate is the most vanilla block
+                        that the wither cannot break.
+                     */
+                    .add(new D(Material.REINFORCED_DEEPSLATE, STACK))
                     .build())
             // https://minecraft.wiki/w/Dye
             .add(ImmutableList.<D>builder()
