@@ -30,10 +30,10 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     /*
         ==== Test ====
 
-            $ grep "Whirlpool.* populated" logs/latest.log | wc -l
-            1474
+            $ grep "Whirlpool.*\] populated" logs/latest.log | wc -l
+            317
      */
-    private final static int DENSITY = 200;
+    private final static int DENSITY = 500;
 
     public WhirlpoolPopulator(final CustomLogger customLogger,
                               final String conflictingPopulatorName) {

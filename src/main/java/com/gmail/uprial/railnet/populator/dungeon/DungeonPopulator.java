@@ -33,10 +33,10 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
     /*
         ==== Test ====
 
-            $ grep "Dungeon.* populated" logs/latest.log | wc -l
-            591
+            $ grep "Dungeon.*\] populated" logs/latest.log | wc -l
+            134
      */
-    private final static int DENSITY = 500;
+    private final static int DENSITY = 2_000;
 
     private final static int ROOM_SIZE = 5;
 
