@@ -2,7 +2,6 @@ package com.gmail.uprial.railnet.populator.dungeon;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.HashUtils;
-import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -74,8 +73,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             this.itemConfig = null;
         }
 
-        Material getMaterial(int seed) {
-            return materials.get(seed % materials.size());
+        Material getMaterial(final Chunk chunk) {
+            return getListItem(materials, chunk);
         }
 
         Integer getCount() {
@@ -442,14 +441,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
 
-            final int code = chunk.getX() + chunk.getZ();
-            final int index = (int)(Math.abs(HashUtils.getHash(code)) % chestLootTable.size());
-
             int i = 0;
-            for(D d : chestLootTable.get(index)) {
+            for(D d : getListItem(chestLootTable, chunk)) {
                 int count = d.getCount();
                 while(count > 0) {
-                    final Material material = d.getMaterial(code);
+                    final Material material = d.getMaterial(chunk);
                     final int amount = Math.min(material.getMaxStackSize(), count);
                     final ItemStack itemStack = new ItemStack(material, amount);
 
@@ -541,5 +537,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                 }
             }
         }
+    }
+
+    private static <T> T getListItem(final List<T> list, final Chunk chunk) {
+        final long chunkHash = HashUtils.getHash(chunk.getX() + chunk.getZ());
+        final int index = (int)(Math.abs(chunkHash) % list.size());
+        return list.get(index);
     }
 }
