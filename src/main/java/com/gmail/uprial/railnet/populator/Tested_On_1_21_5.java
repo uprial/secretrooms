@@ -15,7 +15,10 @@ package com.gmail.uprial.railnet.populator;
     oceanic-threshold: 8.0
     deep-oceanic-threshold: 27.0
 
-    WorldBorder 4050 x 4050
+    WorldBorder
+    world:          4050 x 4050
+    world_nether:   300  x 300
+    world_the_end:  4050 x 4050
 
     Collected test data will be marked by a "#" prefix.
 

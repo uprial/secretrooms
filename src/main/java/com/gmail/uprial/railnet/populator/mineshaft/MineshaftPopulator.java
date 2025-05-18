@@ -112,11 +112,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
                     $ grep " CHEST\[.* populated " logs/latest.log | wc -l
              */
-            // 4,035
+            // 3,558
             .put(Material.CHEST, this::populateContainer)
-            // 30
+            // 37
             .put(Material.TRAPPED_CHEST, this::populateContainer)
-            // 1,295
+            // 1,284
             .put(Material.BARREL, this::populateContainer)
             /*
                 Ideated from Furnace
@@ -125,13 +125,14 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
                     $ grep " CHEST\[.* fuel " logs/latest.log | wc -l
              */
-            // 5,009
+            // 5,005
             .put(Material.FURNACE, this::populateFurnace)
-            // 9
+            // 8
             .put(Material.BLAST_FURNACE, this::populateFurnace)
-            // 23
+            // 30
             .put(Material.SMOKER, this::populateFurnace)
             // Ideated from Illusioner
+            // 38
             .put(Material.BREWING_STAND, this::populateEndShip)
             .build();
 
