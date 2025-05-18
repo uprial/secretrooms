@@ -470,7 +470,9 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             which removes all potential fun of placing them.
             .put(Material.END_CRYSTAL, ...)
 
-            Bedrock has no real usage, but may bring potential damage to the world.
+            Bedrock has no real usage, but it may bring potential damage to the world
+            and also may break MasochisticSurvival:NastyEnderDragonListener
+            because it detects pillars based on bedrock.
             .put(Material.BEDROCK, ...)
 
             Golden carrots and apples are funny for 1st time,
