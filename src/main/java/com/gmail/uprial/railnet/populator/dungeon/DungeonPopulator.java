@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.populator.dungeon;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.HashUtils;
+import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -14,10 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.gmail.uprial.railnet.common.Formatter.format;
@@ -55,7 +53,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
     // DungeonChestLootTable
     private static class D {
-        private final Material material;
+        private final Set<Material> materials = new HashSet<>();
         private final Integer count;
         private final ItemConfig itemConfig;
 
@@ -64,13 +62,19 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         }
 
         D(final Material material, final Integer count, final ItemConfig itemConfig) {
-            this.material = material;
+            this.materials.add(material);
             this.count = count;
             this.itemConfig = itemConfig;
         }
 
+        D(final Set<Material> materials, final Integer count) {
+            this.materials.addAll(materials);
+            this.count = count;
+            this.itemConfig = null;
+        }
+
         Material getMaterial() {
-            return material;
+            return RandomUtils.getSetItem(materials);
         }
 
         Integer getCount() {
@@ -164,7 +168,23 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             = ImmutableList.<List<D>>builder()
 
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.BAMBOO_BLOCK, STACK * 27))
+                    /*
+                        According to https://minecraft.wiki/w/Log,
+                        there are 9 types of logs and 2 types of stems.
+                     */
+                    .add(new D(ImmutableSet.<Material>builder()
+                            .add(Material.OAK_LOG)
+                            .add(Material.SPRUCE_LOG)
+                            .add(Material.BIRCH_LOG)
+                            .add(Material.JUNGLE_LOG)
+                            .add(Material.ACACIA_LOG)
+                            .add(Material.DARK_OAK_LOG)
+                            .add(Material.MANGROVE_LOG)
+                            .add(Material.CHERRY_LOG)
+                            .add(Material.PALE_OAK_LOG)
+                            .add(Material.CRIMSON_STEM)
+                            .add(Material.WARPED_STEM)
+                            .build(), STACK * 27))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.SEA_LANTERN, STACK * 18))

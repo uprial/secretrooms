@@ -4,3 +4,4 @@
 * Fixed Ancient City and Pyramid detection
 * Reduced Dungeon and Whirlpool frequency
 * Replaced the error-prone bedrock loot to Reinforced Deepslate
+* Replaced BAMBOO_BLOCK to a random log
