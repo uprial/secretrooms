@@ -6,6 +6,7 @@ import com.gmail.uprial.railnet.common.RandomUtils;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.*;
@@ -53,7 +54,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
     // DungeonChestLootTable
     private static class D {
-        private final Set<Material> materials = new HashSet<>();
+        private final List<Material> materials;
         private final Integer count;
         private final ItemConfig itemConfig;
 
@@ -62,19 +63,19 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         }
 
         D(final Material material, final Integer count, final ItemConfig itemConfig) {
-            this.materials.add(material);
+            this.materials = Collections.singletonList(material);
             this.count = count;
             this.itemConfig = itemConfig;
         }
 
         D(final Set<Material> materials, final Integer count) {
-            this.materials.addAll(materials);
+            this.materials = Lists.newArrayList(materials);
             this.count = count;
             this.itemConfig = null;
         }
 
-        Material getMaterial() {
-            return RandomUtils.getSetItem(materials);
+        Material getMaterial(int seed) {
+            return materials.get(seed % materials.size());
         }
 
         Integer getCount() {
@@ -187,7 +188,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                             .build(), STACK * 27))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.SEA_LANTERN, STACK * 18))
+                    /*
+                        According to https://www.youtube.com/watch?v=ZntF03lSY4E,
+                        the top-1 of best-looking blocks.
+                     */
+                    .add(new D(Material.SEA_LANTERN, STACK * 9))
                     .build())
             /*
                             Regular*1   Deepslate*1 Regular*2   Deepslate*2 Max mining
@@ -221,7 +226,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     /*
                         According to https://minecraft.wiki/w/Wither,
                         Reinforced Deepslate is the most vanilla block
-                        that the wither cannot break.
+                        that the Wither cannot break.
+
+                        One stack is enough to make a Wither stuck.
                      */
                     .add(new D(Material.REINFORCED_DEEPSLATE, STACK))
                     .build())
@@ -435,15 +442,16 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
 
-            final long code = chunk.getX() + chunk.getZ();
+            final int code = chunk.getX() + chunk.getZ();
             final int index = (int)(Math.abs(HashUtils.getHash(code)) % chestLootTable.size());
 
             int i = 0;
             for(D d : chestLootTable.get(index)) {
                 int count = d.getCount();
                 while(count > 0) {
-                    final int amount = Math.min(d.getMaterial().getMaxStackSize(), count);
-                    final ItemStack itemStack = new ItemStack(d.getMaterial(), amount);
+                    final Material material = d.getMaterial(code);
+                    final int amount = Math.min(material.getMaxStackSize(), count);
+                    final ItemStack itemStack = new ItemStack(material, amount);
 
                     d.applyItemConfig(itemStack);
 
@@ -452,7 +460,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     if (customLogger.isDebugMode()) {
                         // WARNING: ConsistencyReference#1
                         customLogger.debug(String.format("%s item #%d %s set to %d",
-                                format(chest), i, d.getMaterial(), amount));
+                                format(chest), i, material, amount));
                     }
 
                     count -= amount;
