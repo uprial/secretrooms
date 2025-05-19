@@ -267,39 +267,47 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     /*
         The implementation uses basement blocks to detect structures,
         because chunk.getStructures() returns only some structures, e.g., a monument
+
+        ==== Test ====
+            Tested also on an extended WorldBorder
+            world:          10050 x 10050
+            world_nether:   1300  x 1300
+            world_the_end:  10050 x 10050
+
+            # <typical-test> - <extended-test>
      */
     private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
             // Woodland mansion (rarely mineshaft)
-            // #0
+            // #0 - 61
             .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
-            // #0
+            // #0 - 190
             .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
-            // #0
+            // #0 - 152
             .put(Material.DARK_OAK_STAIRS, MANSION_DENSITY)
 
             // Stronghold - disabled: there are other reasons to visit this structure
             //.put(Material.BOOKSHELF, STRONGHOLD_DENSITY)
 
             // Ancient City
-            // #18
+            // #18 - 89
             .put(Material.CHISELED_DEEPSLATE, ANCIENT_CITY_DENSITY)
-            // #6
+            // #6 - 26
             .put(Material.DEEPSLATE_BRICK_SLAB, ANCIENT_CITY_DENSITY)
-            // #54
+            // #54 - 268
             .put(Material.DEEPSLATE_TILE_SLAB, ANCIENT_CITY_DENSITY)
-            // #45
+            // #45 - 444
             .put(Material.POLISHED_BASALT, ANCIENT_CITY_DENSITY)
-            // #2
+            // #2 - 4
             .put(Material.SCULK, ANCIENT_CITY_DENSITY)
 
             // Bastion
-            // #25
+            // #25 - 139
             .put(Material.BLACKSTONE, BASTION_DENSITY)
-            // #14
+            // #14 - 129
             .put(Material.GILDED_BLACKSTONE, BASTION_DENSITY)
-            // #0
+            // #0 - 3
             .put(Material.POLISHED_BLACKSTONE_BRICKS, BASTION_DENSITY)
-            // #1
+            // #1 - 1
             .put(Material.POLISHED_BLACKSTONE_SLAB, BASTION_DENSITY)
 
             // Pyramid
@@ -320,13 +328,13 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 Considering this a rare case in the probability-based population,
                 I decided it's too expensive to fix this bug.
              */
-            // #26
+            // #26 - 126
             .put(Material.BLUE_TERRACOTTA, PYRAMID_DENSITY)
-            // #7
+            // #7 - 53
             .put(Material.ORANGE_TERRACOTTA, PYRAMID_DENSITY)
-            // #19
+            // #19 - 76
             .put(Material.CUT_SANDSTONE, PYRAMID_DENSITY)
-            // #3
+            // #3 - 19
             .put(Material.SUSPICIOUS_SAND, PYRAMID_DENSITY)
 
             // Trial Chamber - disabled: too many
