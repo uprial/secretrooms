@@ -11,7 +11,7 @@ Underground railways, rare loot.
 ## Features
 
 * Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
-* Uncommon, rare, and epic loot in chests with higher probability in pyramids, mansions and bastions
+* Uncommon, rare, and epic loot in chests with higher probability in pyramids, ancient cities, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
 * Lime-colored stained glass and panels are explosive-resistant
