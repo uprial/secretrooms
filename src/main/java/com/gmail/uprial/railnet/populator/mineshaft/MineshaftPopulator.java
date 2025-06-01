@@ -35,14 +35,14 @@ import static com.gmail.uprial.railnet.common.Utils.seconds2ticks;
 public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final RailNet plugin;
     private final CustomLogger customLogger;
-    private final boolean dynamicLootDensity;
+    private final int distanceDensityMultiplier;
 
     public MineshaftPopulator(final RailNet plugin,
                               final CustomLogger customLogger,
-                              final boolean dynamicLootDensity) {
+                              final int distanceDensityMultiplier) {
         this.plugin = plugin;
         this.customLogger = customLogger;
-        this.dynamicLootDensity = dynamicLootDensity;
+        this.distanceDensityMultiplier = distanceDensityMultiplier;
     }
 
     @Override
@@ -200,43 +200,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         return WORLD_DENSITIES.getOrDefault(worldName, 0);
     }
 
-    /*
-        Increase density according to distance from the map center.
-
-        Typical WorldBorder is 10_000 x 10_000, which
-        adds sqrt(10^2+10^2)/5 = 2 density near the world borders.
-
-        ==== Test ====
-
-            MATERIAL                static  dynamic
-
-            TNT                     511     646
-            OBSIDIAN                770     684
-            POTION                  43      45
-            LINGERING_POTION        21      16
-            TIPPED_ARROW            1,477   1,285
-            FIREWORK_ROCKET         42      53
-            ENCHANTED_GOLDEN_APPLE  185     220
-            OMINOUS_BOTTLE          298     179
-            SPAWNER                 9       3
-            GOLDEN_HELMET           64      74
-            GOLDEN_CHESTPLATE       63      58
-            GOLDEN_LEGGINGS         60      69
-            GOLDEN_BOOTS            67      67
-            GOLDEN_PICKAXE          38      31
-            GOLDEN_SWORD            32      35
-
-            Conclusion: there is no observable difference on a 4050 x 4050 map
-            whether to enable dynamic loot density or not.
-
-            A theoretical test gives +3.5%.
-     */
-    private static final int DISTANCE_DENSITY_MULTIPLIER = 5_000;
     int getDistanceDensity(final Block block) {
-        if(dynamicLootDensity) {
+        if(distanceDensityMultiplier > 0) {
             return (int) Math.floor(
                     Math.sqrt(Math.pow(block.getX(), 2.0D) + Math.pow(block.getZ(), 2.0D))
-                            / DISTANCE_DENSITY_MULTIPLIER
+                            / distanceDensityMultiplier
             );
         } else {
             return 0;

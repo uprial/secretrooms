@@ -43,7 +43,7 @@ public class RailNetConfigTest extends TestConfigBase {
     @Test
     public void testDynamicLootDensity() throws Exception {
         e.expect(InvalidConfigException.class);
-        e.expectMessage("Empty 'dynamic-loot-density' flag");
+        e.expectMessage("Empty 'distance-density-multiplier' value");
         loadConfig(getDebugFearingCustomLogger(), "underground-railways: true");
     }
 
@@ -51,9 +51,9 @@ public class RailNetConfigTest extends TestConfigBase {
     public void testNormalConfig() throws Exception {
         assertEquals(
                 "underground-railways: true," +
-                        " dynamic-loot-density: true",
+                        " distance-density-multiplier: 5,000",
                 loadConfig(getCustomLogger(),
                         "underground-railways: true",
-                        "dynamic-loot-density: true").toString());
+                        "distance-density-multiplier: 5_000").toString());
     }
 }

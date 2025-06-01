@@ -12,14 +12,14 @@ public class MineshaftPopulatorTest extends TestConfigBase {
 
     @Test
     public void testDistanceDensity() {
-        assertEquals(0, getDD(0, 0, false));
-        assertEquals(0, getDD(0, 0, true));
+        assertEquals(0, getDD(0, 0, 0));
+        assertEquals(0, getDD(0, 0, 5_000));
 
-        assertEquals(0, getDD(5_000, 5_000, false));
-        assertEquals(1, getDD(5_000, 5_000, true));
+        assertEquals(0, getDD(5_000, 5_000, 0));
+        assertEquals(1, getDD(5_000, 5_000, 5_000));
 
-        assertEquals(0, getDD(10_000, 10_000, false));
-        assertEquals(2, getDD(10_000, 10_000, true));
+        assertEquals(0, getDD(10_000, 10_000, 0));
+        assertEquals(2, getDD(10_000, 10_000, 5_000));
     }
 
     @Test
@@ -32,8 +32,8 @@ public class MineshaftPopulatorTest extends TestConfigBase {
         for(int x = -r; x <= r; x += 100) {
             for(int z = -r; z <= r; z += 100) {
                 chests++;
-                staticDensity += getDD(x, z, false);
-                dynamicDensity += getDD(x, z, true);
+                staticDensity += getDD(x, z, 0);
+                dynamicDensity += getDD(x, z, 5_000);
             }
         }
 
@@ -44,13 +44,13 @@ public class MineshaftPopulatorTest extends TestConfigBase {
         assertEquals(0.035D, 1.0D * dynamicDensity / chests, 0.01D);
     }
 
-    private int getDD(final int x, final int z, final boolean dynamicLootDensity) {
+    private int getDD(final int x, final int z, final int distanceDensityMultiplier) {
         final Block block = mock(Block.class);
 
         when(block.getX()).thenReturn(x);
         when(block.getZ()).thenReturn(z);
 
-        return new MineshaftPopulator(null, null, dynamicLootDensity)
+        return new MineshaftPopulator(null, null, distanceDensityMultiplier)
                 .getDistanceDensity(block);
     }
 }

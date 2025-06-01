@@ -22,8 +22,9 @@ debug: false
 underground-railways: true
 
 #
-# Loot density increases according to distance from the map center.
+# Increase density according to distance from the map center.
 #
-# Possible values: true | false
+# Use 0 to disable the feature.
 #
-dynamic-loot-density: true
+
+distance-density-multiplier: 5_000
