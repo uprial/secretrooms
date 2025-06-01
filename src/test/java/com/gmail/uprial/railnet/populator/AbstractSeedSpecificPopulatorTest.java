@@ -10,23 +10,27 @@ import static org.junit.Assert.*;
 public class AbstractSeedSpecificPopulatorTest {
     @Test
     public void testConsistency() {
-        final int seed = 119;
-        final int density = 12;
+        for(int density = 88; density < 288; density += 22) {
+            for (int seed = 19; seed < 1119; seed += 119) {
 
-        final Map<Integer, Object> maps = new HashMap<>();
-        for(int i = 0; i < 2; i++) {
-            final Map<ChunkXZ, Boolean> map = new HashMap<>();
-            for(int x = -99; x < 100; x++) {
-                for(int z = -99; z < 100; z++) {
-                    map.put(new ChunkXZ(x, z), isAppropriate(x, z, seed, density));
+                Map<ChunkXZ, Boolean> prevMap = null;
+                for (int i = 0; i < 2; i++) {
+                    final Map<ChunkXZ, Boolean> map = new HashMap<>();
+                    for (int x = -99; x < 100; x++) {
+                        for (int z = -99; z < 100; z++) {
+                            map.put(new ChunkXZ(x, z), isAppropriate(x, z, seed, density));
+                        }
+                    }
+
+                    if (i == 0) {
+                        assertNull(prevMap);
+                        prevMap = map;
+                    } else {
+                        assertNotNull(prevMap);
+                        assertEquals(prevMap, map);
+                    }
                 }
             }
-
-            if(i > 0) {
-                assertEquals(map, maps.get(i - 1));
-            }
-
-            maps.put(i, map);
         }
     }
 
@@ -79,7 +83,7 @@ public class AbstractSeedSpecificPopulatorTest {
                         for (int z = -1; z <= +1; z+=2) {
                             if ((x != +1) && (z != +1)) {
                                 final ChunkXZ chunkXZ = new ChunkXZ(x * a.getX(), z * a.getZ());
-                                if (appropriates.contains(chunkXZ)) {
+                                if (!a.equals(chunkXZ) && (appropriates.contains(chunkXZ))) {
                                     symmetric.add(chunkXZ);
                                 }
                             }
@@ -89,13 +93,13 @@ public class AbstractSeedSpecificPopulatorTest {
                     for(int x = -1; x <= +1; x+=2) {
                         for (int z = -1; z <= +1; z+=2) {
                             final ChunkXZ chunkXZ = new ChunkXZ(x * a.getZ(), z * a.getX());
-                            if (appropriates.contains(chunkXZ)) {
+                            if (!a.equals(chunkXZ) && (appropriates.contains(chunkXZ))) {
                                 symmetric.add(chunkXZ);
                             }
                         }
                     }
                     assertTrue(String.format("%s symmetry for %d/%d: %s", a, density, seed, symmetric),
-                            symmetric.size() < 2);
+                            symmetric.isEmpty());
                 }
             }
         }
@@ -104,17 +108,17 @@ public class AbstractSeedSpecificPopulatorTest {
     @Test
     public void testPrimeNumbers() {
         // My guess was that the prime numbers are more stable, but they are not
-        Map<Integer,Integer> density2count = new LinkedHashMap<>();
-        density2count.put(97, 4298);
-        density2count.put(100, 3982);
-        density2count.put(101, 3831);
+        final Map<Integer,Integer> density2count = new LinkedHashMap<>();
+        density2count.put(97, 4039);
+        density2count.put(100, 4004);
+        density2count.put(101, 3806);
 
-        density2count.put(293, 1381);
-        density2count.put(300, 1312);
-        density2count.put(307, 1341);
+        density2count.put(293, 1293);
+        density2count.put(300, 1326);
+        density2count.put(307, 1365);
 
-        for(Map.Entry<Integer,Integer> entry : density2count.entrySet()) {
-            int density = entry.getKey();
+        for(final Map.Entry<Integer,Integer> entry : density2count.entrySet()) {
+            final int density = entry.getKey();
             Integer counter = 0;
 
             for (int seed = 19; seed < 1119; seed += 119) {
@@ -126,7 +130,8 @@ public class AbstractSeedSpecificPopulatorTest {
                     }
                 }
             }
-            assertEquals(counter, entry.getValue());
+            assertEquals(String.format("Prime number %d counter", density),
+                    entry.getValue(), counter);
         }
     }
 }

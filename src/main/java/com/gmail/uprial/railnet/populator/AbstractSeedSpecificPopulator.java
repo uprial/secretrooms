@@ -1,6 +1,6 @@
 package com.gmail.uprial.railnet.populator;
 
-import com.gmail.uprial.railnet.common.HashUtils;
+import com.gmail.uprial.railnet.common.SeedUtils;
 import com.gmail.uprial.railnet.common.WorldName;
 import org.bukkit.Chunk;
 
@@ -35,15 +35,7 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
     }
 
     static boolean isAppropriate(final long x, final long z, final long seed, final long density) {
-        /*
-            The method must be
-            - consistent
-            - evenly distributed
-            - asymmetric
-         */
-        return (HashUtils.getHash(seed * x * z
-                + (seed % density) * x
-                + (seed / density + density / seed) * z) % density) == 0;
+        return (SeedUtils.getHash(seed, x, z) % density) == 0;
     }
 
     private boolean isAppropriate(final Chunk chunk) {
