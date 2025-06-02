@@ -330,7 +330,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         }
 
         // Two rooms with a height of 2 and a floor of 1
-        if(floorY + 5 > roofY - 1) {
+        if(floorY + 6 > roofY - 1) {
             if(customLogger.isDebugMode()) {
                 customLogger.debug(String.format("%s[%s] can't be populated: %d floor and %d roof",
                         getName(), format(chunk), floorY, roofY));
@@ -377,16 +377,16 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                 ROOM_SIZE - 1, floorY + 2, ROOM_SIZE - 1);
 
         box(Material.AIR,
-                1, floorY + 4, 1,
-                ROOM_SIZE - 1, floorY + 5, ROOM_SIZE - 1);
+                1, floorY + 5, 1,
+                ROOM_SIZE - 1, floorY + 6, ROOM_SIZE - 1);
 
         box(Material.AIR,
-                0, floorY + 4, 2,
-                0, floorY + 5, ROOM_SIZE - 1);
+                0, floorY + 5, 2,
+                0, floorY + 6, ROOM_SIZE - 1);
 
         box(Material.AIR,
-                2, floorY + 4, 0,
-                ROOM_SIZE - 1, floorY + 5, 0);
+                2, floorY + 5, 0,
+                ROOM_SIZE - 1, floorY + 6, 0);
 
         /*
             We need to start from the layer above the floor
@@ -403,13 +403,26 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         vc.set(0, entranceY, 0, Material.SOUL_WALL_TORCH, BlockFace.SOUTH);
 
         // A ladder to the sub-room
-        for(int y = floorY + 1; y <= floorY + 3; y++) {
+        for(int y = floorY + 1; y <= floorY + 4; y++) {
             vc.set(ROOM_SIZE - 1, y, ROOM_SIZE - 1, Material.LADDER, BlockFace.NORTH);
         }
 
         {
+            final int sx = ROOM_SIZE / 2;
+            final int sy = floorY + 4;
+            final int sz = ROOM_SIZE / 2;
+
+            // Defend the creeper spawner from the sides
+            for(int s = -1; s <= +1; s += 2) {
+                vc.set(sx + s, sy, sz, Material.REINFORCED_DEEPSLATE);
+                vc.set(sx, sy, sz + s, Material.REINFORCED_DEEPSLATE);
+            }
+            vc.set(sx, sy - 1, sz, Material.REINFORCED_DEEPSLATE);
+            // Hide the creeper spawner from the top
+            vc.set(sx, sy + 1, sz, Material.BLACK_CARPET);
+
             final CreatureSpawner spawner
-                    = (CreatureSpawner) vc.set(ROOM_SIZE / 2, floorY + 4, ROOM_SIZE / 2, Material.SPAWNER).getState();
+                    = (CreatureSpawner) vc.set(sx, sy, sz, Material.SPAWNER).getState();
 
             // Spawn a lot of Creepers, but only when the player is close.
             spawner.setMaxNearbyEntities(8); // Default: 16
@@ -432,13 +445,13 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                 the player must beat the enemies around and only then open the chest.
              */
             // Horizontal box
-            vc.set(0, floorY + 4, 1, Material.BEDROCK);
-            vc.set(1, floorY + 4, 0, Material.BEDROCK);
+            vc.set(0, floorY + 5, 1, Material.BEDROCK);
+            vc.set(1, floorY + 5, 0, Material.BEDROCK);
             // Vertical box
-            vc.set(1, floorY + 5, 1, Material.BEDROCK);
-            vc.set(1, floorY + 3, 1, Material.BEDROCK);
+            vc.set(1, floorY + 6, 1, Material.BEDROCK);
+            vc.set(1, floorY + 4, 1, Material.BEDROCK);
 
-            final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
+            final Block chest = vc.set(1, floorY + 5, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
             final BlockSeed bs = BlockSeed.valueOf(chest);
 
