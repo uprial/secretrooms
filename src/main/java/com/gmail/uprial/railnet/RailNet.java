@@ -48,18 +48,12 @@ public final class RailNet extends JavaPlugin {
 
         final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
 
-        final String railWayName;
-        if(railNetConfig.hasUndergroundRailways()) {
-            // Order does matter: RailWay is top priority
-            final RailWayPopulator railWayPopulator = new RailWayPopulator(this, consoleLogger);
-            railWayName = railWayPopulator.getName();
+        // Order does matter: RailWay is a top priority because it conflicts with other populators.
+        final RailWayPopulator railWayPopulator = new RailWayPopulator(this, consoleLogger);
+        chunkPopulators.add(railWayPopulator);
 
-            chunkPopulators.add(railWayPopulator);
-        } else {
-            railWayName = null;
-        }
-        chunkPopulators.add(new WhirlpoolPopulator(consoleLogger, railWayName));
-        chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayName));
+        chunkPopulators.add(new WhirlpoolPopulator(consoleLogger, railWayPopulator.getName()));
+        chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayPopulator.getName()));
         // Order does matter: populate chests in RailWay and Whirlpool.
         chunkPopulators.add(new MineshaftPopulator(this, consoleLogger, railNetConfig.getDistanceDensityMultiplier()));
 

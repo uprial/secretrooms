@@ -12,7 +12,7 @@ public class RailNetTest extends TestConfigBase {
     @Test
     public void testLoadException() throws Exception {
         e.expect(RuntimeException.class);
-        e.expectMessage("[ERROR] Empty 'underground-railways' flag");
+        e.expectMessage("[ERROR] Empty 'distance-density-multiplier' value");
         RailNet.loadConfig(getPreparedConfig(""), getCustomLogger());
     }
 }

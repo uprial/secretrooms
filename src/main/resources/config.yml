@@ -13,15 +13,6 @@
 debug: false
 
 #
-# Enable underground railways from a spawn location
-# to a woodland mansion and an ocean monument
-# with ladders from above at stations.
-#
-# Possible values: true | false
-#
-underground-railways: true
-
-#
 # Increase density according to distance from the map center.
 #
 # Use 0 to disable the feature.
