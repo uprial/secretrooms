@@ -1,16 +1,22 @@
 package com.gmail.uprial.railnet.populator;
 
+import com.gmail.uprial.railnet.common.BlockSeed;
 import org.junit.Test;
 
 import java.util.*;
 
-import static com.gmail.uprial.railnet.populator.AbstractSeedSpecificPopulator.isAppropriate;
 import static org.junit.Assert.*;
 
 public class AbstractSeedSpecificPopulatorTest {
+    static class TestBlockSeed extends BlockSeed {
+        TestBlockSeed(final long seed, final long x, final long z) {
+            super(seed, x, z);
+        }
+    }
+
     @Test
     public void testConsistency() {
-        for(int density = 88; density < 288; density += 22) {
+        for(int probability = 88; probability < 288; probability += 22) {
             for (int seed = 19; seed < 1119; seed += 119) {
 
                 Map<ChunkXZ, Boolean> prevMap = null;
@@ -18,7 +24,7 @@ public class AbstractSeedSpecificPopulatorTest {
                     final Map<ChunkXZ, Boolean> map = new HashMap<>();
                     for (int x = -99; x < 100; x++) {
                         for (int z = -99; z < 100; z++) {
-                            map.put(new ChunkXZ(x, z), isAppropriate(x, z, seed, density));
+                            map.put(new ChunkXZ(x, z), isAppropriate(seed, x, z, probability));
                         }
                     }
 
@@ -36,18 +42,18 @@ public class AbstractSeedSpecificPopulatorTest {
 
     @Test
     public void testDistribution() {
-        for(int density = 88; density < 288; density += 22) {
+        for(int probability = 88; probability < 288; probability += 22) {
             for (int seed = 19; seed < 1119; seed += 119) {
                 int counter = 0;
                 for (int x = -99; x < 100; x++) {
                     for (int z = -99; z < 100; z++) {
-                        if (isAppropriate(x, z, seed, density)) {
+                        if (isAppropriate(seed, x, z, probability)) {
                             counter++;
                         }
                     }
                 }
 
-                final int frequency = 200 * 200 / density;
+                final int frequency = 200 * 200 / probability;
                 assertTrue(counter >= frequency / 2);
                 assertTrue(counter <= frequency * 2);
             }
@@ -56,22 +62,24 @@ public class AbstractSeedSpecificPopulatorTest {
 
     @Test
     public void testAsymmetry() {
-        for(long density = 1288; density < 2288; density += 128) {
-            for (long seed = 119; seed < 219; seed += 19) {
+        for (int probability = 1288; probability < 2288; probability += 128) {
+            for (int seed = 119; seed < 219; seed += 19) {
 
                 final Set<ChunkXZ> appropriates = new HashSet<>();
                 for (int x = -99; x < 100; x++) {
                     for (int z = -99; z < 100; z++) {
-                        if (isAppropriate(x, z, seed, density)) {
+                        if (isAppropriate(seed, x, z, probability)) {
                             appropriates.add(new ChunkXZ(x, z));
                         }
                     }
                 }
 
-                assertFalse(String.format("Appropriates is empty for %d/%d", density, seed),
+                assertFalse(String.format("Appropriates is empty for %d/%d",
+                                probability, seed),
                         appropriates.isEmpty());
-                assertFalse(String.format("Too many appropriates for %d/%d: %d/%d", density, seed, appropriates.size(), density / 5),
-                        appropriates.size() > density / 5);
+                assertFalse(String.format("Too many appropriates for %d/%d: %d/%d",
+                                probability, seed, appropriates.size(), probability / 5),
+                        appropriates.size() > probability / 5);
 
                 for (final ChunkXZ a : appropriates) {
                     assertTrue(String.format("%s is self-symmetric", a),
@@ -98,7 +106,7 @@ public class AbstractSeedSpecificPopulatorTest {
                             }
                         }
                     }
-                    assertTrue(String.format("%s symmetry for %d/%d: %s", a, density, seed, symmetric),
+                    assertTrue(String.format("%s symmetry for %d/%d: %s", a, probability, seed, symmetric),
                             symmetric.isEmpty());
                 }
             }
@@ -108,30 +116,34 @@ public class AbstractSeedSpecificPopulatorTest {
     @Test
     public void testPrimeNumbers() {
         // My guess was that the prime numbers are more stable, but they are not
-        final Map<Integer,Integer> density2count = new LinkedHashMap<>();
-        density2count.put(97, 4039);
-        density2count.put(100, 4004);
-        density2count.put(101, 3806);
+        final Map<Integer,Integer> probability2count = new LinkedHashMap<>();
+        probability2count.put(97, 4039);
+        probability2count.put(100, 4004);
+        probability2count.put(101, 3806);
 
-        density2count.put(293, 1293);
-        density2count.put(300, 1326);
-        density2count.put(307, 1365);
+        probability2count.put(293, 1293);
+        probability2count.put(300, 1326);
+        probability2count.put(307, 1365);
 
-        for(final Map.Entry<Integer,Integer> entry : density2count.entrySet()) {
-            final int density = entry.getKey();
+        for(final Map.Entry<Integer,Integer> entry : probability2count.entrySet()) {
+            final int probability = entry.getKey();
             Integer counter = 0;
 
             for (int seed = 19; seed < 1119; seed += 119) {
                 for (int x = -99; x < 100; x++) {
                     for (int z = -99; z < 100; z++) {
-                        if (isAppropriate(x, z, seed, density)) {
+                        if (isAppropriate(seed, x, z, probability)) {
                             counter++;
                         }
                     }
                 }
             }
-            assertEquals(String.format("Prime number %d counter", density),
+            assertEquals(String.format("Prime number %d counter", probability),
                     entry.getValue(), counter);
         }
+    }
+
+    private boolean isAppropriate(final long seed, final int x, final int z, final int probability) {
+        return AbstractSeedSpecificPopulator.isAppropriate(new TestBlockSeed(seed, x, z), probability);
     }
 }

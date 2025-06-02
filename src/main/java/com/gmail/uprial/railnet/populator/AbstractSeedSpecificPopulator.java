@@ -1,12 +1,12 @@
 package com.gmail.uprial.railnet.populator;
 
-import com.gmail.uprial.railnet.common.SeedUtils;
+import com.gmail.uprial.railnet.common.BlockSeed;
 import com.gmail.uprial.railnet.common.WorldName;
 import org.bukkit.Chunk;
 
 public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     final String worldName;
-    final int density;
+    final int probability;
 
     static class InternalPopulatorConfigurationError extends RuntimeException {
         InternalPopulatorConfigurationError(String message) {
@@ -14,13 +14,13 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
         }
     }
 
-    public AbstractSeedSpecificPopulator(final String worldName, final int density) {
+    public AbstractSeedSpecificPopulator(final String worldName, final int probability) {
         if((worldName != null) && (!WorldName.getAll().contains(worldName))) {
             throw new InternalPopulatorConfigurationError(String.format("Unknown world: %s", worldName));
         }
         this.worldName = worldName;
 
-        this.density = density;
+        this.probability = probability;
     }
 
     protected abstract boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history);
@@ -34,12 +34,13 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
         }
     }
 
-    static boolean isAppropriate(final long x, final long z, final long seed, final long density) {
-        return (SeedUtils.getHash(seed, x, z) % density) == 0;
+    // For testing purposes
+    static boolean isAppropriate(final BlockSeed bs, final int probability) {
+        return bs.oneOf(probability) == 0;
     }
 
-    private boolean isAppropriate(final Chunk chunk) {
+    boolean isAppropriate(final Chunk chunk) {
         return (worldName == null || chunk.getWorld().getName().equals(worldName))
-                && isAppropriate(chunk.getX(), chunk.getZ(), chunk.getWorld().getSeed(), density);
+                && (isAppropriate(BlockSeed.valueOf(chunk), probability));
     }
 }

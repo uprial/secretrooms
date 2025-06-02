@@ -1,5 +1,6 @@
 package com.gmail.uprial.railnet.populator.whirlpool;
 
+import com.gmail.uprial.railnet.common.BlockSeed;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.*;
@@ -33,11 +34,11 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             $ grep "Whirlpool.*\] populated" logs/latest.log | wc -l
             317
      */
-    private final static int DENSITY = 500;
+    private final static int PROBABILITY = 500;
 
     public WhirlpoolPopulator(final CustomLogger customLogger,
                               final String conflictingPopulatorName) {
-        super(WORLD, DENSITY);
+        super(WORLD, PROBABILITY);
 
         this.customLogger = customLogger;
         this.conflictingPopulatorName = conflictingPopulatorName;
@@ -133,19 +134,23 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
                         final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
 
+                        final BlockSeed bs = BlockSeed.valueOf(block);
+
                         // The deepest water the more loot in the chest.
                         int density = (int)Math.floor((vc.getSeaLevel() - y) / DEPTH_2_DENSITY);
 
                         int i = 0;
 
+                        int callId = 0;
                         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-                            if(entry.getValue().pass(density, chunk.getWorld().getName())) {
-                                final int amount = entry.getValue().getRandomAmount();
+                            callId++;
+                            if(entry.getValue().pass(callId, bs, density, chunk.getWorld().getName())) {
+                                final int amount = entry.getValue().getRandomAmount(bs);
 
                                 inventory.setItem(i, new ItemStack(entry.getKey(), amount));
 
                                 // The fresh getItem() is needed to properly update the amount
-                                entry.getValue().applyItemConfig(inventory.getItem(i));
+                                entry.getValue().applyItemConfig(bs, inventory.getItem(i));
 
                                 if (customLogger.isDebugMode()) {
                                     customLogger.debug(String.format("%s item #%d %s set to %d",

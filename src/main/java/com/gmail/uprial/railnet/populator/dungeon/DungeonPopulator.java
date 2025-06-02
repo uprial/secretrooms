@@ -1,7 +1,7 @@
 package com.gmail.uprial.railnet.populator.dungeon;
 
 import com.gmail.uprial.railnet.common.CustomLogger;
-import com.gmail.uprial.railnet.common.HashUtils;
+import com.gmail.uprial.railnet.common.BlockSeed;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -34,13 +34,13 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             $ grep "Dungeon.*\] populated" logs/latest.log | wc -l
             134
      */
-    private final static int DENSITY = 2_000;
+    private final static int PROBABILITY = 2_000;
 
     private final static int ROOM_SIZE = 5;
 
     public DungeonPopulator(final CustomLogger customLogger,
                             final String conflictingPopulatorName) {
-        super(WORLD, DENSITY);
+        super(WORLD, PROBABILITY);
 
         this.customLogger = customLogger;
         this.conflictingPopulatorName = conflictingPopulatorName;
@@ -73,17 +73,17 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             this.itemConfig = null;
         }
 
-        Material getMaterial(final Chunk chunk) {
-            return getListItem(materials, chunk);
+        Material getMaterial(final BlockSeed bs) {
+            return bs.oneOf(materials);
         }
 
         Integer getCount() {
             return count;
         }
 
-        void applyItemConfig(final ItemStack itemStack) {
+        void applyItemConfig(final BlockSeed bs, final ItemStack itemStack) {
             if(itemConfig != null) {
-                itemConfig.apply(itemStack);
+                itemConfig.apply(bs, itemStack);
             }
         }
     }
@@ -440,16 +440,17 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
             final Block chest = vc.set(1, floorY + 4, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
+            final BlockSeed bs = BlockSeed.valueOf(chest);
 
             int i = 0;
-            for(D d : getListItem(chestLootTable, chunk)) {
+            for(D d : bs.oneOf(chestLootTable)) {
                 int count = d.getCount();
                 while(count > 0) {
-                    final Material material = d.getMaterial(chunk);
+                    final Material material = d.getMaterial(bs);
                     final int amount = Math.min(material.getMaxStackSize(), count);
                     final ItemStack itemStack = new ItemStack(material, amount);
 
-                    d.applyItemConfig(itemStack);
+                    d.applyItemConfig(bs, itemStack);
 
                     inventory.setItem(i, itemStack);
 
@@ -537,11 +538,5 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                 }
             }
         }
-    }
-
-    private static <T> T getListItem(final List<T> list, final Chunk chunk) {
-        final long chunkHash = HashUtils.getHash(chunk.getX() + chunk.getZ());
-        final int index = (int)(Math.abs(chunkHash) % list.size());
-        return list.get(index);
     }
 }

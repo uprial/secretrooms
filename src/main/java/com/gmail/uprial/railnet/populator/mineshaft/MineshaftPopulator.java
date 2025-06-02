@@ -3,8 +3,7 @@ package com.gmail.uprial.railnet.populator.mineshaft;
 import com.gmail.uprial.railnet.RailNet;
 import com.gmail.uprial.railnet.RailNetCron;
 import com.gmail.uprial.railnet.common.CustomLogger;
-import com.gmail.uprial.railnet.common.Probability;
-import com.gmail.uprial.railnet.common.RandomUtils;
+import com.gmail.uprial.railnet.common.BlockSeed;
 import com.gmail.uprial.railnet.common.WorldName;
 import com.gmail.uprial.railnet.populator.*;
 import com.google.common.collect.ImmutableMap;
@@ -181,7 +180,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
     private void maybeMutateBlock(final Block block) {
         final Mutator mutator = blockMutators.get(block.getType());
-        if((mutator != null) && (Probability.PASS(mutator.getProbability(), getWorldDensity(block.getWorld().getName())))){
+        if((mutator != null) && (BlockSeed.valueOf(block).pass(0, mutator.getProbability(), getWorldDensity(block.getWorld().getName())))){
             block.setType(mutator.getMaterial(), false);
             // Commented because too frequent
             /*if (customLogger.isDebugMode()) {
@@ -246,36 +245,36 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
      */
     private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
             // Woodland mansion (rarely mineshaft)
-            // #0 - 61
+            // # 0 - 61
             .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
-            // #0 - 190
+            // # 0 - 190
             .put(Material.DARK_OAK_SLAB, MANSION_DENSITY)
-            // #0 - 152
+            // # 0 - 152
             .put(Material.DARK_OAK_STAIRS, MANSION_DENSITY)
 
             // Stronghold - disabled: there are other reasons to visit this structure
             //.put(Material.BOOKSHELF, STRONGHOLD_DENSITY)
 
             // Ancient City
-            // #18 - 89
+            // # 18 - 89
             .put(Material.CHISELED_DEEPSLATE, ANCIENT_CITY_DENSITY)
-            // #6 - 26
+            // # 6 - 26
             .put(Material.DEEPSLATE_BRICK_SLAB, ANCIENT_CITY_DENSITY)
-            // #54 - 268
+            // # 54 - 268
             .put(Material.DEEPSLATE_TILE_SLAB, ANCIENT_CITY_DENSITY)
-            // #45 - 444
+            // # 45 - 444
             .put(Material.POLISHED_BASALT, ANCIENT_CITY_DENSITY)
-            // #2 - 4
+            // # 2 - 4
             .put(Material.SCULK, ANCIENT_CITY_DENSITY)
 
             // Bastion
-            // #25 - 139
+            // # 25 - 139
             .put(Material.BLACKSTONE, BASTION_DENSITY)
-            // #14 - 129
+            // # 14 - 129
             .put(Material.GILDED_BLACKSTONE, BASTION_DENSITY)
-            // #0 - 3
+            // # 0 - 3
             .put(Material.POLISHED_BLACKSTONE_BRICKS, BASTION_DENSITY)
-            // #1 - 1
+            // # 1 - 1
             .put(Material.POLISHED_BLACKSTONE_SLAB, BASTION_DENSITY)
 
             // Pyramid
@@ -296,13 +295,13 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 Considering this a rare case in the probability-based population,
                 I decided it's too expensive to fix this bug.
              */
-            // #26 - 126
+            // # 26 - 126
             .put(Material.BLUE_TERRACOTTA, PYRAMID_DENSITY)
-            // #7 - 53
+            // # 7 - 53
             .put(Material.ORANGE_TERRACOTTA, PYRAMID_DENSITY)
-            // #19 - 76
+            // # 19 - 76
             .put(Material.CUT_SANDSTONE, PYRAMID_DENSITY)
-            // #3 - 19
+            // # 3 - 19
             .put(Material.SUSPICIOUS_SAND, PYRAMID_DENSITY)
 
             // Trial Chamber - disabled: too many
@@ -685,7 +684,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     private final static double MULTIPLY_PROBABILITY = 10.0D;
-    private void populateInventory(final String title, final String worldName, final Inventory inventory, final int density) {
+    private void populateInventory(final String title, final String worldName,
+                                   final BlockSeed bs, final Inventory inventory, final int density) {
         /*
             getContents() returns a list of nulls
             even when the content isn't actually null,
@@ -718,15 +718,18 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
                 and there is nothing specific to multiply.
              */
-            if((itemStack != null) && (itemStack.getMaxStackSize() > 1) && (Probability.PASS(MULTIPLY_PROBABILITY, 0))) {
+            if((itemStack != null) && (itemStack.getMaxStackSize() > 1)
+                    && (bs.pass(i, MULTIPLY_PROBABILITY, 0))) {
                 // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
-                        itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
+                        bs, itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
         }
 
+        int callId = 0;
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
-            if(entry.getValue().pass(density, worldName)) {
+            callId++;
+            if(entry.getValue().pass(callId, bs, density, worldName)) {
                 int i = inventory.firstEmpty();
                 if(i == -1) {
                     // There are no empty slots.
@@ -743,12 +746,12 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
                 // The fresh getItem() is needed to properly update the amount
-                entry.getValue().applyItemConfig(inventory.getItem(i));
+                entry.getValue().applyItemConfig(bs, inventory.getItem(i));
 
                 // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
                         // The fresh getItem() is needed to properly update the amount
-                        0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
+                        bs, 0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
             }
         }
     }
@@ -764,7 +767,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private void populateContainer(final Block block) {
         final int density = getDensity(getBasement(block));
 
-        populateInventory(format(block), block.getWorld().getName(), ((Container)block.getState()).getInventory(), density);
+        populateInventory(format(block), block.getWorld().getName(),
+                BlockSeed.valueOf(block), ((Container)block.getState()).getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
@@ -775,7 +779,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private <T extends InventoryHolder & Entity> void populateInventoryHolder(final T inventoryHolder) {
         final int density = getDensity(getBasement(inventoryHolder));
 
-        populateInventory(format(inventoryHolder), inventoryHolder.getWorld().getName(), inventoryHolder.getInventory(), density);
+        populateInventory(format(inventoryHolder), inventoryHolder.getWorld().getName(),
+                BlockSeed.valueOf(inventoryHolder), inventoryHolder.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
@@ -784,7 +789,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     public void populatePlayer(final Player player, final int density) {
-        populateInventory(format(player), player.getWorld().getName(), player.getInventory(), density);
+        populateInventory(format(player), player.getWorld().getName(),
+                BlockSeed.valueOf(player), player.getInventory(), density);
     }
 
     /*
@@ -799,33 +805,33 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
      */
     private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // # 7,702
+            // # 7,788
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
-            // # 7,752
+            // # 8,067
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
-            // # 7,130
+            // # 8,033
             .put(Material.QUARTZ, CLT.MAX_POWER)
 
-            // # 4,075
+            // # 3,240
             .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
-            // # 4,086
+            // # 6,768
             .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
-            // # 4,241
+            // # 13,600
             .put(Material.COPPER_INGOT, CLT.MAX_POWER - 1)
 
-            // # 2,416
+            // # 2,494
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
-            // # 2,645
+            // # 2,780
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
-            // # 2,632
+            // # 2,202
             .put(Material.COAL, CLT.MAX_POWER - 2)
 
-            // # 598
+            // # 830
             .put(Material.DIAMOND, 1)
-            // # 615
+            // # 502
             .put(Material.EMERALD, 1)
 
-            // # 405
+            // # 466
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
@@ -862,6 +868,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .build();
 
     private void updateItemStack(final String title,
+                                 final BlockSeed bs,
                                  final Supplier<ItemStack> itemStackGetter,
                                  final Consumer<ItemStack> itemStackSetter,
                                  final Map<Material,Integer> lootTable) {
@@ -873,11 +880,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             return;
         }
 
-        final Material material = RandomUtils.getSetItem(lootTable.keySet());
+        final Material material = bs.oneOf(lootTable.keySet());
         itemStackSetter.accept(new ItemStack(material, 1));
         // The sequence is needed to properly update the amount
         itemStack = itemStackGetter.get();
-        setAmount(title, 0, itemStack, 0, lootTable.get(material));
+        setAmount(title, bs, 0, itemStack, 0, lootTable.get(material));
     }
 
     private void populateFurnace(final Block block) {
@@ -885,8 +892,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         final FurnaceInventory inventory = furnace.getInventory();
 
+        final BlockSeed bs = BlockSeed.valueOf(block);
+
         // WARNING: ConsistencyReference#1
         updateItemStack(String.format("%s fuel item", format(block)),
+                bs,
                 inventory::getFuel,
                 inventory::setFuel,
                 furnaceFuelTable);
@@ -898,17 +908,19 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         // WARNING: ConsistencyReference#1
         updateItemStack(String.format("%s result item", format(block)),
+                bs,
                 inventory::getResult,
                 inventory::setResult,
                 lootTable);
     }
 
-    private void setAmount(final String title, final int oldAmount, final ItemStack itemStack,
+    private void setAmount(final String title, final BlockSeed bs,
+                           final int oldAmount, final ItemStack itemStack,
                            final int minPower, final int maxPower) {
         final int newAmount =
                 Math.min(
                         itemStack.getMaxStackSize(),
-                        itemStack.getAmount() * CLT.getRandomAmount(minPower, maxPower)
+                        itemStack.getAmount() * CLT.getRandomAmount(bs, minPower, maxPower)
                 );
 
         itemStack.setAmount(newAmount);

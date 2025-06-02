@@ -1,19 +1,17 @@
 package com.gmail.uprial.railnet.populator;
 
-import com.gmail.uprial.railnet.common.Probability;
+import com.gmail.uprial.railnet.common.BlockSeed;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 // ChestLootTable
 public class CLT {
-    private final static Random RANDOM = new Random();
-
     // 2 ^ 6 = 64
     public final static int MAX_POWER = 6;
 
-    public static int getRandomAmount(final int minPower, final int maxPower) {
-        return (int)Math.pow(2.0, minPower + RANDOM.nextInt(maxPower - minPower + 1));
+    public static int getRandomAmount(final BlockSeed bs, final int minPower, final int maxPower) {
+        return (int)Math.pow(2.0, minPower + bs.oneOf(maxPower - minPower + 1));
     }
 
     private final double probability;
@@ -41,14 +39,14 @@ public class CLT {
         this.maxPower = maxPower;
     }
 
-    public boolean pass(final int density, final String worldName) {
-        return Probability.PASS(probability, density)
+    public boolean pass(final int callId, final BlockSeed bs, final int density, final String worldName) {
+        return bs.pass(callId, probability, density)
                 && (worldNames.isEmpty() || worldNames.contains(worldName));
     }
 
-    public void applyItemConfig(final ItemStack itemStack) {
+    public void applyItemConfig(final BlockSeed bs, final ItemStack itemStack) {
         if (!itemConfigOptions.isEmpty()) {
-            itemConfigOptions.get(RANDOM.nextInt(itemConfigOptions.size())).apply(itemStack);
+            bs.oneOf(itemConfigOptions).apply(bs, itemStack);
         }
     }
 
@@ -56,8 +54,8 @@ public class CLT {
         return maxPower;
     }
 
-    public int getRandomAmount() {
-        return getRandomAmount(0, maxPower);
+    public int getRandomAmount(final BlockSeed bs) {
+        return getRandomAmount(bs, 0, maxPower);
     }
 
     public CLT addItemConfigOption(final ItemConfig itemConfig) {

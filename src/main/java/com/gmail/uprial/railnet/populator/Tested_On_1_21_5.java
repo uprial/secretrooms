@@ -6,7 +6,7 @@ package com.gmail.uprial.railnet.populator;
     ==== Test server configuration ====
 
     Server: Paper
-    Version: 1.21.3
+    Version: 1.21.5
     Seed: -1565193744182814265 (Belongings 2025-01-12)
 
     TerraformGenerator-19.1.0
