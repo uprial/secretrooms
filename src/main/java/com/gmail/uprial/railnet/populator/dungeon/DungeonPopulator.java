@@ -73,17 +73,17 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             this.itemConfig = null;
         }
 
-        Material getMaterial(final BlockSeed bs) {
-            return bs.oneOf(materials);
+        Material getMaterial(final ContentSeed cs) {
+            return cs.oneOf(materials);
         }
 
         Integer getCount() {
             return count;
         }
 
-        void applyItemConfig(final BlockSeed bs, final ItemStack itemStack) {
+        void applyItemConfig(final ContentSeed cs, final ItemStack itemStack) {
             if(itemConfig != null) {
-                itemConfig.apply(bs, itemStack);
+                itemConfig.apply(cs, itemStack);
             }
         }
     }
@@ -454,16 +454,17 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             final Block chest = vc.set(1, floorY + 5, 1, Material.CHEST);
             final Inventory inventory = ((Chest) chest.getState()).getInventory();
             final BlockSeed bs = BlockSeed.valueOf(chest);
+            final ContentSeed cs = ContentSeed.valueOf(chest);
 
             int i = 0;
             for(D d : bs.oneOf(chestLootTable)) {
                 int count = d.getCount();
                 while(count > 0) {
-                    final Material material = d.getMaterial(bs);
+                    final Material material = d.getMaterial(cs);
                     final int amount = Math.min(material.getMaxStackSize(), count);
                     final ItemStack itemStack = new ItemStack(material, amount);
 
-                    d.applyItemConfig(bs, itemStack);
+                    d.applyItemConfig(cs, itemStack);
 
                     inventory.setItem(i, itemStack);
 

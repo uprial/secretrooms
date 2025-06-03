@@ -30,11 +30,17 @@ public class BlockSeed {
     // ==== static constructors ====
 
     public static BlockSeed valueOf(final Block block) {
-        return new BlockSeed(block.getWorld().getSeed(), block.getX(), block.getZ());
+        // WARNING: two blocks with the identical X and Z will have the same BlockSeed.
+        return new BlockSeed(block.getWorld().getSeed(),
+                block.getX(),
+                block.getZ());
     }
 
     public static BlockSeed valueOf(final Entity entity) {
-        return new BlockSeed(entity.getWorld().getSeed(), entity.getLocation().getBlockX(), entity.getLocation().getBlockZ());
+        // WARNING: two entities with the identical X and Z will have the same BlockSeed.
+        return new BlockSeed(entity.getWorld().getSeed(),
+                entity.getLocation().getBlockX(),
+                entity.getLocation().getBlockZ());
     }
 
     public static BlockSeed valueOf(final Chunk chunk) {
@@ -54,7 +60,7 @@ public class BlockSeed {
     private AtomicLong cachedOneOfHash = null;
     public long oneOf(final long range) {
         if(range < 1) {
-            throw new BlockSeedError(String.format("Range is not a natural number: %d", range));
+            throw new BlockSeedError(String.format("%s range is not a natural number: %d", this, range));
         }
 
         if(cachedOneOfHash == null) {
@@ -71,9 +77,9 @@ public class BlockSeed {
 
     public boolean pass(final long callId, final double probability, final int density) {
         if(getRightDigits(probability, 4) > 3) {
-            throw new BlockSeedError(String.format("Probability has too many digits: %f", probability));
+            throw new BlockSeedError(String.format("%s probability has too many digits: %f", this, probability));
         } else if (probability > 100.0D) {
-            throw new BlockSeedError(String.format("Probability too big: %f", probability));
+            throw new BlockSeedError(String.format("%s probability too big: %f", this, probability));
         }
 
         long range = 100_000L;
@@ -89,24 +95,28 @@ public class BlockSeed {
 
     static long getHash(final long seed, final long x, final long z) {
         try {
-        /*
-            The method must be
-            1 consistent
-            2 evenly distributed
-            3 asymmetric
+            /*
+                The method must be
+                1 consistent
+                2 evenly distributed
+                3 asymmetric
 
-            For 1 and 2, we need a consistent and evenly distributed hash function.
+                For 1 and 2, we need a consistent and evenly distributed hash function.
 
-            For 3, we need different multipliers for x and z.
-         */
-            long semiSeed = (long) Math.sqrt(Math.abs(seed));
+                For 3, we need different multipliers for x and z.
+             */
+            long semiSeed = (long) (Math.signum(seed) * Math.sqrt(Math.abs(seed)));
             return getHash(seed
-                    // Not sure why
-                    * x * z
+                    /*
+                        For more even distribution,
+                        small seeds should be increased,
+                        but big seeds must not be increased.
+                     */
+                    * (Math.abs(seed) > Integer.MAX_VALUE ? 1 : x * z)
                     + (seed / semiSeed) * x
                     + (seed % semiSeed) * z);
         } catch (java.lang.ArithmeticException e) {
-            throw new BlockSeedError(String.format("Wrong block seed %d:%d:%d: %s", seed, x, z, e.getMessage()));
+            throw new BlockSeedError(String.format("Wrong BlockSeed[%d:%d:%d]: %s", seed, x, z, e.getMessage()));
         }
     }
 
@@ -130,5 +140,10 @@ public class BlockSeed {
         double multiplier = Math.pow(10.0, digit);
 
         return Math.round(value * multiplier) / multiplier;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BlockSeed[%d:%d:%d]", seed, x, z);
     }
 }

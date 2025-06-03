@@ -135,22 +135,23 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                         final Inventory inventory = ((Chest) block.getState()).getBlockInventory();
 
                         final BlockSeed bs = BlockSeed.valueOf(block);
+                        final ContentSeed cs = ContentSeed.valueOf(block);
 
                         // The deepest water the more loot in the chest.
                         int density = (int)Math.floor((vc.getSeaLevel() - y) / DEPTH_2_DENSITY);
 
                         int i = 0;
 
-                        int callId = 0;
+                        long callId = 0;
                         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
                             callId++;
                             if(entry.getValue().pass(callId, bs, density, chunk.getWorld().getName())) {
-                                final int amount = entry.getValue().getRandomAmount(bs);
+                                final int amount = entry.getValue().getRandomAmount(cs);
 
                                 inventory.setItem(i, new ItemStack(entry.getKey(), amount));
 
                                 // The fresh getItem() is needed to properly update the amount
-                                entry.getValue().applyItemConfig(bs, inventory.getItem(i));
+                                entry.getValue().applyItemConfig(cs, inventory.getItem(i));
 
                                 if (customLogger.isDebugMode()) {
                                     customLogger.debug(String.format("%s item #%d %s set to %d",

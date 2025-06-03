@@ -1,6 +1,5 @@
 package com.gmail.uprial.railnet.populator;
 
-import com.gmail.uprial.railnet.common.BlockSeed;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -18,7 +17,7 @@ import java.util.*;
 
 public class ItemConfig {
     private interface VirtualItemConfig {
-        void apply(final BlockSeed bs, final ItemStack itemStack);
+        void apply(final ContentSeed cs, final ItemStack itemStack);
     }
 
     private final ImmutableList<VirtualItemConfig> configs;
@@ -33,7 +32,7 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
             itemStack.addUnsafeEnchantment(enchantment, level);
         }
     }
@@ -50,8 +49,8 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
-            itemStack.addUnsafeEnchantment(enchantment, level1 + (int)bs.oneOf(level2 - level1 + 1));
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
+            itemStack.addUnsafeEnchantment(enchantment, level1 + (int)cs.oneOf(level2 - level1 + 1));
         }
     }
 
@@ -65,7 +64,7 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
             final ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
             armorMeta.setTrim(new ArmorTrim(material, pattern));
             itemStack.setItemMeta(armorMeta);
@@ -80,7 +79,7 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
             final OminousBottleMeta ominousBottleMeta = (OminousBottleMeta) itemStack.getItemMeta();
             ominousBottleMeta.setAmplifier(level);
             itemStack.setItemMeta(ominousBottleMeta);
@@ -97,12 +96,12 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
-            final PotionEffectType effectType = bs.oneOf(effectTypeOptions.keySet());
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
+            final PotionEffectType effectType = cs.oneOf(effectTypeOptions.keySet());
 
             final int amplifier = effectTypeOptions.get(effectType);
 
-            int duration = bs.oneOf(durationOptions);
+            int duration = cs.oneOf(durationOptions);
             if (itemStack.getType().equals(Material.TIPPED_ARROW)) {
                 /*
                     According to https://minecraft.wiki/w/Tipped_Arrow,
@@ -111,7 +110,7 @@ public class ItemConfig {
                 duration *= 8;
             }
 
-            new effect(effectType, duration, amplifier).apply(bs, itemStack);
+            new effect(effectType, duration, amplifier).apply(cs, itemStack);
         }
     }
 
@@ -127,7 +126,7 @@ public class ItemConfig {
         }
 
         @Override
-        public void apply(final BlockSeed bs, final ItemStack itemStack) {
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
             potionMeta.addCustomEffect(new PotionEffect(effectType, duration, amplifier), true);
@@ -175,9 +174,9 @@ public class ItemConfig {
         return addConfig(new effect(effectType, duration, amplifier));
     }
 
-    public void apply(final BlockSeed bs, final ItemStack itemStack) {
+    public void apply(final ContentSeed cs, final ItemStack itemStack) {
         for(final VirtualItemConfig config : configs) {
-            config.apply(bs, itemStack);
+            config.apply(cs, itemStack);
         }
     }
 }

@@ -685,7 +685,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
     private final static double MULTIPLY_PROBABILITY = 10.0D;
     private void populateInventory(final String title, final String worldName,
-                                   final BlockSeed bs, final Inventory inventory, final int density) {
+                                   final BlockSeed bs, final ContentSeed cs,
+                                   final Inventory inventory, final int density) {
         /*
             getContents() returns a list of nulls
             even when the content isn't actually null,
@@ -722,11 +723,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     && (bs.pass(i, MULTIPLY_PROBABILITY, 0))) {
                 // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
-                        bs, itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
+                        cs, itemStack.getAmount(), itemStack, 1, CLT.MAX_POWER);
             }
         }
 
-        int callId = 0;
+        long callId = 0;
         for(Map.Entry<Material, CLT> entry : chestLootTable.entrySet()) {
             callId++;
             if(entry.getValue().pass(callId, bs, density, worldName)) {
@@ -746,12 +747,12 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
                 // The fresh getItem() is needed to properly update the amount
-                entry.getValue().applyItemConfig(bs, inventory.getItem(i));
+                entry.getValue().applyItemConfig(cs, inventory.getItem(i));
 
                 // WARNING: ConsistencyReference#1
                 setAmount(String.format("%s item #%d", title, i),
                         // The fresh getItem() is needed to properly update the amount
-                        bs, 0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
+                        cs, 0, inventory.getItem(i), 0, entry.getValue().getMaxPower());
             }
         }
     }
@@ -768,7 +769,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         final int density = getDensity(getBasement(block));
 
         populateInventory(format(block), block.getWorld().getName(),
-                BlockSeed.valueOf(block), ((Container)block.getState()).getInventory(), density);
+                BlockSeed.valueOf(block), ContentSeed.valueOf(block),
+                ((Container)block.getState()).getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
@@ -780,7 +782,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         final int density = getDensity(getBasement(inventoryHolder));
 
         populateInventory(format(inventoryHolder), inventoryHolder.getWorld().getName(),
-                BlockSeed.valueOf(inventoryHolder), inventoryHolder.getInventory(), density);
+                BlockSeed.valueOf(inventoryHolder), ContentSeed.valueOf(inventoryHolder),
+                inventoryHolder.getInventory(), density);
 
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s populated with density %d and %s under",
@@ -790,7 +793,8 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
     public void populatePlayer(final Player player, final int density) {
         populateInventory(format(player), player.getWorld().getName(),
-                BlockSeed.valueOf(player), player.getInventory(), density);
+                BlockSeed.valueOf(player), ContentSeed.valueOf(player),
+                player.getInventory(), density);
     }
 
     /*
@@ -868,7 +872,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .build();
 
     private void updateItemStack(final String title,
-                                 final BlockSeed bs,
+                                 final BlockSeed bs, final ContentSeed cs,
                                  final Supplier<ItemStack> itemStackGetter,
                                  final Consumer<ItemStack> itemStackSetter,
                                  final Map<Material,Integer> lootTable) {
@@ -884,7 +888,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         itemStackSetter.accept(new ItemStack(material, 1));
         // The sequence is needed to properly update the amount
         itemStack = itemStackGetter.get();
-        setAmount(title, bs, 0, itemStack, 0, lootTable.get(material));
+        setAmount(title, cs, 0, itemStack, 0, lootTable.get(material));
     }
 
     private void populateFurnace(final Block block) {
@@ -893,10 +897,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         final FurnaceInventory inventory = furnace.getInventory();
 
         final BlockSeed bs = BlockSeed.valueOf(block);
+        final ContentSeed cs = ContentSeed.valueOf(block);
 
         // WARNING: ConsistencyReference#1
         updateItemStack(String.format("%s fuel item", format(block)),
-                bs,
+                bs, cs,
                 inventory::getFuel,
                 inventory::setFuel,
                 furnaceFuelTable);
@@ -908,7 +913,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
         // WARNING: ConsistencyReference#1
         updateItemStack(String.format("%s result item", format(block)),
-                bs,
+                bs, cs,
                 inventory::getResult,
                 inventory::setResult,
                 lootTable);

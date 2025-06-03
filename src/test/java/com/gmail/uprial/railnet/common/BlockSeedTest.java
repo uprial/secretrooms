@@ -16,6 +16,8 @@ public class BlockSeedTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
+    private static final long TEST_SEED = -1565193744182814265L;
+
     private static final double INFINITE_DECIMAL = 10000000000000000000000000000000000.200000000000000000000000002;
 
     private final int TEST_MAP_SIZE = 100;
@@ -24,7 +26,7 @@ public class BlockSeedTest {
 
     @Test
     public void testOneOfRangeDistribution() {
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             for (int size = 1; size < 100; size += 20) {
                 final Map<Long, AtomicLong> map = new HashMap<>();
                 for (int x = -TEST_MAP_SIZE; x <= TEST_MAP_SIZE; x++) {
@@ -47,9 +49,9 @@ public class BlockSeedTest {
                 for(final Map.Entry<Long, AtomicLong> entry : map.entrySet()) {
                     final long value = entry.getKey();
                     final long counter = entry.getValue().get();
-                    assertTrue(String.format("Values of %d for size %d: %d vs. %d", value, size, counter, estimate),
+                    assertTrue(String.format("Max count of %d for size %d: %d vs. %d", value, size, counter, estimate),
                             counter < estimate * 2);
-                    assertTrue(String.format("Values of %d for size %d: %d vs. %d", value, size, counter, estimate),
+                    assertTrue(String.format("Min count of %d for size %d: %d vs. %d", value, size, counter, estimate),
                             counter > estimate / 2);
                 }
             }
@@ -62,7 +64,7 @@ public class BlockSeedTest {
         for(int i = 0; i < 100; i += 7) {
             source.add(String.format("Item #%d", i));
         }
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             final Set<String> picked = new HashSet<>();
             for (int x = -TEST_MAP_SIZE; x <= TEST_MAP_SIZE; x++) {
                 for (int z = -TEST_MAP_SIZE; z <= TEST_MAP_SIZE; z++) {
@@ -79,7 +81,7 @@ public class BlockSeedTest {
         for(int i = 0; i < 100; i += 7) {
             source.add(i);
         }
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             final Set<Integer> picked = new HashSet<>();
             for (int x = -TEST_MAP_SIZE; x <= TEST_MAP_SIZE; x++) {
                 for (int z = -TEST_MAP_SIZE; z <= TEST_MAP_SIZE; z++) {
@@ -100,7 +102,7 @@ public class BlockSeedTest {
 
     @Test
     public void testOneOfWithLongSeed() throws Exception {
-        assertEquals(0, new BlockSeed(-1565193744182814265L, 276, -364).oneOf(1));
+        assertEquals(0, new BlockSeed(TEST_SEED, 276, -364).oneOf(1));
     }
 
     @Test
@@ -113,14 +115,14 @@ public class BlockSeedTest {
     @Test
     public void testOneOfWithBadRange() throws Exception {
         e.expect(BlockSeed.BlockSeedError.class);
-        e.expectMessage("Range is not a natural number: 0");
+        e.expectMessage("BlockSeed[1:0:0] range is not a natural number: 0");
         new BlockSeed(1, 0, 0).oneOf(0);
     }
 
     @Test
     public void testOneOfWithBadSeed() throws Exception {
         e.expect(BlockSeed.BlockSeedError.class);
-        e.expectMessage("Wrong block seed 0:0:0: / by zero");
+        e.expectMessage("Wrong BlockSeed[0:0:0]: / by zero");
         new BlockSeed(0, 0, 0).oneOf(1);
     }
 
@@ -128,7 +130,7 @@ public class BlockSeedTest {
 
     @Test
     public void testPassDistribution() {
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             for (int probability = 10; probability < 100; probability += 20) {
                 for (int density = 0; density < 3; density += 1) {
                     int numberOfCells = 0;
@@ -161,7 +163,7 @@ public class BlockSeedTest {
 
     @Test
     public void testPassWithLongSeed() throws Exception {
-        assertTrue(new BlockSeed(-1565193744182814265L, 276, -364).pass(0, 100, 0));
+        assertTrue(new BlockSeed(TEST_SEED, 276, -364).pass(0, 100, 0));
     }
 
     @Test
@@ -173,7 +175,7 @@ public class BlockSeedTest {
 
     @Test
     public void testPassWithDifferentCallIds() throws Exception {
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             final Map<Long, AtomicLong> passed = new HashMap<>();
             for (long callId = 0; callId < 10; callId++) {
                 for (int x = -TEST_MAP_SIZE; x <= TEST_MAP_SIZE; x += 10) {
@@ -194,21 +196,21 @@ public class BlockSeedTest {
     @Test
     public void testPassWithBadSeed() throws Exception {
         e.expect(BlockSeed.BlockSeedError.class);
-        e.expectMessage("Wrong block seed 0:0:0: / by zero");
+        e.expectMessage("Wrong BlockSeed[0:0:0]: / by zero");
         new BlockSeed(0, 0, 0).pass(0, 0.001, 0);
     }
 
     @Test
     public void testPassWithBadProbability() throws Exception {
         e.expect(BlockSeed.BlockSeedError.class);
-        e.expectMessage("Probability has too many digits: 0.0001");
+        e.expectMessage("BlockSeed[1:0:0] probability has too many digits: 0.0001");
         new BlockSeed(1, 0, 0).pass(0, 0.0001, 0);
     }
 
     @Test
     public void testPassWithBigProbability() throws Exception {
         e.expect(BlockSeed.BlockSeedError.class);
-        e.expectMessage("Probability too big: 200");
+        e.expectMessage("BlockSeed[1:0:0] probability too big: 200");
         new BlockSeed(1, 0, 0).pass(0, 200, 0);
     }
 
@@ -216,7 +218,7 @@ public class BlockSeedTest {
 
     @Test
     public void testConsistent() {
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
              assertEquals(getTestMap(seed), getTestMap(seed));
         });
     }
@@ -225,14 +227,14 @@ public class BlockSeedTest {
     public void testEvenlyDistributed() {
         final int numberOfCells = (2 * TEST_MAP_SIZE + 1) * (2 * TEST_MAP_SIZE + 1);
 
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
             assertEquals(numberOfCells, getTestMap(seed).size());
         });
     }
 
     @Test
     public void testAsymmetric() {
-        forSeed((final Integer seed) -> {
+        forSeed((final Long seed) -> {
 
             final Map<ChunkXZ, Long> map = getTestMap(seed);
 
@@ -317,9 +319,12 @@ public class BlockSeedTest {
         return map;
     }
 
-    private void forSeed(final Consumer<Integer> consumer) {
-        for (int seed = 19; seed < 1119; seed += 119) {
+    private void forSeed(final Consumer<Long> consumer) {
+        for (long seed = 19; seed < 1119; seed += 119) {
+            // Test small seeds
             consumer.accept(seed);
+            // Test big seeds
+            consumer.accept(TEST_SEED + seed);
         }
     }
 }

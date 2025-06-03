@@ -39,14 +39,14 @@ public class CLT {
         this.maxPower = maxPower;
     }
 
-    public boolean pass(final int callId, final BlockSeed bs, final int density, final String worldName) {
+    public boolean pass(final long callId, final BlockSeed bs, final int density, final String worldName) {
         return bs.pass(callId, probability, density)
                 && (worldNames.isEmpty() || worldNames.contains(worldName));
     }
 
-    public void applyItemConfig(final BlockSeed bs, final ItemStack itemStack) {
+    public void applyItemConfig(final ContentSeed cs, final ItemStack itemStack) {
         if (!itemConfigOptions.isEmpty()) {
-            bs.oneOf(itemConfigOptions).apply(bs, itemStack);
+            cs.oneOf(itemConfigOptions).apply(cs, itemStack);
         }
     }
 
