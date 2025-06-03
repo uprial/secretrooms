@@ -14,7 +14,6 @@ Underground railways, rare loot.
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, ancient cities, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
-* Lime-colored stained glass and panels are explosive-resistant
 * 0.01% of appropriate blocks are infested
 * End Ships have Illusioners pre-generated
 * Underground dungeons with spawners, building blocks, and items enchanted impossibly for survival

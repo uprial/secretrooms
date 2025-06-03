@@ -60,7 +60,6 @@ public final class RailNet extends JavaPlugin {
         populator = new Populator(this, consoleLogger, chunkPopulators);
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
-        getServer().getPluginManager().registerEvents(new StrongBlockListener(), this);
 
         getCommand(COMMAND_NS).setExecutor(new RailNetCommandExecutor(this));
         consoleLogger.info("Plugin enabled");
