@@ -2,6 +2,7 @@ package com.gmail.uprial.railnet.common;
 
 import com.google.common.hash.Hashing;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
@@ -28,6 +29,10 @@ public class BlockSeed {
     }
 
     // ==== static constructors ====
+
+    public static BlockSeed valueOf(final World world) {
+        return new BlockSeed(world.getSeed(), 0, 0);
+    }
 
     public static BlockSeed valueOf(final Block block) {
         // WARNING: two blocks with the identical X and Z will have the same BlockSeed.

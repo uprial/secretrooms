@@ -17,6 +17,8 @@ public class Populator {
 
     private final List<ChunkPopulator> chunkPopulators;
 
+    private final ChunkQueue queue;
+
     public Populator(final RailNet plugin, final CustomLogger customLogger, List<ChunkPopulator> chunkPopulators) {
         this.plugin = plugin;
         this.customLogger = customLogger;
@@ -25,6 +27,12 @@ public class Populator {
         for(final World world : plugin.getServer().getWorlds()) {
             onWorldInit(world);
         }
+
+        queue = new ChunkQueue(plugin);
+    }
+
+    public void stop() {
+        queue.cancel();
     }
     /*
         Plugins are enabled on server start.
@@ -91,11 +99,8 @@ public class Populator {
     }
 
     private void populateChunk(final Chunk chunk) {
-        final PopulationHistory history = new PopulationHistory();
         for(final ChunkPopulator chunkPopulator : chunkPopulators) {
-            if(chunkPopulator.populate(chunk, history)) {
-                history.add(chunkPopulator.getName());
-            }
+            chunkPopulator.populate(chunk);
         }
     }
 

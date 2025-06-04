@@ -6,11 +6,10 @@ Tested on Spigot-1.21.5.
 
 ## Introduction
 
-Underground railways, rare loot.
+Secret buildings with rare loot underground, underwater, and in the End.
 
 ## Features
 
-* Underground railways from a spawn location to a woodland mansion and an ocean monument with ladders from above at stations
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, ancient cities, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
@@ -18,14 +17,11 @@ Underground railways, rare loot.
 * End Ships have Illusioners pre-generated
 * Underground dungeons with spawners, building blocks, and items enchanted impossibly for survival
 * Loot density increases according to distance from the map center
+* The End has hardened mansions with epic loot
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 
 #### Use cases
-
-Find an entrance, take a minecart, enjoy your ride, discover a struct
-
-![Find a monument](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-monument.png)
 
 Find a whirlpool, then a chest, and loot it
 
@@ -39,6 +35,13 @@ Find a soul torch, go down, go up, loot
 
 ![Find a dungeon](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-dungeon.png)
 
+Find a mansion in the End, loot
+
+![Find a mansion](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-mansion.png)
+
+Build a turret
+
+![Build a turret](https://raw.githubusercontent.com/uprial/railnet/master/images/build-a-turret.png)
 
 ## Commands
 

@@ -3,6 +3,7 @@ package com.gmail.uprial.railnet.populator;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -85,6 +86,10 @@ public class VirtualChunk {
                     String.format("Positive virtual Z of %s chunk in %s: %d", format(chunk), title, vz));
         }
         return 15;
+    }
+
+    public World getWorld() {
+        return chunk.getWorld();
     }
 
     private Block getRotated(final int x, final int y, final int z) {
@@ -213,5 +218,25 @@ public class VirtualChunk {
 
     private static BlockFace getBlockFacesSum(final BlockFace blockFace1, final BlockFace blockFace2) {
         return getBlockFace(getClock(blockFace1) + getClock(blockFace2));
+    }
+
+    public void box(final Material material,
+                    final int x1, final int y1, final int z1,
+                    final int x2, final int y2, final int z2) {
+
+        final int rx1 = Math.min(x1, x2);
+        final int rx2 = Math.max(x1, x2);
+        final int ry1 = Math.min(y1, y2);
+        final int ry2 = Math.max(y1, y2);
+        final int rz1 = Math.min(z1, z2);
+        final int rz2 = Math.max(z1, z2);
+
+        for(int x = rx1; x <= rx2; x++) {
+            for(int y = ry1; y <= ry2; y++) {
+                for(int z = rz1; z <= rz2; z++) {
+                    set(x, y, z, material);
+                }
+            }
+        }
     }
 }

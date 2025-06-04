@@ -22,7 +22,6 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class DungeonPopulator extends AbstractSeedSpecificPopulator implements Tested_On_1_21_5 {
     private final CustomLogger customLogger;
-    private final String conflictingPopulatorName;
 
     VirtualChunk vc;
 
@@ -38,15 +37,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
     private final static int ROOM_SIZE = 5;
 
-    public DungeonPopulator(final CustomLogger customLogger,
-                            final String conflictingPopulatorName) {
+    public DungeonPopulator(final CustomLogger customLogger) {
         super(WORLD, PROBABILITY);
 
         this.customLogger = customLogger;
-        this.conflictingPopulatorName = conflictingPopulatorName;
     }
 
-    @Override
     public String getName() {
         return "Dungeon";
     }
@@ -268,12 +264,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                     .build())
             .build();
 
-    protected boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history) {
-        if (history.contains(conflictingPopulatorName)) {
-            // Don't overlap with other structures
-            return false;
-        }
-
+    @Override
+    protected void populateAppropriateChunk(final Chunk chunk) {
         vc = new VirtualChunk(getName(), chunk, BlockFace.NORTH);
         /*
             Structure is between -1 and ROOM_SIZE + 1,
@@ -297,7 +289,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                                     getName(), format(chunk)));
                         }
 
-                        return false;
+                        return ;
                     }
 
                     if (y < minY) {
@@ -336,7 +328,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                         getName(), format(chunk), floorY, roofY));
             }
 
-            return false;
+            return ;
         }
 
         final Material ladderBase;
@@ -364,7 +356,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
                             getName(), format(chunk), popularity));
                 }
 
-                return false;
+                return ;
             }
 
 
@@ -372,19 +364,19 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         }
 
         // We need to start from the layer above the floor and finish before the roof
-        box(Material.AIR,
+        vc.box(Material.AIR,
                 0, floorY + 1, 0,
                 ROOM_SIZE - 1, floorY + 2, ROOM_SIZE - 1);
 
-        box(Material.AIR,
+        vc.box(Material.AIR,
                 1, floorY + 5, 1,
                 ROOM_SIZE - 1, floorY + 6, ROOM_SIZE - 1);
 
-        box(Material.AIR,
+        vc.box(Material.AIR,
                 0, floorY + 5, 2,
                 0, floorY + 6, ROOM_SIZE - 1);
 
-        box(Material.AIR,
+        vc.box(Material.AIR,
                 2, floorY + 5, 0,
                 ROOM_SIZE - 1, floorY + 6, 0);
 
@@ -483,8 +475,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s[%s] populated", getName(), format(chunk)));
         }
-
-        return true;
     }
 
     private int getEntranceY(final int x, final int z) {
@@ -532,25 +522,5 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
         }
 
         return passable / Math.pow(ROOM_SIZE + 2, 2.0D);
-    }
-
-    private void box(final Material material,
-                     final int x1, final int y1, final int z1,
-                     final int x2, final int y2, final int z2) {
-
-        final int rx1 = Math.min(x1, x2);
-        final int rx2 = Math.max(x1, x2);
-        final int ry1 = Math.min(y1, y2);
-        final int ry2 = Math.max(y1, y2);
-        final int rz1 = Math.min(z1, z2);
-        final int rz2 = Math.max(z1, z2);
-
-        for(int x = rx1; x <= rx2; x++) {
-            for(int y = ry1; y <= ry2; y++) {
-                for(int z = rz1; z <= rz2; z++) {
-                    vc.set(x, y, z, material);
-                }
-            }
-        }
     }
 }

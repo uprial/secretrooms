@@ -1,7 +1,7 @@
 package com.gmail.uprial.railnet.populator.mineshaft;
 
 import com.gmail.uprial.railnet.RailNet;
-import com.gmail.uprial.railnet.RailNetCron;
+import com.gmail.uprial.railnet.populator.ChunkQueue;
 import com.gmail.uprial.railnet.common.CustomLogger;
 import com.gmail.uprial.railnet.common.BlockSeed;
 import com.gmail.uprial.railnet.common.WorldName;
@@ -45,7 +45,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     @Override
-    public boolean populate(final Chunk readonlyChunk, final PopulationHistory history) {
+    public void populate(final Chunk readonlyChunk) {
         /*
             Fix population in structures with post-generation,
             known examples: Desert Pyramid, Outpost
@@ -55,14 +55,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         final int chunkX = readonlyChunk.getX();
         final int chunkZ = readonlyChunk.getZ();
 
-        RailNetCron.defer(() -> populateDeferred(readonlyWorldUID, chunkX, chunkZ));
-
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return "Mineshaft";
+        ChunkQueue.add(() -> populateDeferred(readonlyWorldUID, chunkX, chunkZ));
     }
 
     private void populateDeferred(final UUID worldUID, final int chunkX, final int chunkZ) {
@@ -809,41 +802,41 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             $ grep "DEBUG.* result GOLD_NUGGET " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
      */
     private final Map<Material,Integer> oreFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // # 7,788
+            // # 6,269
             .put(Material.GOLD_NUGGET, CLT.MAX_POWER)
-            // # 8,067
+            // # 6,839
             .put(Material.IRON_NUGGET, CLT.MAX_POWER)
-            // # 8,033
+            // # 6,465
             .put(Material.QUARTZ, CLT.MAX_POWER)
 
-            // # 3,240
+            // # 4,078
             .put(Material.IRON_INGOT, CLT.MAX_POWER - 1)
-            // # 6,768
+            // # 4,483
             .put(Material.GOLD_INGOT, CLT.MAX_POWER - 1)
-            // # 13,600
+            // # 4,435
             .put(Material.COPPER_INGOT, CLT.MAX_POWER - 1)
 
-            // # 2,494
+            // # 2,062
             .put(Material.REDSTONE, CLT.MAX_POWER - 2)
-            // # 2,780
+            // # 2,306
             .put(Material.LAPIS_LAZULI, CLT.MAX_POWER - 2)
-            // # 2,202
+            // # 2,628
             .put(Material.COAL, CLT.MAX_POWER - 2)
 
-            // # 830
+            // # 564
             .put(Material.DIAMOND, 1)
-            // # 502
+            // # 531
             .put(Material.EMERALD, 1)
 
-            // # 466
+            // # 427
             .put(Material.NETHERITE_SCRAP, 0)
             .build();
 
     private final int FOOD_FURNACE_POWER = CLT.MAX_POWER - 1;
     private final Map<Material,Integer> foodFurnaceResultTable = ImmutableMap.<Material,Integer>builder()
-            // # 4
+            // # 16
             .put(Material.BAKED_POTATO, FOOD_FURNACE_POWER)
-            // # 8
+            // # 12
             .put(Material.DRIED_KELP, FOOD_FURNACE_POWER)
             // # 1
             .put(Material.COOKED_BEEF, FOOD_FURNACE_POWER)
@@ -860,14 +853,14 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     /*
         ==== Test ====
 
-            $ grep "DEBUG.* fuel COAL " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
+            $ grep "DEBUG.* fuel item COAL " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
      */
     private final Map<Material,Integer> furnaceFuelTable = ImmutableMap.<Material,Integer>builder()
-            // # 31,492
+            // # 27,005
             .put(Material.COAL, CLT.MAX_POWER)
-            // # 10,716
+            // # 9,101
             .put(Material.COAL_BLOCK, CLT.MAX_POWER - 2)
-            // # 1,697
+            // # 1,679
             .put(Material.LAVA_BUCKET, 0)
             .build();
 

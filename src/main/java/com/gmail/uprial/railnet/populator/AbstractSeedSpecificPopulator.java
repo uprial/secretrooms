@@ -23,14 +23,12 @@ public abstract class AbstractSeedSpecificPopulator implements ChunkPopulator, T
         this.probability = probability;
     }
 
-    protected abstract boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history);
+    protected abstract void populateAppropriateChunk(final Chunk chunk);
 
     @Override
-    public boolean populate(final Chunk chunk, final PopulationHistory history) {
+    public void populate(final Chunk chunk) {
         if (isAppropriate(chunk)) {
-            return populateAppropriateChunk(chunk, history);
-        } else {
-            return false;
+            populateAppropriateChunk(chunk);
         }
     }
 

@@ -1,21 +1,22 @@
-package com.gmail.uprial.railnet;
+package com.gmail.uprial.railnet.populator;
 
+import com.gmail.uprial.railnet.RailNet;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class RailNetCron extends BukkitRunnable {
+public class ChunkQueue extends BukkitRunnable {
     private static final int INTERVAL = 1;
 
     private static final Queue<Runnable> DEFERRED_TASKS = new LinkedBlockingQueue<>();
     private static final Queue<Runnable> ACTIVE_TASKS = new LinkedBlockingQueue<>();
 
-    public RailNetCron(RailNet plugin) {
+    ChunkQueue(final RailNet plugin) {
         runTaskTimer(plugin, INTERVAL, INTERVAL);
     }
 
-    public static void defer(Runnable task) {
+    public static void add(final Runnable task) {
         DEFERRED_TASKS.add(task);
     }
 

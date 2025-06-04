@@ -7,8 +7,8 @@ import com.gmail.uprial.railnet.listeners.*;
 import com.gmail.uprial.railnet.populator.ChunkPopulator;
 import com.gmail.uprial.railnet.populator.Populator;
 import com.gmail.uprial.railnet.populator.dungeon.DungeonPopulator;
+import com.gmail.uprial.railnet.populator.endmansion.EndMansionPopulator;
 import com.gmail.uprial.railnet.populator.mineshaft.MineshaftPopulator;
-import com.gmail.uprial.railnet.populator.railway.RailWayPopulator;
 import com.gmail.uprial.railnet.populator.whirlpool.WhirlpoolPopulator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -29,7 +29,7 @@ public final class RailNet extends JavaPlugin {
 
     private Populator populator = null;
 
-    private RailNetCron cron = null;
+    private TurretCron turretCron = null;
 
     @Override
     public void onEnable() {
@@ -41,19 +41,18 @@ public final class RailNet extends JavaPlugin {
             }
         }
 
-        cron = new RailNetCron(this);
-
         consoleLogger = new CustomLogger(getLogger());
         final RailNetConfig railNetConfig = loadConfig(getConfig(), consoleLogger);
 
+        turretCron = new TurretCron(this, consoleLogger);
+
         final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
 
-        // Order does matter: RailWay is a top priority because it conflicts with other populators.
-        final RailWayPopulator railWayPopulator = new RailWayPopulator(this, consoleLogger);
-        chunkPopulators.add(railWayPopulator);
+        // Order does matter: RailWay is a top priority.
+        chunkPopulators.add(new EndMansionPopulator(consoleLogger));
 
-        chunkPopulators.add(new WhirlpoolPopulator(consoleLogger, railWayPopulator.getName()));
-        chunkPopulators.add(new DungeonPopulator(consoleLogger, railWayPopulator.getName()));
+        chunkPopulators.add(new WhirlpoolPopulator(consoleLogger));
+        chunkPopulators.add(new DungeonPopulator(consoleLogger));
         // Order does matter: populate chests in RailWay and Whirlpool.
         chunkPopulators.add(new MineshaftPopulator(this, consoleLogger, railNetConfig.getDistanceDensityMultiplier()));
 
@@ -76,7 +75,8 @@ public final class RailNet extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
-        cron.cancel();
+        populator.stop();
+        turretCron.cancel();
         consoleLogger.info("Plugin disabled");
     }
 

@@ -20,7 +20,6 @@ import static com.gmail.uprial.railnet.common.Formatter.format;
 
 public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     private final CustomLogger customLogger;
-    private final String conflictingPopulatorName;
 
     private static final double DEPTH_2_DENSITY = 20.0d;
 
@@ -36,15 +35,12 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
      */
     private final static int PROBABILITY = 500;
 
-    public WhirlpoolPopulator(final CustomLogger customLogger,
-                              final String conflictingPopulatorName) {
+    public WhirlpoolPopulator(final CustomLogger customLogger) {
         super(WORLD, PROBABILITY);
 
         this.customLogger = customLogger;
-        this.conflictingPopulatorName = conflictingPopulatorName;
     }
 
-    @Override
     public String getName() {
         return "Whirlpool";
     }
@@ -75,12 +71,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             .put(Material.FISHING_ROD, new CLT(10.0D, fishingRodItemConfig))
             .build();
 
-    protected boolean populateAppropriateChunk(final Chunk chunk, final PopulationHistory history) {
-        if(history.contains(conflictingPopulatorName)) {
-            // Don't overlap with other structures
-            return false;
-        }
-
+    @Override
+    protected void populateAppropriateChunk(final Chunk chunk) {
         vc = new VirtualChunk(getName(), chunk, BlockFace.NORTH);
 
         int minX = 1;
@@ -106,7 +98,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                 // No water
                 customLogger.debug(String.format("%s[%s] can't be populated", getName(), format(chunk)));
             }
-            return false;
+            return ;
         }
 
         for(int dx = -1; dx <= 1; dx++) {
@@ -123,7 +115,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                             // Idempotency marker
                             customLogger.debug(String.format("%s[%s] is already populated", getName(), format(chunk)));
                         }
-                        return false;
+                        return ;
                     }
 
                     vc.applyPhysicsOnce();
@@ -171,8 +163,6 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
         if(customLogger.isDebugMode()) {
             customLogger.debug(String.format("%s[%s] populated", getName(), format(chunk)));
         }
-
-        return true;
     }
 
     private boolean isWater(final int x, final int y, final int z) {
