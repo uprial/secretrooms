@@ -1,4 +1,4 @@
-![RailNet Logo](images/railnet-logo.png)
+![SecretRooms Logo](images/secretrooms-logo.png)
 
 ## Compatibility
 
@@ -25,48 +25,48 @@ That plugin combines all the fun I had with my friends that I didn't find in oth
 
 Find a whirlpool, then a chest, and loot it
 
-![Find a whirlpool](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-whirlpool.png)
+![Find a whirlpool](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-whirlpool.png)
 
 Find furnaces in mineshaft, check your luck
 
-![Find furnaces](https://raw.githubusercontent.com/uprial/railnet/master/images/find-furnaces.png)
+![Find furnaces](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-furnaces.png)
 
 Find a soul torch, go down, go up, loot
 
-![Find a dungeon](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-dungeon.png)
+![Find a dungeon](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-dungeon.png)
 
 Find a mansion in the End, loot
 
-![Find a mansion](https://raw.githubusercontent.com/uprial/railnet/master/images/find-a-mansion.png)
+![Find a mansion](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-mansion.png)
 
 Build a turret
 
-![Build a turret](https://raw.githubusercontent.com/uprial/railnet/master/images/build-a-turret.png)
+![Build a turret](https://raw.githubusercontent.com/uprial/secretrooms/master/images/build-a-turret.png)
 
 ## Commands
 
-`railnet repopulate-loaded <radius>` - repopulate loaded terrain around player
+`secretrooms repopulate-loaded <radius>` - repopulate loaded terrain around player
 
-`railnet repopulate-loaded <world> <x> <z> <radius>` - repopulate loaded terrain
+`secretrooms repopulate-loaded <world> <x> <z> <radius>` - repopulate loaded terrain
 
-`railnet claim <density>` - generate player inventory like it's a chest
+`secretrooms claim <density>` - generate player inventory like it's a chest
 
-`railnet break <radius>` - break terrain around player
+`secretrooms break <radius>` - break terrain around player
 
-`railnet break <world> <x> <y> <z> <radius>` - break terrain
+`secretrooms break <world> <x> <y> <z> <radius>` - break terrain
 
-`railnet loaded-stats <material>` - show material stats in loaded terrain
+`secretrooms loaded-stats <material>` - show material stats in loaded terrain
 
 ## Permissions
 
 * Access to 'repopulate-loaded' command:
-`railnet.repopulate-loaded` (default: op)
+`secretrooms.repopulate-loaded` (default: op)
 * Access to 'claim' command:
-`railnet.claim` (default: op)
+`secretrooms.claim` (default: op)
 * Access to 'break' command:
-`railnet.break` (default: op)
+`secretrooms.break` (default: op)
 * Access to 'loaded-stats' command:
-`railnet.loaded-stats` (default: op)
+`secretrooms.loaded-stats` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)
@@ -75,9 +75,9 @@ Build a turret
 I will be happy to add some features or fix bugs. My mail: uprial@gmail.com.
 
 ## Useful links
-* [Project on GitHub](https://github.com/uprial/railnet)
-* [Project on Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/rails-chests/)
-* [Project on Spigot](https://www.spigotmc.org/resources/rails-chests.121505/)
+* [Project on GitHub](https://github.com/uprial/secretrooms)
+* [Project on Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/secret-rooms/)
+* [Project on Spigot](https://www.spigotmc.org/resources/secret-rooms.121505/)
 
 ## Related projects
 * CustomBazookas: [Bukkit Dev](https://legacy.curseforge.com/minecraft/bukkit-plugins/custombazookas/) [GitHub](https://github.com/uprial/custombazookas), [Spigot](https://www.spigotmc.org/resources/custombazookas.124997/)

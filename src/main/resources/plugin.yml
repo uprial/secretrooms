@@ -1,23 +1,23 @@
-name: RailNet
-main: com.gmail.uprial.railnet.RailNet
+name: SecretRooms
+main: com.gmail.uprial.secretrooms.SecretRooms
 version: 0.8.0
 api-version: 1.14
 commands:
-  railnet:
-    description: RailNet config help
-    usage: /railnet help
+  secretrooms:
+    description: SecretRooms config help
+    usage: /secretrooms help
     permission:
     permission-message:
 permissions:
-  railnet.repopulate-loaded:
-    description: Gives access to RailNet 'repopulate-loaded' command
+  secretrooms.repopulate-loaded:
+    description: Gives access to SecretRooms 'repopulate-loaded' command
     default: op
-  railnet.claim:
-    description: Gives access to RailNet 'claim' command
+  secretrooms.claim:
+    description: Gives access to SecretRooms 'claim' command
     default: op
-  railnet.break:
-    description: Gives access to RailNet 'break' command
+  secretrooms.break:
+    description: Gives access to SecretRooms 'break' command
     default: op
-  railnet.loaded-stats:
-    description: Gives access to RailNet 'loaded-stats' command
+  secretrooms.loaded-stats:
+    description: Gives access to SecretRooms 'loaded-stats' command
     default: op
