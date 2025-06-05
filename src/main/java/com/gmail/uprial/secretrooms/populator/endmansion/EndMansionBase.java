@@ -31,12 +31,14 @@ public class EndMansionBase extends EndMansionChunk {
             = ImmutableMap.<Material, ItemConfig>builder()
             .put(Material.DIAMOND_CHESTPLATE, new ItemConfig()
 //diamond_chestplate[glider={},rarity=epic,lore=[[{"text":"It lets you fly like an Elytra","italic":false}]],minecraft:trim={material:"minecraft:resin",pattern:"minecraft:silence"}]
-                    .glider(true)
                     .rarity(ItemRarity.EPIC)
-                    .lore(List.of("It lets you fly like an Elytra"))
+                    .lore(List.of("Lets you fly like an Elytra"))
+                    .glider(true)
                     .trim(TrimMaterial.RESIN, TrimPattern.SILENCE))
             .put(Material.BOW, new ItemConfig()
 //bow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:mending":1}]
+                    .rarity(ItemRarity.EPIC)
+                    .lore(List.of("Combines two impossibilities"))
                     /*
                         A potential UNBREAKING(3), PUNCH(2) and FLAME(1)
                         upgrade would cost 18 levels.
