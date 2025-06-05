@@ -1,20 +1,24 @@
 package com.gmail.uprial.secretrooms.populator.endmansion;
 
+import com.gmail.uprial.secretrooms.common.BlockSeed;
+import com.gmail.uprial.secretrooms.populator.ContentSeed;
+import com.gmail.uprial.secretrooms.populator.ItemConfig;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
+import java.util.Map;
 
 public class EndMansionBase extends EndMansionChunk {
     VirtualChunk vc;
@@ -22,6 +26,28 @@ public class EndMansionBase extends EndMansionChunk {
     EndMansionBase(final BlockFace blockFace) {
         super(blockFace);
     }
+
+    private final Map<Material, ItemConfig> chestLootTable
+            = ImmutableMap.<Material, ItemConfig>builder()
+            .put(Material.DIAMOND_CHESTPLATE, new ItemConfig()
+//diamond_chestplate[glider={},rarity=epic,lore=[[{"text":"It lets you fly like an Elytra","italic":false}]],minecraft:trim={material:"minecraft:resin",pattern:"minecraft:silence"}]
+                    .glider(true)
+                    .rarity(ItemRarity.EPIC)
+                    .lore(List.of("It lets you fly like an Elytra"))
+                    .trim(TrimMaterial.RESIN, TrimPattern.SILENCE))
+            .put(Material.BOW, new ItemConfig()
+//bow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:mending":1}]
+                    /*
+                        A potential UNBREAKING(3), PUNCH(2) and FLAME(1)
+                        upgrade would cost 18 levels.
+                     */
+                    // Survival maximum level is 5, here it's 10.
+                    .ench(Enchantment.POWER, 10, 10)
+                    // Not compatible with INFINITY in survival.
+                    .ench(Enchantment.MENDING)
+                    // Not compatible with MENDING in survival.
+                    .ench(Enchantment.INFINITY))
+            .build();
 
     @Override
     void populate(final VirtualChunk vc) {
@@ -67,16 +93,9 @@ public class EndMansionBase extends EndMansionChunk {
 
             final Block chest = vc.set(7, y, 7, Material.CHEST);
 
-            final ItemStack itemStack = new ItemStack(Material.NETHERITE_CHESTPLATE);
-
-            {
-                final ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
-                armorMeta.setGlider(true);
-                armorMeta.setRarity(ItemRarity.EPIC);
-                armorMeta.setLore(List.of("It lets you fly like an Elytra"));
-                armorMeta.setTrim(new ArmorTrim(TrimMaterial.RESIN, TrimPattern.SILENCE));
-                itemStack.setItemMeta(armorMeta);
-            }
+            final Material material = BlockSeed.valueOf(chest).oneOf(chestLootTable.keySet());
+            final ItemStack itemStack = new ItemStack(material);
+            chestLootTable.get(material).apply(ContentSeed.valueOf(chest), itemStack);
 
             ((Chest) chest.getState()).getInventory().setItem(0, itemStack);
         }

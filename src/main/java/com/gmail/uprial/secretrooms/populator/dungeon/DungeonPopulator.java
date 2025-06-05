@@ -101,8 +101,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
                 diamond_pickaxe[minecraft:enchantments={"minecraft:fortune":5}]
 
-                A potential EFFICIENCY(5) and UNBREAKING(3)
-                upgrade would cost 11 levels.
+                A potential EFFICIENCY(5), UNBREAKING(3) and MENDING(1)
+                upgrade would cost 15 levels.
              */
             .ench(Enchantment.FORTUNE, 5, 5);
 
@@ -112,8 +112,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
                 trident[minecraft:enchantments={"minecraft:loyalty":5}]
 
-                A potential UNBREAKING(3) and CHANNELING(1)
-                upgrade would cost 14 levels.
+                A potential UNBREAKING(3), CHANNELING(1) and MENDING(1)
+                upgrade would cost 18 levels.
 
                 IMO, impaling is just useless, and isn't a potential upgrade.
 
@@ -127,11 +127,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
                 crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
 
-                A potential PIERCING(4), UNBREAKING(3) and QUICK_CHARGE(3)
-                upgrade would cost 18 levels.
+                A potential UNBREAKING(3), QUICK_CHARGE(3) and MENDING(1)
+                upgrade would cost 15 levels.
 
-                A potential MULTISHOT(1), UNBREAKING(3) and QUICK_CHARGE(3)
-                upgrade would cost 16 levels.
+                With PIERCING(4) - 19.
+
+                With MULTISHOT(1) - 19.
              */
             .ench(Enchantment.POWER, 10, 10)
             .ench(Enchantment.PUNCH, 2, 2)
@@ -144,8 +145,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
 
                 diamond_sword[minecraft:enchantments={"minecraft:looting":5}]
 
-                A potential UNBREAKING(3), SHARPNESS(5), FIRE_ASPECT(2) and SWEEPING_EDGE(3)
-                upgrade would cost 31 levels.
+                A potential UNBREAKING(3), SHARPNESS(5), FIRE_ASPECT(2), SWEEPING_EDGE(3) and MENDING(1)
+                upgrade would cost 35 levels.
 
                 IMO, knockback prevents swords from dealing a lot of melee damage per second,
                 and isn't a potential upgrade.

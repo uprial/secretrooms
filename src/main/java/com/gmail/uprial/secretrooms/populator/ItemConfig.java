@@ -3,8 +3,10 @@ package com.gmail.uprial.secretrooms.populator;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.OminousBottleMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
@@ -134,6 +136,56 @@ public class ItemConfig {
         }
     }
 
+    private static abstract class itemmeta<T> implements VirtualItemConfig {
+        final T value;
+
+        itemmeta(final T value) {
+            this.value = value;
+        }
+
+        abstract void setmeta(final ItemMeta itemMeta, final T value);
+
+        @Override
+        public void apply(final ContentSeed cs, final ItemStack itemStack) {
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            setmeta(itemMeta, value);
+            itemStack.setItemMeta(itemMeta);
+        }
+    }
+
+    private static class glider extends itemmeta<Boolean> {
+        glider(final Boolean value) {
+            super(value);
+        }
+
+        @Override
+        void setmeta(final ItemMeta itemMeta, final Boolean value) {
+            itemMeta.setGlider(value);
+        }
+    }
+
+    private static class rarity extends itemmeta<ItemRarity> {
+        rarity(final ItemRarity value) {
+            super(value);
+        }
+
+        @Override
+        void setmeta(final ItemMeta itemMeta, final ItemRarity value) {
+            itemMeta.setRarity(value);
+        }
+    }
+
+    private static class lore extends itemmeta<List<String>> {
+        lore(final List<String> value) {
+            super(value);
+        }
+
+        @Override
+        void setmeta(final ItemMeta itemMeta, final List<String> value) {
+            itemMeta.setLore(value);
+        }
+    }
+
     public ItemConfig() {
         configs = ImmutableList.<VirtualItemConfig>builder().build();
     }
@@ -172,6 +224,18 @@ public class ItemConfig {
 
     public ItemConfig effect(final PotionEffectType effectType, final Integer duration, final Integer amplifier) {
         return addConfig(new effect(effectType, duration, amplifier));
+    }
+
+    public ItemConfig glider(final Boolean value) {
+        return addConfig(new glider(value));
+    }
+
+    public ItemConfig rarity(final ItemRarity value) {
+        return addConfig(new rarity(value));
+    }
+
+    public ItemConfig lore(final List<String> value) {
+        return addConfig(new lore(value));
     }
 
     public void apply(final ContentSeed cs, final ItemStack itemStack) {
