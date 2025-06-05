@@ -87,10 +87,11 @@ public class TurretCron extends BukkitRunnable {
                     if (crystal.isValid() && isTurret(crystal)) {
                         final Player player = getClosestVisiblePlayer(crystal, worldsPlayers.get(world.getUID()));
                         if(player != null) {
-                            launch(crystal, player);
+                            final Fireball fireball = launch(crystal, player);
 
                             if (customLogger.isDebugMode()) {
-                                customLogger.debug(String.format("%s launched at %s", format(crystal), format(player)));
+                                customLogger.debug(String.format("%s launched a %s at %s",
+                                        format(crystal), fireball.getType(), format(player)));
                             }
                         }
                     }
@@ -137,23 +138,39 @@ public class TurretCron extends BukkitRunnable {
         final Location toLocation = getAimPoint(player);
 
         final double distance = toLocation.distance(fromLocation);
-        if((distance > MIN_VIEW_DISTANCE - DEFENCE_DISTANCE) && (distance < MAX_VIEW_DISTANCE - DEFENCE_DISTANCE)) {
-            // Check for direct vision
-            final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
-                    fromLocation,
-                    getDirection(fromLocation, toLocation),
-                    // -1.0D to avoid colliding with the player itself
-                    toLocation.distance(fromLocation) - 1.0D,
-                    // Fireballs don't care about fluids
-                    FluidCollisionMode.NEVER);
-
-            return (rayTraceResult == null);
-        } else {
+        // Too close
+        if(distance < MIN_VIEW_DISTANCE - DEFENCE_DISTANCE) {
             return false;
         }
+        // Too distant
+        if(distance > MAX_VIEW_DISTANCE - DEFENCE_DISTANCE) {
+            return false;
+        }
+        // Check for direct vision
+        final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
+                fromLocation,
+                getDirection(fromLocation, toLocation),
+                // -1.0D to avoid colliding with the player itself
+                toLocation.distance(fromLocation) - 1.0D,
+                // Fireballs don't care about fluids
+                FluidCollisionMode.NEVER);
+
+        // Has no blocks between
+        if(rayTraceResult == null) {
+            return true;
+        }
+
+        /*
+            According to https://minecraft.wiki/w/Fireball,
+            blocks with resistance as low as 3.5 survive if hit from the sides or from the top.
+
+            But there is also a bug with End Stone: https://github.com/HangarMC/Hangar/issues/1485,
+            so I reduced to 3.0.
+         */
+        return rayTraceResult.getHitBlock().getType().getHardness() < 3.0D;
     }
 
-    private void launch(final EnderCrystal crystal, final Player player) {
+    private Fireball launch(final EnderCrystal crystal, final Player player) {
         final Location fromLocation = getLaunchPoint(crystal, player);
 
         /*
@@ -162,10 +179,12 @@ public class TurretCron extends BukkitRunnable {
          */
         final Mob mob = (Mob)crystal.getWorld().spawnEntity(fromLocation, EntityType.BAT);
 
-        TakeAimAdapter.setTarget(mob, player);
-        mob.launchProjectile(LargeFireball.class);
-
-        mob.remove();
+        try {
+            TakeAimAdapter.setTarget(mob, player);
+            return mob.launchProjectile(Fireball.class);
+        } finally {
+            mob.remove();
+        }
     }
 
     private Vector getDirection(final Location fromLocation, final Location toLocation) {
