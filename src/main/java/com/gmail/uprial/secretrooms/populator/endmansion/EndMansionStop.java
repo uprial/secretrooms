@@ -14,7 +14,7 @@ public class EndMansionStop extends EndMansionChunk {
     void populate(final VirtualChunk vc) {
         final int y = vc.getMinHeight() + 3;
 
-        vc.box(Material.CRYING_OBSIDIAN,
+        vc.box(Material.OBSIDIAN,
                 0, y, 1,
                 3, y, 4);
         vc.box(Material.AIR,

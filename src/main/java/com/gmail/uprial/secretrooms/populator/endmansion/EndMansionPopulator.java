@@ -48,7 +48,7 @@ public class EndMansionPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     c.populate(chunk);
 
                     if (customLogger.isDebugMode()) {
-                        customLogger.debug(String.format("%s[%s] populated", getName(), format(chunk)));
+                        customLogger.debug(String.format("%s[%s]%s populated", getName(), c, format(chunk)));
                     }
                 }
             }

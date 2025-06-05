@@ -1,18 +1,16 @@
 package com.gmail.uprial.secretrooms.populator.endmansion;
 
-import com.gmail.uprial.secretrooms.populator.ContentSeed;
-import com.gmail.uprial.secretrooms.populator.ItemConfig;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
@@ -71,19 +69,13 @@ public class EndMansionBase extends EndMansionChunk {
 
             final ItemStack itemStack = new ItemStack(Material.NETHERITE_CHESTPLATE);
 
-            new ItemConfig()
-                    // Survival maximum level is 4, here it's 5
-                    .ench(Enchantment.PROTECTION, 10, 10)
-                    .ench(Enchantment.UNBREAKING, 3, 3)
-                    .trim(TrimMaterial.RESIN, TrimPattern.SILENCE)
-                    .apply(ContentSeed.valueOf(chest), itemStack);
-
             {
-                final ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setGlider(true);
-                itemMeta.setRarity(ItemRarity.EPIC);
-                itemMeta.setLore(List.of("It lets you fly like an Elytra"));
-                itemStack.setItemMeta(itemMeta);
+                final ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
+                armorMeta.setGlider(true);
+                armorMeta.setRarity(ItemRarity.EPIC);
+                armorMeta.setLore(List.of("It lets you fly like an Elytra"));
+                armorMeta.setTrim(new ArmorTrim(TrimMaterial.RESIN, TrimPattern.SILENCE));
+                itemStack.setItemMeta(armorMeta);
             }
 
             ((Chest) chest.getState()).getInventory().setItem(0, itemStack);

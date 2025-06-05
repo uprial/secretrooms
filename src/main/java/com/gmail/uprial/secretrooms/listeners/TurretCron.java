@@ -24,10 +24,12 @@ public class TurretCron extends BukkitRunnable {
 
     private static final int SHOOT_INTERVAL = seconds2ticks(3);
 
+    // Don't shoot from the inside of the crystal, give a space for the defence buildings
+    private static final double DEFENCE_DISTANCE = 2.0D;
     // Don't shoot across all the map
     private static final double MAX_VIEW_DISTANCE = 32.0D * 16;
     // Don't shoot at too close enemies
-    private static final double MIN_VIEW_DISTANCE = 5.0D;
+    private static final double MIN_VIEW_DISTANCE = 3.0D;
 
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
@@ -54,10 +56,13 @@ public class TurretCron extends BukkitRunnable {
                 EntityType.END_CRYSTAL);
 
         // Defence buildings
-        for(int i = -1; i <= +1; i += 2) {
-            vc.set(x + i, y, z, Material.BLACK_STAINED_GLASS);
-            vc.set(x, y, z + i, Material.BLACK_STAINED_GLASS);
+        for(int dy = 0; dy < 2; dy++) {
+            for (int i = -1; i <= +1; i += 2) {
+                vc.set(x + i, y + dy, z, Material.BLACK_STAINED_GLASS);
+                vc.set(x, y + dy, z + i, Material.BLACK_STAINED_GLASS);
+            }
         }
+        vc.set(x, y + 2, z, Material.BLACK_STAINED_GLASS);
     }
 
     @Override
@@ -132,7 +137,7 @@ public class TurretCron extends BukkitRunnable {
         final Location toLocation = getAimPoint(player);
 
         final double distance = toLocation.distance(fromLocation);
-        if((distance > MIN_VIEW_DISTANCE) && (distance < MAX_VIEW_DISTANCE)) {
+        if((distance > MIN_VIEW_DISTANCE - DEFENCE_DISTANCE) && (distance < MAX_VIEW_DISTANCE - DEFENCE_DISTANCE)) {
             // Check for direct vision
             final RayTraceResult rayTraceResult = fromLocation.getWorld().rayTraceBlocks(
                     fromLocation,
@@ -155,10 +160,6 @@ public class TurretCron extends BukkitRunnable {
             Bat is the only ambient mob.
          */
         final Mob mob = (Mob)crystal.getWorld().spawnEntity(fromLocation, EntityType.BAT);
-        //ghast.getAttribute(Attribute.SCALE).setBaseValue(0.01D);
-        //ghast.setCollidable(false);
-        //ghast.setAware(false);
-        //mob.teleport(fromLocation);
 
         TakeAimAdapter.setTarget(mob, player);
         mob.launchProjectile(LargeFireball.class);
@@ -185,8 +186,8 @@ public class TurretCron extends BukkitRunnable {
                 crystal.getLocation().getBlockZ() + 0.5D);
 
         final Vector direction = getDirection(bodyLocation, getAimPoint(player));
-        // Give a space for the defence buildings
-        direction.multiply(2.0D / direction.length());
+        // Don't shoot from the inside of the crystal, give a space for the defence buildings
+        direction.multiply(DEFENCE_DISTANCE / direction.length());
 
         return bodyLocation.add(direction);
     }
