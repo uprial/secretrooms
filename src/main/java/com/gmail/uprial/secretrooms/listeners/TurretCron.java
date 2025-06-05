@@ -144,7 +144,8 @@ public class TurretCron extends BukkitRunnable {
                     getDirection(fromLocation, toLocation),
                     // -1.0D to avoid colliding with the player itself
                     toLocation.distance(fromLocation) - 1.0D,
-                    FluidCollisionMode.ALWAYS);
+                    // Fireballs don't care about fluids
+                    FluidCollisionMode.NEVER);
 
             return (rayTraceResult == null);
         } else {
