@@ -48,7 +48,7 @@ public class EndMansionPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     c.populate(chunk);
 
                     if (customLogger.isDebugMode()) {
-                        customLogger.debug(String.format("%s[%s]%s populated", getName(), c, format(chunk)));
+                        customLogger.debug(String.format("%s[%s]%s populated", getName(), format(chunk), c));
                     }
                 }
             }
@@ -60,12 +60,11 @@ public class EndMansionPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     int getX(final int step, final Chunk chunk) {
-        return step
-                * ((int) BlockSeed.valueOf(chunk.getWorld())
-                .oneOf(RADIAL_STEP * 2 + 1) - RADIAL_STEP);
+        return (int)(BlockSeed.valueOf(chunk.getWorld())
+                .oneOf((long)step * RADIAL_STEP * 2 + 1) - step * RADIAL_STEP);
     }
 
-    int getZ(final int step, final int x) {
+    int getZ(final long step, final int x) {
         return  (int) Math.sqrt(sqr(step * RADIAL_STEP) - sqr(x));
     }
 
