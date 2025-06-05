@@ -6,7 +6,7 @@ Tested on Spigot-1.21.5.
 
 ## Introduction
 
-Secret buildings with rare loot underground, underwater, and in the End.
+Motivate players to explore the map by secret buildings with rare loot underground, underwater, and in the End.
 
 ## Features
 
