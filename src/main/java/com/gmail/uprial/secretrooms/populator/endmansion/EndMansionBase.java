@@ -126,10 +126,10 @@ public class EndMansionBase extends EndMansionChunk {
     private void spawner(final int x, final int y, final int z, final EntityType entityType) {
         for (int i = -1; i <= +1; i += 2) {
             // Vertical defence
-            vc.set(x, y + i, z, Material.REINFORCED_DEEPSLATE);
+            vc.set(x, y + i, z, Material.OBSIDIAN);
             // Horizontal defence
-            vc.set(x + i, y, z, Material.REINFORCED_DEEPSLATE);
-            vc.set(x, y, z + i, Material.REINFORCED_DEEPSLATE);
+            vc.set(x + i, y, z, Material.OBSIDIAN);
+            vc.set(x, y, z + i, Material.OBSIDIAN);
         }
         final CreatureSpawner spawner
                 = (CreatureSpawner) vc.set(x, y, z, Material.SPAWNER).getState();

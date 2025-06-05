@@ -14,7 +14,7 @@ public class EndMansionRoad extends EndMansionChunk {
     public void populate(final VirtualChunk vc) {
         final int y = vc.getMinHeight() + 3;
 
-        vc.box(Material.POLISHED_BLACKSTONE_BRICK_SLAB,
+        vc.box(Material.OBSIDIAN,
                 0, y, 1,
                 15, y, 4);
         vc.box(Material.AIR,

@@ -39,15 +39,15 @@ public class EndMansionCorner extends EndMansionChunk {
 
             for (int i = -1; i <= +1; i += 2) {
                 // Vertical defence
-                vc.set(2, y + i, 2, Material.REINFORCED_DEEPSLATE);
-                vc.set(3, y + i, 3, Material.REINFORCED_DEEPSLATE);
+                vc.set(2, y + i, 2, Material.OBSIDIAN);
+                vc.set(3, y + i, 3, Material.OBSIDIAN);
                 // Horizontal defence #1
-                vc.set(2 + i, y, 2, Material.REINFORCED_DEEPSLATE);
-                vc.set(2, y, 2 + i, Material.REINFORCED_DEEPSLATE);
+                vc.set(2 + i, y, 2, Material.OBSIDIAN);
+                vc.set(2, y, 2 + i, Material.OBSIDIAN);
             }
             // Horizontal defence #2
-            vc.set(4, y, 3, Material.REINFORCED_DEEPSLATE);
-            vc.set(3, y, 4, Material.REINFORCED_DEEPSLATE);
+            vc.set(4, y, 3, Material.OBSIDIAN);
+            vc.set(3, y, 4, Material.OBSIDIAN);
 
             for(final Map.Entry<EntityType,Integer> entry : ImmutableMap.<EntityType, Integer>builder()
                     .put(EntityType.WITCH, 2)
