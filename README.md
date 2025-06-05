@@ -35,11 +35,11 @@ Find a soul torch, go down, go up, loot
 
 ![Find a dungeon](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-dungeon.png)
 
-Find a mansion in the End, loot
+Detect an End Mansion by being attacked, find a chest inside, loot it
 
 ![Find a mansion](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-mansion.png)
 
-Build a turret
+Build a turret from an End Crystal and a Heavy Core above it
 
 ![Build a turret](https://raw.githubusercontent.com/uprial/secretrooms/master/images/build-a-turret.png)
 
