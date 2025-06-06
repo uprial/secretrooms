@@ -72,11 +72,6 @@ public class TurretCron extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!TakeAimAdapter.hasPlugin()) {
-            customLogger.warning("Turrets can't shoot: no TakeAim plugin");
-            return;
-        }
-
         final Map<UUID, List<Player>> worldsPlayers = new HashMap<>();
         for(final Player player : plugin.getServer().getOnlinePlayers()) {
             if(player.isValid()) {
@@ -126,7 +121,7 @@ public class TurretCron extends BukkitRunnable {
                     && (!player.isInvulnerable())
                     && isSeeingPlayer(crystal, player)) {
 
-                final double distance = getAimPoint(player).distance(crystal.getLocation());
+                final double distance = TakeAimAdapter.getAimPoint(player).distance(crystal.getLocation());
 
                 if ((closestPlayer == null) || (distance < closestDistance)) {
                     closestPlayer = player;
@@ -140,7 +135,7 @@ public class TurretCron extends BukkitRunnable {
 
     private boolean isSeeingPlayer(final EnderCrystal crystal, final Player player) {
         final Location fromLocation = getLaunchPoint(crystal, player);
-        final Location toLocation = getAimPoint(player);
+        final Location toLocation = TakeAimAdapter.getAimPoint(player);
 
         final double distance = toLocation.distance(fromLocation);
         // Too close
@@ -182,8 +177,7 @@ public class TurretCron extends BukkitRunnable {
         final Mob mob = (Mob)crystal.getWorld().spawnEntity(fromLocation, EntityType.BAT);
 
         try {
-            TakeAimAdapter.setTarget(mob, player);
-            return mob.launchProjectile(Fireball.class);
+            return TakeAimAdapter.launchFireball(mob, player, Fireball.class);
         } finally {
             mob.remove();
         }
@@ -207,15 +201,10 @@ public class TurretCron extends BukkitRunnable {
                 crystal.getLocation().getBlockY() + 0.5D,
                 crystal.getLocation().getBlockZ() + 0.5D);
 
-        final Vector direction = getDirection(bodyLocation, getAimPoint(player));
+        final Vector direction = getDirection(bodyLocation, TakeAimAdapter.getAimPoint(player));
         // Don't shoot from the inside of the crystal, give a space for the defence buildings
         direction.multiply(DEFENCE_DISTANCE / direction.length());
 
         return bodyLocation.add(direction);
-    }
-
-    // According to TakeAim:ProjectileHoming
-    private Location getAimPoint(final Player player) {
-        return player.getEyeLocation();
     }
 }
