@@ -163,11 +163,8 @@ public class TurretCron extends BukkitRunnable {
         /*
             According to https://minecraft.wiki/w/Fireball,
             blocks with resistance as low as 3.5 survive if hit from the sides or from the top.
-
-            But there is also a bug with End Stone: https://github.com/HangarMC/Hangar/issues/1485,
-            so I reduced to 3.0.
          */
-        return rayTraceResult.getHitBlock().getType().getHardness() < 3.0D;
+        return rayTraceResult.getHitBlock().getType().getBlastResistance() < 3.5D;
     }
 
     private Fireball launch(final EnderCrystal crystal, final Player player) {
