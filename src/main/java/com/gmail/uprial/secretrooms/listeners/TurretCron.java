@@ -72,6 +72,11 @@ public class TurretCron extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!TakeAimAdapter.hasPlugin()) {
+            customLogger.warning("Turrets can't shoot: no TakeAim plugin");
+            return;
+        }
+
         final Map<UUID, List<Player>> worldsPlayers = new HashMap<>();
         for(final Player player : plugin.getServer().getOnlinePlayers()) {
             if(player.isValid()) {
