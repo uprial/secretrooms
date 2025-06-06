@@ -10,6 +10,7 @@ Motivate players to explore the map by secret buildings with rare loot undergrou
 
 ## Features
 
+* Synergies perfectly with [TakeAim](https://github.com/uprial/takeaim) and [CustomCreatures](https://github.com/uprial/customcreatures) plugins
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, ancient cities, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
