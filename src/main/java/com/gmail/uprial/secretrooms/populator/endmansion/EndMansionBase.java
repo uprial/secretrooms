@@ -30,13 +30,13 @@ public class EndMansionBase extends EndMansionChunk {
     private final Map<Material, ItemConfig> chestLootTable
             = ImmutableMap.<Material, ItemConfig>builder()
             .put(Material.DIAMOND_CHESTPLATE, new ItemConfig()
-//diamond_chestplate[glider={},rarity=epic,lore=[[{"text":"It lets you fly like an Elytra","italic":false}]],minecraft:trim={material:"minecraft:resin",pattern:"minecraft:silence"}]
+//diamond_chestplate[glider={},rarity=epic,lore=[[{"text":"Lets you fly like an Elytra","italic":false}]],minecraft:trim={material:"minecraft:resin",pattern:"minecraft:silence"}]
                     .rarity(ItemRarity.EPIC)
                     .lore(List.of("Lets you fly like an Elytra"))
                     .glider(true)
                     .trim(TrimMaterial.RESIN, TrimPattern.SILENCE))
             .put(Material.BOW, new ItemConfig()
-//bow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:mending":1}]
+//bow[rarity=epic,lore=[[{"text":"Combines two impossibilities","italic":false}]],minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:mending":1}]
                     .rarity(ItemRarity.EPIC)
                     .lore(List.of("Combines two impossibilities"))
                     /*
