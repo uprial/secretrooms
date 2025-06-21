@@ -2,9 +2,14 @@ package com.gmail.uprial.secretrooms.common;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class TakeAimAdapter {
     public static void setTarget(final Mob source, final Player target) {
@@ -20,7 +25,7 @@ public class TakeAimAdapter {
                                                         final Player target,
                                                         Class<? extends T> tFireball) {
 
-        if(null != Bukkit.getPluginManager().getPlugin("TakeAim")) {
+        if(isTakeAimEnabled()) {
             setTarget(source, target);
             /*
                 I carefully tested, and TakeAim works without this fixture.
@@ -51,5 +56,19 @@ public class TakeAimAdapter {
         return targetPlayer.getLocation()
                 .add(targetPlayer.getEyeLocation())
                 .multiply(0.5D);
+    }
+
+    private static boolean isTakeAimEnabled() {
+        final Plugin plugin = Bukkit.getPluginManager().getPlugin("TakeAim");
+        if(plugin == null) {
+            return false;
+        }
+        try {
+            final Object config = plugin.getClass().getMethod("getTakeAimConfig").invoke(plugin);
+
+            return (Boolean)config.getClass().getMethod("isEnabled").invoke(config);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
