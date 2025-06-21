@@ -47,7 +47,9 @@ public class TakeAimAdapter {
     }
 
     // According to TakeAim:ProjectileHoming
-    public static Location getAimPoint(final LivingEntity targetEntity) {
-        return targetEntity.getEyeLocation();
+    public static Location getAimPoint(final Player targetPlayer) {
+        return targetPlayer.getLocation()
+                .add(targetPlayer.getEyeLocation())
+                .multiply(0.5D);
     }
 }
