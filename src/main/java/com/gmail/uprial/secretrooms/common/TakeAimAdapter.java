@@ -58,6 +58,12 @@ public class TakeAimAdapter {
                 .multiply(0.5D);
     }
 
+    private static class TakeAimIntegrationError extends RuntimeException {
+        TakeAimIntegrationError(final Throwable cause) {
+            super(cause);
+        }
+    }
+
     private static boolean isTakeAimEnabled() {
         final Plugin plugin = Bukkit.getPluginManager().getPlugin("TakeAim");
         if(plugin == null) {
@@ -68,7 +74,7 @@ public class TakeAimAdapter {
 
             return (Boolean)config.getClass().getMethod("isEnabled").invoke(config);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new TakeAimIntegrationError(e);
         }
     }
 }
