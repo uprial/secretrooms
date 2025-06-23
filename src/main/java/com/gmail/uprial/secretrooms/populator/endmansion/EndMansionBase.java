@@ -3,13 +3,13 @@ package com.gmail.uprial.secretrooms.populator.endmansion;
 import com.gmail.uprial.secretrooms.common.BlockSeed;
 import com.gmail.uprial.secretrooms.populator.ContentSeed;
 import com.gmail.uprial.secretrooms.populator.ItemConfig;
+import com.gmail.uprial.secretrooms.populator.SpawnerHelper;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemRarity;
@@ -133,16 +133,7 @@ public class EndMansionBase extends EndMansionChunk {
             vc.set(x + i, y, z, Material.OBSIDIAN);
             vc.set(x, y, z + i, Material.OBSIDIAN);
         }
-        final CreatureSpawner spawner
-                = (CreatureSpawner) vc.set(x, y, z, Material.SPAWNER).getState();
-
-        // Spawn fewer entities
-        spawner.setMaxNearbyEntities(8); // Default: 16
-        spawner.setSpawnCount(2); // Default: 4
-
-        spawner.setSpawnedType(entityType);
-
-        spawner.update();
+        new SpawnerHelper().set(vc.get(x, y, z), entityType);
     }
 
     @Override

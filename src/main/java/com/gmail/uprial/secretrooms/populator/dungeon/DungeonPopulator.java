@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
 
-public class DungeonPopulator extends AbstractSeedSpecificPopulator implements Tested_On_1_21_5 {
+public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final CustomLogger customLogger;
 
     VirtualChunk vc;
@@ -414,18 +414,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator implements T
             // Hide the creeper spawner from the top
             vc.set(sx, sy + 1, sz, Material.BLACK_CARPET);
 
-            final CreatureSpawner spawner
-                    = (CreatureSpawner) vc.set(sx, sy, sz, Material.SPAWNER).getState();
-
-            // Spawn a lot of Creepers, but only when the player is close.
-            spawner.setMaxNearbyEntities(8); // Default: 16
-            spawner.setMinSpawnDelay(20); // Default: 200
-            spawner.setMaxSpawnDelay(80); // Default: 800
-            spawner.setSpawnCount(8); // Default: 4
-            // spawner.setDelay(-1);
-            spawner.setSpawnedType(EntityType.CREEPER);
-
-            spawner.update();
+            new SpawnerHelper().setQuick().set(vc.get(sx, sy, sz), EntityType.CREEPER);
         }
 
         {

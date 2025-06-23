@@ -1,10 +1,10 @@
 package com.gmail.uprial.secretrooms.populator.endmansion;
 
+import com.gmail.uprial.secretrooms.populator.SpawnerHelper;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
 import java.util.Map;
@@ -54,19 +54,9 @@ public class EndMansionCorner extends EndMansionChunk {
                     .put(EntityType.BREEZE, 3)
                     .build().entrySet()) {
 
-                final EntityType entityType = entry.getKey();
                 final Integer position = entry.getValue();
 
-                final CreatureSpawner spawner
-                        = (CreatureSpawner) vc.set(position, y, position, Material.SPAWNER).getState();
-
-                // Spawn fewer entities
-                spawner.setMaxNearbyEntities(8); // Default: 16
-                spawner.setSpawnCount(2); // Default: 4
-
-                spawner.setSpawnedType(entityType);
-
-                spawner.update();
+                new SpawnerHelper().set(vc.get(position, y, position), entry.getKey());
             }
         }
     }

@@ -22,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -942,14 +941,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
     private void populateEndShip(final Block block) {
         if(block.getWorld().getName().equals(WorldName.END)) {
-
-            final Illusioner illusioner = (Illusioner)block.getWorld().spawnEntity(
-                    block.getWorld().getHighestBlockAt(block.getX(), block.getZ()).getLocation()
-                            // Above the highest block
-                            .add(new Vector(0.0D, 1.01D, 0.0D)),
-                    EntityType.ILLUSIONER);
-            // In case the CustomCreatures plugin is switched off.
-            illusioner.setRemoveWhenFarAway(false);
+            new EndShipBlockBrewingStandHelper(block).defend();
 
             if(customLogger.isDebugMode()) {
                 customLogger.debug(String.format("%s populated", format(block)));
