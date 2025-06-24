@@ -3,6 +3,7 @@ package com.gmail.uprial.secretrooms.common;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
@@ -56,6 +57,19 @@ public class AngerHelper {
         return (player.isValid()
                 && (!isInvisiblePlayer(player))
                 && (!player.isInvulnerable()));
+    }
+
+    /*
+        According to https://minecraft.wiki/w/Server.properties,
+        max view-distance and simulation-distance are both 32 chunks.
+     */
+    public static boolean isSimulated(final Entity entity, final Player player) {
+        return Math.sqrt(
+                Math.pow(player.getLocation().getChunk().getX()
+                        - entity.getLocation().getChunk().getX(), 2.0D)
+                + Math.pow(player.getLocation().getChunk().getZ()
+                        - entity.getLocation().getChunk().getZ(), 2.0D))
+                <= player.getWorld().getSimulationDistance();
     }
 
     private static boolean isInvisiblePlayer(final Player player) {

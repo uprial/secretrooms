@@ -167,21 +167,17 @@ public class TurretCron extends BukkitRunnable {
     }
 
     private boolean isSeeingPlayer(final EnderCrystal crystal, final Player player) {
+        // Don't shoot across the whole map.
+        if(!AngerHelper.isSimulated(crystal, player)) {
+            return false;
+        }
+
         final Location fromLocation = getLaunchPoint(crystal, player);
         final Location toLocation = TakeAimAdapter.getAimPoint(player);
 
         final double distance = toLocation.distance(fromLocation);
         // Too close
         if(distance < EXPLOSION_DISTANCE - DEFENCE_DISTANCE) {
-            return false;
-        }
-        /*
-            Don't shoot across the whole map.
-
-            According to https://minecraft.wiki/w/Server.properties,
-            max view-distance and simulation-distance are both 32 chunks.
-         */
-        if(distance > fromLocation.getWorld().getSimulationDistance() * 16 - DEFENCE_DISTANCE) {
             return false;
         }
         // Check for direct vision
