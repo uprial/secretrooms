@@ -59,6 +59,7 @@ public final class SecretRooms extends JavaPlugin {
         populator = new Populator(this, consoleLogger, chunkPopulators);
 
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
+        getServer().getPluginManager().registerEvents(new TurretListener(turretCron), this);
 
         getCommand(COMMAND_NS).setExecutor(new SecretRoomsCommandExecutor(this));
         consoleLogger.info("Plugin enabled");

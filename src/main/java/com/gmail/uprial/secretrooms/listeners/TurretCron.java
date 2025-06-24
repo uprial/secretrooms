@@ -132,14 +132,27 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
+    void onExplode(final EnderCrystal crystal) {
+        if (isTurret(crystal)) {
+            // Break Heavy Core together with its End Crystal
+            getHeading(crystal).setType(Material.AIR);
+        }
+    }
+
     private boolean isTurret(final EnderCrystal crystal) {
+        final Block heading = getHeading(crystal);
+
+        return (heading != null) && (heading.getType().equals(HEADING_MATERIAL));
+    }
+
+    private Block getHeading(final EnderCrystal crystal) {
         final Location location = crystal.getLocation().clone().add(0.0D, 1.0D, 0.0D);
 
         // I tested, and getMaxHeight() already can't be set.
         if (location.getBlockY() < crystal.getWorld().getMaxHeight()) {
-            return crystal.getWorld().getBlockAt(location).getType().equals(HEADING_MATERIAL);
+            return crystal.getWorld().getBlockAt(location);
         } else {
-            return false;
+            return null;
         }
     }
 
