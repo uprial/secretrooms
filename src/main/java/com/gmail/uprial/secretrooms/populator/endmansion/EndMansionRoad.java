@@ -1,11 +1,12 @@
 package com.gmail.uprial.secretrooms.populator.endmansion;
 
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
-public class EndMansionRoad extends EndMansionChunk {
+import static com.gmail.uprial.secretrooms.populator.endmansion.EndMansionMaterials.END_MANSION_BLOCK;
+import static com.gmail.uprial.secretrooms.populator.endmansion.EndMansionMaterials.END_MANSION_SPACE;
 
+public class EndMansionRoad extends EndMansionChunk {
     EndMansionRoad(final BlockFace blockFace) {
         super(blockFace);
     }
@@ -14,10 +15,10 @@ public class EndMansionRoad extends EndMansionChunk {
     public void populate(final VirtualChunk vc) {
         final int y = vc.getMinHeight() + 3;
 
-        vc.box(Material.OBSIDIAN,
+        vc.box(END_MANSION_BLOCK,
                 0, y, 1,
                 15, y, 4);
-        vc.box(Material.AIR,
+        vc.box(END_MANSION_SPACE,
                 0, y + 1, 1,
                 15, y + 2, 4);
     }

@@ -20,6 +20,9 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 import java.util.List;
 import java.util.Map;
 
+import static com.gmail.uprial.secretrooms.populator.endmansion.EndMansionMaterials.END_MANSION_BLOCK;
+import static com.gmail.uprial.secretrooms.populator.endmansion.EndMansionMaterials.END_MANSION_SPACE;
+
 public class EndMansionBase extends EndMansionChunk {
     VirtualChunk vc;
 
@@ -56,38 +59,41 @@ public class EndMansionBase extends EndMansionChunk {
         this.vc = vc;
 
         {
-            int y = vc.getMinHeight();
+            int y = vc.getMinHeight() - 1;
 
-            circle(y, 0, 1, Material.OBSIDIAN);
-
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 0; i <= 3; i++) {
                 y++;
-                circle(y, i * 2, i * 2 + 1, Material.OBSIDIAN);
+                circle(y, i * 2, i * 2 + 1, END_MANSION_BLOCK);
             }
 
             for (int i = 0; i < 3; i ++) {
                 y++;
-                circle(y, 7, 7, Material.AIR);
+                circle(y, 7, 7, END_MANSION_SPACE);
             }
 
-            for (int i = 7; i >= 0; i--) {
+            for (int i = 3; i >= 0; i--) {
                 y++;
-                circle(y, i, i, Material.OBSIDIAN);
+                circle(y, i * 2, i * 2 + 1, END_MANSION_BLOCK);
             }
         }
 
         {
             int y = vc.getMinHeight() + 3;
-            circle(y, 0, 1, Material.OBSIDIAN);
+            circle(y, 0, 1, END_MANSION_BLOCK);
         }
 
         {
             int y = vc.getMinHeight() + 7;
 
+            /*
+                Spawn all the most annoying mobs in one place, excluding bosses.
+
+                The spawners are not symmetrical to prevent overcrowding.
+             */
             spawner(3, y, 12, EntityType.BLAZE);
             spawner(12, y, 3, EntityType.SHULKER);
             spawner(3, y, 3, EntityType.CREEPER);
-            spawner(12, y, 12, EntityType.CREEPER);
+            spawner(12, y, 12, EntityType.SKELETON);
         }
 
         {
@@ -120,18 +126,18 @@ public class EndMansionBase extends EndMansionChunk {
 
         for(int x = 7 - nr1 + 1; x <= 8 + nr1 - 1; x ++) {
             for (int z = 7 - nr1 + 1; z <= 8 + nr1 - 1; z++) {
-                vc.set(x, y, z, Material.AIR);
+                vc.set(x, y, z, END_MANSION_SPACE);
             }
         }
     }
 
     private void spawner(final int x, final int y, final int z, final EntityType entityType) {
         for (int i = -1; i <= +1; i += 2) {
-            // Vertical defence
-            vc.set(x, y + i, z, Material.OBSIDIAN);
-            // Horizontal defence
-            vc.set(x + i, y, z, Material.OBSIDIAN);
-            vc.set(x, y, z + i, Material.OBSIDIAN);
+            // Vertical
+            vc.set(x, y + i, z, END_MANSION_BLOCK);
+            // Horizontal
+            vc.set(x + i, y, z, END_MANSION_BLOCK);
+            vc.set(x, y, z + i, END_MANSION_BLOCK);
         }
         new SpawnerHelper().set(vc.get(x, y, z), entityType);
     }
