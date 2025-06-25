@@ -132,7 +132,7 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    void onExplode(final EnderCrystal crystal) {
+    void onDeath(final EnderCrystal crystal) {
         if (isTurret(crystal)) {
             // Break Heavy Core together with its End Crystal
             getHeading(crystal).setType(Material.AIR);
