@@ -87,79 +87,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     /*
         Ideated from:
             https://minecraft.wiki/w/Non-renewable_resource
-     */
-    private final int STACK = 64;
-    private final int DYE_COUNT = 16;
 
-    /*
         The idea is to give items with only enchantments
         unavailable in Survival mode, with potential for extension.
      */
-    private final ItemConfig diamondToolConfig = new ItemConfig()
-            /*
-                Survival maximum level is 3, here it's 5.
-
-                diamond_pickaxe[minecraft:enchantments={"minecraft:fortune":5}]
-
-                A potential EFFICIENCY(5), UNBREAKING(3) and MENDING(1)
-                upgrade would cost 15 levels.
-             */
-            .ench(Enchantment.FORTUNE, 5, 5);
-
-    private final ItemConfig tridentConfig = new ItemConfig()
-            /*
-                Survival maximum level is 3, here it's 5.
-
-                trident[minecraft:enchantments={"minecraft:loyalty":5}]
-
-                A potential UNBREAKING(3), CHANNELING(1) and MENDING(1)
-                upgrade would cost 18 levels.
-
-                IMO, impaling is just useless, and isn't a potential upgrade.
-
-                In fact, riptide isn't compatible ith loyalty.
-             */
-            .ench(Enchantment.LOYALTY, 5, 5);
-
-    private final ItemConfig crossbowConfig = new ItemConfig()
-            /*
-                Survival maximum levels are ZERO.
-
-                crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
-
-                A potential UNBREAKING(3), QUICK_CHARGE(3) and MENDING(1)
-                upgrade would cost 15 levels.
-
-                With PIERCING(4) - 19.
-
-                With MULTISHOT(1) - 19.
-             */
-            .ench(Enchantment.POWER, 10, 10)
-            .ench(Enchantment.PUNCH, 2, 2)
-            .ench(Enchantment.FLAME)
-            .ench(Enchantment.INFINITY);
-
-    private final ItemConfig diamondSwordConfig = new ItemConfig()
-            /*
-                Survival maximum level is 3, here it's 5.
-
-                diamond_sword[minecraft:enchantments={"minecraft:looting":5}]
-
-                A potential UNBREAKING(3), SHARPNESS(5), FIRE_ASPECT(2), SWEEPING_EDGE(3) and MENDING(1)
-                upgrade would cost 35 levels.
-
-                IMO, knockback prevents swords from dealing a lot of melee damage per second,
-                and isn't a potential upgrade.
-             */
-            .ench(Enchantment.LOOTING, 5, 5);
-
-    private final ItemConfig damageSplashPotionConfig = new ItemConfig()
-            // The highest potion amplifier that has a name
-            .effect(PotionEffectType.INSTANT_DAMAGE, 0, 5);
-
-    private final ItemConfig healthSplashPotionConfig = new ItemConfig()
-            // The highest potion amplifier that has a name
-            .effect(PotionEffectType.INSTANT_HEALTH, 0, 5);
+    private final int STACK = 64;
 
     private final List<List<D>> chestLootTable
             = ImmutableList.<List<D>>builder()
@@ -254,20 +186,74 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                             .build(), STACK))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.DIAMOND_PICKAXE, 1, diamondToolConfig))
+                    .add(new D(Material.DIAMOND_PICKAXE, 1, new ItemConfig()
+                            /*
+                                Survival maximum level is 3, here it's 5.
+
+                                diamond_pickaxe[minecraft:enchantments={"minecraft:fortune":5}]
+
+                                A potential EFFICIENCY(5), UNBREAKING(3) and MENDING(1)
+                                upgrade would cost 15 levels.
+                             */
+                            .ench(Enchantment.FORTUNE, 5, 5)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.SPLASH_POTION, 3, damageSplashPotionConfig))
-                    .add(new D(Material.SPLASH_POTION, 3, healthSplashPotionConfig))
+                    .add(new D(Material.SPLASH_POTION, 3, new ItemConfig()
+                            // The highest potion amplifier that has a name
+                            .effect(PotionEffectType.INSTANT_DAMAGE, 0, 5)))
+                    .add(new D(Material.SPLASH_POTION, 3, new ItemConfig()
+                            // The highest potion amplifier that has a name
+                            .effect(PotionEffectType.INSTANT_HEALTH, 0, 5)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.TRIDENT, 1, tridentConfig))
+                    .add(new D(Material.TRIDENT, 1, new ItemConfig()
+                            /*
+                                Survival maximum level is 3, here it's 5.
+
+                                trident[minecraft:enchantments={"minecraft:loyalty":5}]
+
+                                A potential UNBREAKING(3), CHANNELING(1) and MENDING(1)
+                                upgrade would cost 18 levels.
+
+                                IMO, impaling is just useless, and isn't a potential upgrade.
+
+                                In fact, riptide isn't compatible ith loyalty.
+                             */
+                            .ench(Enchantment.LOYALTY, 5, 5)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.CROSSBOW, 1, crossbowConfig))
+                    .add(new D(Material.CROSSBOW, 1, new ItemConfig()
+                            /*
+                                Survival maximum levels are ZERO.
+
+                                crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
+
+                                A potential UNBREAKING(3), QUICK_CHARGE(3) and MENDING(1)
+                                upgrade would cost 15 levels.
+
+                                With PIERCING(4) - 19.
+
+                                With MULTISHOT(1) - 19.
+                             */
+                            .ench(Enchantment.POWER, 10, 10)
+                            .ench(Enchantment.PUNCH, 2, 2)
+                            .ench(Enchantment.FLAME)
+                            .ench(Enchantment.INFINITY)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.DIAMOND_SWORD, 1, diamondSwordConfig))
+                    .add(new D(Material.DIAMOND_SWORD, 1, new ItemConfig()
+                            /*
+                                Survival maximum level is 3, here it's 5.
+
+                                diamond_sword[minecraft:enchantments={"minecraft:looting":5}]
+
+                                A potential UNBREAKING(3), SHARPNESS(5), FIRE_ASPECT(2), SWEEPING_EDGE(3) and MENDING(1)
+                                upgrade would cost 35 levels.
+
+                                IMO, knockback prevents swords from dealing a lot of melee damage per second,
+                                and isn't a potential upgrade.
+                             */
+                            .ench(Enchantment.LOOTING, 5, 5)))
                     .build())
             .build();
 
