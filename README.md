@@ -40,7 +40,7 @@ Detect an End Mansion by being attacked, find a chest inside, loot it
 
 ![Find a mansion](https://raw.githubusercontent.com/uprial/secretrooms/master/images/find-a-mansion.png)
 
-Build a turret from an End Crystal and a Heavy Core above it
+Build a turret from an End Crystal and a Heavy Core or a Dragon Head above it
 
 ![Build a turret](https://raw.githubusercontent.com/uprial/secretrooms/master/images/build-a-turret.png)
 
