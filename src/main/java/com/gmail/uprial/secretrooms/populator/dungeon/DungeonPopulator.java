@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
+import static com.gmail.uprial.secretrooms.common.Utils.seconds2ticks;
 
 public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final CustomLogger customLogger;
@@ -204,6 +205,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     .add(new D(Material.SPLASH_POTION, 3, new ItemConfig()
                             // The highest potion amplifier that has a name
                             .effect(PotionEffectType.INSTANT_HEALTH, 0, 5)))
+                    .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.SPLASH_POTION, 2, new ItemConfig()
+                            // The highest potion amplifier that protects less than for 100%
+                            .effect(PotionEffectType.STRENGTH, seconds2ticks(3_600), 4)))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.TRIDENT, 1, new ItemConfig()
