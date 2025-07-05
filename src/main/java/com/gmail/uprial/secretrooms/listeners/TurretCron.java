@@ -5,6 +5,7 @@ import com.gmail.uprial.secretrooms.common.AngerHelper;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.common.TakeAimAdapter;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,47 +22,75 @@ import static com.gmail.uprial.secretrooms.common.Formatter.format;
 import static com.gmail.uprial.secretrooms.common.Utils.seconds2ticks;
 
 public class TurretCron extends BukkitRunnable {
-    /*
-        According to https://minecraft.wiki/w/Explosion,
-        the Heavy Core blast resistance is 30.
-     */
-    private static final Material HEADING_MATERIAL = Material.HEAVY_CORE;
+    public enum TurretType {
+        SMALL,
+        BIG
+    }
+
+    private static class Turret {
+        private final float explosionPower;
+        private final float maxBlastResistance;
+        private final double explosionDistance;
+
+        Turret(final float explosionPower,
+               final float maxBlastResistance,
+               final double explosionDistance) {
+            this.explosionPower = explosionPower;
+            this.maxBlastResistance = maxBlastResistance;
+            this.explosionDistance = explosionDistance;
+        }
+
+        float getExplosionPower() {
+            return explosionPower;
+        }
+
+        float getMaxBlastResistance() {
+            return maxBlastResistance;
+        }
+
+        double getExplosionDistance() {
+            return explosionDistance;
+        }
+    }
+
+    private static final Map<Material,Turret> turrets = ImmutableMap.<Material,Turret>builder()
+            /*
+                According to https://minecraft.wiki/w/Explosion,
+
+                CAUSE    | POWER | MAX. BLAST RESISTANCE | MAX. RANGE
+                Fireball | 1     | 3                     | 1.5
+                Creeper  | 3     | 9                     | 5.1
+
+                And the Heavy Core blast resistance is 30.
+             */
+            .put(Material.HEAVY_CORE,
+                    new Turret(3.0f, 9.0f, 5.1D))
+            .put(Material.DRAGON_HEAD,
+                    new Turret(1.0f, 3.0f, 1.5D))
+            .build();
+
+    private static final Map<TurretType,Material> turretTypes = ImmutableMap.<TurretType,Material>builder()
+            .put(TurretType.BIG, Material.HEAVY_CORE)
+            .put(TurretType.SMALL, Material.DRAGON_HEAD)
+            .build();
 
     private static final int SHOOT_INTERVAL = seconds2ticks(3);
-
-    private static final float EXPLOSION_POWER = 3.0f;
-    /*
-        Penetrate blocks with small blast resistance.
-
-        According to https://minecraft.wiki/w/Explosion,
-        Creeper has power 3 and explodes blocks with up to 9 of blast resistance.
-
-        It might be reduced to the original 1.0 of Fireball.
-        According to https://minecraft.wiki/w/Fireball,
-        blocks with blast resistance as low as 3.5 survive if hit from the sides or from the top.
-     */
-    private static final double MAX_BLAST_RESISTANCE = 9.0f;
 
     /*
         Don't shoot from the inside of the crystal, give a space for the defence buildings.
 
         The End Crystals move vertically, taking two blocks.
-        If the top block is bordered with 4 defence blocks,
+        If the top block is bordered with 4 defence blocks in X and Z coordinates,
         the distance between the End Crystal position and these 4 defence blocks
         might be more than 2.0: (1.5) * 2 ^ 0.5 = 2.12.
      */
     private static final double DEFENCE_DISTANCE = 3.0D;
 
     /*
-        Avoid shooting at enemies located too close, as this may cause the turret itself to explode.
-
-        According to https://minecraft.wiki/w/Explosion,
-        Creeper has power 3 and damages blocks in a 5.1 range.
-
         According to https://minecraft.wiki/w/End_Crystal,
         the weight and height of the End Crystals are 2.0.
      */
-    private static final double EXPLOSION_DISTANCE = 5.1D + 2.0D;
+    private static final double BODY_SIZE = 2.0D;
 
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
@@ -74,9 +103,9 @@ public class TurretCron extends BukkitRunnable {
         runTaskTimer(plugin, SHOOT_INTERVAL, SHOOT_INTERVAL);
     }
 
-    public static void spawn(final VirtualChunk vc, final int x, final int y, final int z) {
+    public static void spawn(final VirtualChunk vc, final int x, final int y, final int z, final TurretType type) {
         vc.set(x, y - 1, z, Material.OBSIDIAN);
-        vc.set(x, y + 1, z, HEADING_MATERIAL);
+        vc.set(x, y + 1, z, turretTypes.get(type));
 
         final Block crystal = vc.get(x, y, z);
 
@@ -116,11 +145,15 @@ public class TurretCron extends BukkitRunnable {
         for(final World world : plugin.getServer().getWorlds()) {
             if(worldsPlayers.containsKey(world.getUID())) {
                 for(final EnderCrystal crystal : world.getEntitiesByClass(EnderCrystal.class)) {
-                    if (crystal.isValid() && isTurret(crystal)) {
-                        final Player player = getClosestVisiblePlayer(crystal, worldsPlayers.get(world.getUID()));
+                    if (!crystal.isValid()) {
+                        continue;
+                    }
+                    final Turret turret = getTurret(crystal);
+                    if(turret != null) {
+                        final Player player = getClosestVisiblePlayer(crystal, turret, worldsPlayers.get(world.getUID()));
                         if(player != null) {
                             final Fireball fireball = launch(crystal, player);
-                            fireball.setYield(EXPLOSION_POWER);
+                            fireball.setYield(turret.getExplosionPower());
                             if (customLogger.isDebugMode()) {
                                 customLogger.debug(String.format("%s launched a %s at %s",
                                         format(crystal), fireball.getType(), format(player)));
@@ -133,16 +166,16 @@ public class TurretCron extends BukkitRunnable {
     }
 
     void onDeath(final EnderCrystal crystal) {
-        if (isTurret(crystal)) {
+        if (getTurret(crystal) != null) {
             // Break Heavy Core together with its End Crystal
             getHeading(crystal).setType(Material.AIR);
         }
     }
 
-    private boolean isTurret(final EnderCrystal crystal) {
+    private Turret getTurret(final EnderCrystal crystal) {
         final Block heading = getHeading(crystal);
 
-        return (heading != null) && (heading.getType().equals(HEADING_MATERIAL));
+        return turrets.get(heading.getType());
     }
 
     private Block getHeading(final EnderCrystal crystal) {
@@ -156,9 +189,9 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private Player getClosestVisiblePlayer(final EnderCrystal crystal, final List<Player> players) {
+    private Player getClosestVisiblePlayer(final EnderCrystal crystal, final Turret turret, final List<Player> players) {
         return AngerHelper.getSmallestItem(players, (final Player player) -> {
-            if(AngerHelper.isValidPlayer(player) && isSeeingPlayer(crystal, player)) {
+            if(AngerHelper.isValidPlayer(player) && isSeeingPlayer(crystal, turret, player)) {
                 return TakeAimAdapter.getAimPoint(player).distance(crystal.getLocation());
             } else {
                 return null;
@@ -166,23 +199,21 @@ public class TurretCron extends BukkitRunnable {
         });
     }
 
-    private boolean isSeeingPlayer(final EnderCrystal crystal, final Player player) {
+    private boolean isSeeingPlayer(final EnderCrystal crystal, final Turret turret, final Player player) {
         // Don't shoot across the whole map.
         if(!AngerHelper.isSimulated(crystal, player)) {
             return false;
         }
 
-        final Location fromLocation = getLaunchPoint(crystal, player);
         final Location toLocation = TakeAimAdapter.getAimPoint(player);
 
-        final double distance = toLocation.distance(fromLocation);
-        // Too close
-        if(distance < EXPLOSION_DISTANCE - DEFENCE_DISTANCE) {
+        // Make sure the launch point isn't too close to the potential target
+        if(toLocation.distance(getBodyCenter(crystal)) < BODY_SIZE + turret.getExplosionDistance()) {
             return false;
         }
         // Check for direct vision
         final RayTraceResult rayTraceResult = AngerHelper.rayTraceBlocks(
-                fromLocation,
+                getLaunchPoint(crystal, player),
                 toLocation,
                 // Fireballs don't care about fluids
                 FluidCollisionMode.NEVER);
@@ -193,7 +224,7 @@ public class TurretCron extends BukkitRunnable {
         }
 
         // Can break a block between
-        return rayTraceResult.getHitBlock().getType().getBlastResistance() <= MAX_BLAST_RESISTANCE;
+        return rayTraceResult.getHitBlock().getType().getBlastResistance() <= turret.getMaxBlastResistance();
     }
 
     private Fireball launch(final EnderCrystal crystal, final Player player) {
@@ -212,17 +243,21 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private Location getLaunchPoint(final EnderCrystal crystal, final Player player) {
-        final Location bodyLocation = new Location(
+    private Location getBodyCenter(final EnderCrystal crystal) {
+        return new Location(
                 crystal.getLocation().getWorld(),
                 crystal.getLocation().getBlockX() + 0.5D,
                 crystal.getLocation().getBlockY() + 0.5D,
                 crystal.getLocation().getBlockZ() + 0.5D);
+    }
 
-        final Vector direction = AngerHelper.getDirection(bodyLocation, TakeAimAdapter.getAimPoint(player));
+    private Location getLaunchPoint(final EnderCrystal crystal, final Player player) {
+        final Location bodyCenter = getBodyCenter(crystal);
+
+        final Vector direction = AngerHelper.getDirection(bodyCenter, TakeAimAdapter.getAimPoint(player));
         // Avoid shooting at enemies located too close, as this may cause the turret itself to explode.
         direction.multiply(DEFENCE_DISTANCE / direction.length());
 
-        return bodyLocation.add(direction);
+        return bodyCenter.add(direction);
     }
 }

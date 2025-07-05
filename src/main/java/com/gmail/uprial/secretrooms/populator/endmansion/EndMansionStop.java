@@ -23,7 +23,13 @@ public class EndMansionStop extends EndMansionChunk {
                 0, y + 1, 1,
                 3, y + 2, 4);
 
-        TurretCron.spawn(vc, 1, y + 3, 2);
+        /*
+            The turrets are positioned so that
+            a player can't take a position between them,
+            causing them to kill each other:
+            there is a base in between with high blast resistance.
+         */
+        TurretCron.spawn(vc, 1, y + 3, 2, TurretCron.TurretType.BIG);
     }
 
     @Override
