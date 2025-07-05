@@ -209,7 +209,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.SPLASH_POTION, 2, new ItemConfig()
                             // The highest potion amplifier that protects less than for 100%
-                            .effect(PotionEffectType.STRENGTH, seconds2ticks(3_600), 4)))
+                            .effect(PotionEffectType.RESISTANCE, seconds2ticks(300), 3)))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.TRIDENT, 1, new ItemConfig()
