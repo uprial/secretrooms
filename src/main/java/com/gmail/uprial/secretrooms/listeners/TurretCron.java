@@ -135,11 +135,14 @@ public class TurretCron extends BukkitRunnable {
     public void run() {
         final Map<UUID, List<Player>> worldsPlayers = new HashMap<>();
         for(final Player player : plugin.getServer().getOnlinePlayers()) {
-            if(player.isValid()) {
+            if(AngerHelper.isValidPlayer(player)) {
                 worldsPlayers
                         .computeIfAbsent(player.getWorld().getUID(), (k) -> new ArrayList<>())
                         .add(player);
             }
+        }
+        if(worldsPlayers.isEmpty()) {
+            return;
         }
 
         for(final World world : plugin.getServer().getWorlds()) {
