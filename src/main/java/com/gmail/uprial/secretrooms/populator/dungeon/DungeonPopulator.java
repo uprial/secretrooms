@@ -121,7 +121,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                         According to https://www.youtube.com/watch?v=ZntF03lSY4E,
                         the top-1 of best-looking blocks.
                      */
-                    .add(new D(Material.SEA_LANTERN, STACK * 9))
+                    .add(new D(Material.SEA_LANTERN, STACK * 3))
                     .build())
             /*
                             Regular*1   Deepslate*1 Regular*2   Deepslate*2 Max mining

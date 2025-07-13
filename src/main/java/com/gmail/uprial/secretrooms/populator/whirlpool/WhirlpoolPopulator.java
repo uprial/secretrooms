@@ -58,17 +58,21 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             https://minecraft.wiki/w/Fishing
      */
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
-            // 60%/2=30% for up to 2^(6-2)=16
-            .put(Material.COD, new CLT(30.0D, CLT.MAX_POWER - 2))
-            // 25%/2=12.5% for up to 16
-            .put(Material.SALMON, new CLT(12.5D, CLT.MAX_POWER - 2))
+            // 51%/2=25.5% for up to 2^(6-2)=16
+            .put(Material.COD, new CLT(25.5D, CLT.MAX_POWER - 2))
+            // 21.3%/2=10.65% for up to 16
+            .put(Material.SALMON, new CLT(10.65D, CLT.MAX_POWER - 2))
 
-            // 13% for 1-4
-            .put(Material.PUFFERFISH, new CLT(13.0D, 2))
-            // 2*2=4% for 1-4
-            .put(Material.TROPICAL_FISH, new CLT(4.0D, 2))
+            // 11.1% for 1-4
+            .put(Material.PUFFERFISH, new CLT(11.1D, 2))
+            // 1.7% for 1-4
+            .put(Material.TROPICAL_FISH, new CLT(1.7D, 2))
 
-            .put(Material.FISHING_ROD, new CLT(10.0D, fishingRodItemConfig))
+            // 0.8%*2=1.6% for 1
+            .put(Material.FISHING_ROD, new CLT(1.6D, fishingRodItemConfig))
+            .put(Material.NAME_TAG, new CLT(1.6D))
+            .put(Material.NAUTILUS_SHELL, new CLT(1.6D))
+            .put(Material.SADDLE, new CLT(1.6D))
             .build();
 
     @Override

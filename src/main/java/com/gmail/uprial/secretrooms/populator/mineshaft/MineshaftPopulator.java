@@ -488,16 +488,16 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
-            // 19.84% - total
+            // 16.12% - total
 
             /*
-                6% - boring resources
+                5% - boring resources
 
                 Obtaining these resources isn't worth its time,
                 but as a gift it's a lot of fun.
              */
             .put(Material.TNT, new CLT(3.00D, 2))
-            .put(Material.OBSIDIAN, new CLT(3.00D, 2))
+            .put(Material.OBSIDIAN, new CLT(2.00D, 2))
 
             // 2% - potions
             .put(Material.POTION, new CLT(0.75D, potionConfig))
@@ -525,14 +525,14 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.GOLDEN_PICKAXE, new CLT(0.50D, goldenToolConfig))
             .put(Material.GOLDEN_SWORD, new CLT(0.50D, goldenSwordConfig))
 
-            // 2% - netherite cloths
-            .put(Material.NETHERITE_HELMET, new CLT(0.50D, netheriteClothConfig
+            // 1% - netherite cloths
+            .put(Material.NETHERITE_HELMET, new CLT(0.25D, netheriteClothConfig
                     .ench(Enchantment.RESPIRATION, 0, 3)
                     .ench(Enchantment.AQUA_AFFINITY, 0, 1)))
-            .put(Material.NETHERITE_CHESTPLATE, new CLT(0.50D, netheriteClothConfig))
-            .put(Material.NETHERITE_LEGGINGS, new CLT(0.50D, netheriteClothConfig
+            .put(Material.NETHERITE_CHESTPLATE, new CLT(0.25D, netheriteClothConfig))
+            .put(Material.NETHERITE_LEGGINGS, new CLT(0.25D, netheriteClothConfig
                     .ench(Enchantment.SWIFT_SNEAK, 0, 3)))
-            .put(Material.NETHERITE_BOOTS, new CLT(0.50D, netheriteClothConfig
+            .put(Material.NETHERITE_BOOTS, new CLT(0.25D, netheriteClothConfig
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
@@ -540,80 +540,80 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.NETHERITE_PICKAXE, new CLT(0.25D, netheriteToolConfig))
             .put(Material.NETHERITE_SWORD, new CLT(0.25D, netheriteSwordConfig))
 
-            // 0.25% - heads for fun
-            .put(Material.CREEPER_HEAD, new CLT(0.05D))
-            .put(Material.PIGLIN_HEAD, new CLT(0.05D))
-            .put(Material.PLAYER_HEAD, new CLT(0.05D))
-            .put(Material.SKELETON_SKULL, new CLT(0.05D))
-            .put(Material.ZOMBIE_HEAD, new CLT(0.05D))
+            // 0.1% - heads for fun
+            .put(Material.CREEPER_HEAD, new CLT(0.02D))
+            .put(Material.PIGLIN_HEAD, new CLT(0.02D))
+            .put(Material.PLAYER_HEAD, new CLT(0.02D))
+            .put(Material.SKELETON_SKULL, new CLT(0.02D))
+            .put(Material.ZOMBIE_HEAD, new CLT(0.02D))
 
-            // 1.85% - EGGS
+            // 1.06% - EGGS
 
-            // 1.4% - hostile mobs from https://minecraft.fandom.com/wiki/Mob
-            .put(Material.BOGGED_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.CREAKING_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.DROWNED_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.ENDERMAN_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.ENDERMITE_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.GUARDIAN_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.HOGLIN_SPAWN_EGG, new CLT(0.07D).onlyInWorld(WorldName.NETHER))
-            .put(Material.HUSK_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.PIGLIN_BRUTE_SPAWN_EGG, new CLT(0.07D).onlyInWorld(WorldName.NETHER))
-            .put(Material.PIGLIN_SPAWN_EGG, new CLT(0.07D).onlyInWorld(WorldName.NETHER))
-            .put(Material.PILLAGER_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.SILVERFISH_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.SKELETON_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.SPIDER_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.STRAY_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.VEX_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.VINDICATOR_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.ZOGLIN_SPAWN_EGG, new CLT(0.07D))
-            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(0.07D))
+            // 0.8% - hostile mobs from https://minecraft.fandom.com/wiki/Mob
+            .put(Material.BOGGED_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.CREAKING_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.DROWNED_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.ENDERMAN_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.ENDERMITE_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.GUARDIAN_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.HOGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
+            .put(Material.HUSK_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.PIGLIN_BRUTE_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PIGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PILLAGER_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.SILVERFISH_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.SKELETON_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.SPIDER_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.STRAY_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.VEX_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.VINDICATOR_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.ZOGLIN_SPAWN_EGG, new CLT(0.04D))
+            .put(Material.ZOMBIE_SPAWN_EGG, new CLT(0.04D))
 
-            // 0.32% - good loot mobs
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
-            .put(Material.BREEZE_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.CREEPER_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.MAGMA_CUBE_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
-            .put(Material.PHANTOM_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.RAVAGER_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.SLIME_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.WITCH_SPAWN_EGG, new CLT(0.04D))
+            // 0.16% - good loot mobs
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
+            .put(Material.BREEZE_SPAWN_EGG, new CLT(0.02D))
+            .put(Material.CREEPER_SPAWN_EGG, new CLT(0.02D))
+            .put(Material.MAGMA_CUBE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PHANTOM_SPAWN_EGG, new CLT(0.02D))
+            .put(Material.RAVAGER_SPAWN_EGG, new CLT(0.02D))
+            .put(Material.SLIME_SPAWN_EGG, new CLT(0.02D))
+            .put(Material.WITCH_SPAWN_EGG, new CLT(0.02D))
 
-            // 0.12% - amazing loot mobs
-            .put(Material.ELDER_GUARDIAN_SPAWN_EGG, new CLT(0.02D))
-            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.02D))
-            .put(Material.GHAST_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
-            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.END))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
-            .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, new CLT(0.02D))
+            // 0.09% - amazing loot mobs
+            .put(Material.ELDER_GUARDIAN_SPAWN_EGG, new CLT(0.015D))
+            .put(Material.EVOKER_SPAWN_EGG, new CLT(0.015D))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.NETHER))
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.END))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.NETHER))
+            .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, new CLT(0.015D))
 
             // 0.01% - semi-bosses
             .put(Material.WARDEN_SPAWN_EGG, new CLT(0.01D))
 
-            // 0.74% - TEMPLATES
+            // 0.46% - TEMPLATES
 
-            // 0.65% - uncommon templates from https://minecraft.wiki/w/Rarity,
-            .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
-            .put(Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.05D))
+            // 0.39% - uncommon templates from https://minecraft.wiki/w/Rarity,
+            .put(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
+            .put(Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.03D))
 
-            // 0.08% - rare templates
-            .put(Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.02D))
-            .put(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.02D))
-            .put(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.02D))
-            .put(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.02D))
+            // 0.06% - rare templates
+            .put(Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.015D))
+            .put(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.015D))
+            .put(Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.015D))
+            .put(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.015D))
 
             // 0.01% - epic templates
             .put(Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE, new CLT(0.01D))

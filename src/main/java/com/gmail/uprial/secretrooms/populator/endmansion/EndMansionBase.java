@@ -34,6 +34,10 @@ public class EndMansionBase extends EndMansionChunk {
             = ImmutableMap.<Material, ItemConfig>builder()
             .put(Material.DIAMOND_CHESTPLATE, new ItemConfig()
 //diamond_chestplate[glider={},rarity=epic,lore=[[{"text":"Lets you fly like an Elytra","italic":false}]],minecraft:trim={material:"minecraft:resin",pattern:"minecraft:silence"}]
+                    /*
+                        A potential UNBREAKING(3), PROTECTION(4), and MENDING(1)
+                        upgrade would cost 14 levels.
+                     */
                     .rarity(ItemRarity.EPIC)
                     .lore(List.of("Lets you fly like an Elytra"))
                     .glider(true)
