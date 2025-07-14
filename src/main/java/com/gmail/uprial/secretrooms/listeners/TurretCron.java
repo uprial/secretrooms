@@ -3,7 +3,6 @@ package com.gmail.uprial.secretrooms.listeners;
 import com.gmail.uprial.secretrooms.SecretRooms;
 import com.gmail.uprial.secretrooms.common.AngerHelper;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
-import com.gmail.uprial.secretrooms.common.TakeAimAdapter;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.FluidCollisionMode;
@@ -12,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -155,12 +155,14 @@ public class TurretCron extends BukkitRunnable {
                     if(turret != null) {
                         final Player player = getClosestVisiblePlayer(crystal, turret, worldsPlayers.get(world.getUID()));
                         if(player != null) {
-                            final Fireball fireball = launch(crystal, player);
-                            fireball.setYield(turret.getExplosionPower());
-                            if (customLogger.isDebugMode()) {
-                                customLogger.debug(String.format("%s launched a %s at %s",
-                                        format(crystal), fireball.getType(), format(player)));
-                            }
+                            launch(crystal, player, (final Fireball fireball) -> {
+                                fireball.setYield(turret.getExplosionPower());
+
+                                if (customLogger.isDebugMode()) {
+                                    customLogger.debug(String.format("%s launched a %s x %.2f at %s",
+                                            format(crystal), fireball.getType(), fireball.getYield(), format(player)));
+                                }
+                            });
                         }
                     }
                 }
@@ -230,7 +232,9 @@ public class TurretCron extends BukkitRunnable {
         return rayTraceResult.getHitBlock().getType().getBlastResistance() <= turret.getMaxBlastResistance();
     }
 
-    private Fireball launch(final EnderCrystal crystal, final Player player) {
+    private void launch(final EnderCrystal crystal,
+                        final Player player,
+                        final TakeAimAdapter.LaunchFireballCallback<Fireball> callback) {
         final Location fromLocation = getLaunchPoint(crystal, player);
 
         /*
@@ -240,7 +244,9 @@ public class TurretCron extends BukkitRunnable {
         final Mob mob = (Mob)crystal.getWorld().spawnEntity(fromLocation, EntityType.BAT);
 
         try {
-            return TakeAimAdapter.launchFireball(mob, player, Fireball.class);
+            TakeAimAdapter.launchFireball(mob, player,
+                    EntityTargetEvent.TargetReason.CLOSEST_PLAYER,
+                    Fireball.class, callback);
         } finally {
             mob.remove();
         }
