@@ -2,7 +2,6 @@ package com.gmail.uprial.secretrooms.populator.endmansion;
 
 import com.gmail.uprial.secretrooms.common.BlockSeed;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
-import com.gmail.uprial.secretrooms.common.WorldName;
 import com.gmail.uprial.secretrooms.populator.ChunkPopulator;
 import com.gmail.uprial.secretrooms.populator.ChunkXZ;
 import com.gmail.uprial.secretrooms.populator.Tested_On_1_21_5;
@@ -15,15 +14,17 @@ import java.util.Map;
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
 
 public class EndMansionPopulator implements ChunkPopulator, Tested_On_1_21_5 {
-    private final static String WORLD = WorldName.END;
+    private final String endName;
 
     private final static int RADIAL_STEP = 1_000 / 16;
     private final static int RADIUS = 64 / 16;
 
     private final CustomLogger customLogger;
 
-    public EndMansionPopulator(final CustomLogger customLogger) {
+    public EndMansionPopulator(final CustomLogger customLogger,
+                               final String endName) {
         this.customLogger = customLogger;
+        this.endName = endName;
     }
 
     private static class EndMansionMap extends HashMap<ChunkXZ, EndMansionChunk> {};
@@ -32,7 +33,7 @@ public class EndMansionPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
     @Override
     public void populate(final Chunk chunk) {
-        if(chunk.getWorld().getName().equals(WORLD)) {
+        if(chunk.getWorld().getName().equals(endName)) {
             final int step = (int)Math.round(Math.sqrt(sqr(chunk.getX()) + sqr(chunk.getZ())) / RADIAL_STEP);
 
             if(step > 0) {

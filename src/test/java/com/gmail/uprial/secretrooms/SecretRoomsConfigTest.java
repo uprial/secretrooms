@@ -40,10 +40,29 @@ public class SecretRoomsConfigTest extends TestConfigBase {
     }
 
     @Test
+    public void testEmptyNetherName() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Null 'nether-name' value");
+        loadConfig(getDebugFearingCustomLogger(), "distance-density-multiplier: 5_000");
+    }
+
+    @Test
+    public void testEmptyEndName() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Null 'end-name' value");
+        loadConfig(getDebugFearingCustomLogger(), "distance-density-multiplier: 5_000",
+                "nether-name: world_nether");
+    }
+
+    @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
-                "distance-density-multiplier: 5,000",
+                "distance-density-multiplier: 5,000, " +
+                "nether-name: 'world_nether', " +
+                "end-name: 'world_the_end'",
                 loadConfig(getCustomLogger(),
-                        "distance-density-multiplier: 5_000").toString());
+                        "distance-density-multiplier: 5_000",
+                                "nether-name: world_nether",
+                                "end-name: world_the_end").toString());
     }
 }

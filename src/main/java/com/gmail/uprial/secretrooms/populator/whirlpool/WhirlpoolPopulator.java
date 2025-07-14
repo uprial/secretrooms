@@ -2,7 +2,6 @@ package com.gmail.uprial.secretrooms.populator.whirlpool;
 
 import com.gmail.uprial.secretrooms.common.BlockSeed;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
-import com.gmail.uprial.secretrooms.common.WorldName;
 import com.gmail.uprial.secretrooms.populator.*;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
@@ -25,8 +24,6 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
     VirtualChunk vc;
 
-    private final static String WORLD = WorldName.WORLD;
-
     /*
         ==== Test ====
 
@@ -36,7 +33,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
     private final static int PROBABILITY = 500;
 
     public WhirlpoolPopulator(final CustomLogger customLogger) {
-        super(WORLD, PROBABILITY);
+        super(PROBABILITY);
 
         this.customLogger = customLogger;
     }
@@ -100,7 +97,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
         if(minY >= vc.getSeaLevel()) {
             if(customLogger.isDebugMode()) {
                 // No water
-                customLogger.debug(String.format("%s[%s] can't be populated", getName(), format(chunk)));
+                customLogger.debug(String.format("%s[%s] can't be populated",
+                        getName(), format(chunk)));
             }
             return ;
         }
@@ -117,7 +115,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                     if (vc.get(minX + dx, y, minZ + dz).getType().equals(Material.MAGMA_BLOCK)) {
                         if (customLogger.isDebugMode()) {
                             // Idempotency marker
-                            customLogger.debug(String.format("%s[%s] is already populated", getName(), format(chunk)));
+                            customLogger.debug(String.format("%s[%s] is already populated",
+                                    getName(), format(chunk)));
                         }
                         return ;
                     }

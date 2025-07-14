@@ -1,10 +1,10 @@
 package com.gmail.uprial.secretrooms.populator.mineshaft;
 
 import com.gmail.uprial.secretrooms.SecretRooms;
+import com.gmail.uprial.secretrooms.config.InternalConfigurationError;
 import com.gmail.uprial.secretrooms.populator.ChunkQueue;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.common.BlockSeed;
-import com.gmail.uprial.secretrooms.common.WorldName;
 import com.gmail.uprial.secretrooms.populator.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -35,9 +35,19 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final CustomLogger customLogger;
     private final int distanceDensityMultiplier;
 
+    public static String NETHER_NAME = "world_nether";
+    public static String END_NAME = "world_the_end";
+
     public MineshaftPopulator(final SecretRooms plugin,
                               final CustomLogger customLogger,
                               final int distanceDensityMultiplier) {
+        if(NETHER_NAME == null) {
+            throw new InternalConfigurationError("NETHER_NAME not initialized");
+        }
+        if (END_NAME == null) {
+            throw new InternalConfigurationError("END_NAME not initialized");
+        }
+
         this.plugin = plugin;
         this.customLogger = customLogger;
         this.distanceDensityMultiplier = distanceDensityMultiplier;
@@ -182,13 +192,13 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     // Increase density in some worlds
-    private final static Map<String,Integer> WORLD_DENSITIES = ImmutableMap.<String,Integer>builder()
-            .put(WorldName.NETHER, 1)
-            .put(WorldName.END, 2)
+    private final Map<String,Integer> worldDensities = ImmutableMap.<String,Integer>builder()
+            .put(NETHER_NAME, 1)
+            .put(END_NAME, 2)
             .build();
 
-    private static int getWorldDensity(final String worldName) {
-        return WORLD_DENSITIES.getOrDefault(worldName, 0);
+    private int getWorldDensity(final String worldName) {
+        return worldDensities.getOrDefault(worldName, 0);
     }
 
     int getDistanceDensity(final Block block) {
@@ -213,15 +223,15 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
      */
 
     // inherits 0 from WORLD_DENSITIES
-    private final static int MANSION_DENSITY = 5 - getWorldDensity(WorldName.WORLD);
+    private final static int MANSION_DENSITY = 5;
     // inherits 0 from WORLD_DENSITIES
-    private final static int ANCIENT_CITY_DENSITY = 4 - getWorldDensity(WorldName.WORLD);
+    private final static int ANCIENT_CITY_DENSITY = 4;
     // inherits 1 from WORLD_DENSITIES
-    private final static int BASTION_DENSITY = 3 - getWorldDensity(WorldName.NETHER);
+    private final static int BASTION_DENSITY = 3;
     // inherits 0 from WORLD_DENSITIES
-    private final static int PYRAMID_DENSITY = 2 - getWorldDensity(WorldName.WORLD);
+    private final static int PYRAMID_DENSITY = 2;
     // inherits 0 from WORLD_DENSITIES
-    private final static int WHIRLPOOL_DENSITY = 1 - getWorldDensity(WorldName.WORLD);
+    private final static int WHIRLPOOL_DENSITY = 1;
 
     /*
         The implementation uses basement blocks to detect structures,
@@ -235,7 +245,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
             # <typical-test> - <extended-test>
      */
-    private final static Map<Material,Integer> MATERIAL_DENSITIES = ImmutableMap.<Material,Integer>builder()
+    private final Map<Material,Integer> materialDensities = ImmutableMap.<Material,Integer>builder()
             // Woodland mansion (rarely mineshaft)
             // # 0 - 61
             .put(Material.DARK_OAK_PLANKS, MANSION_DENSITY)
@@ -309,9 +319,15 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .build();
 
     private int getDensity(final Block basement) {
-        return getWorldDensity(basement.getWorld().getName())
-                + MATERIAL_DENSITIES.getOrDefault(basement.getType(), 0)
-                + getDistanceDensity(basement);
+        final int density;
+
+        if(materialDensities.containsKey(basement.getType())) {
+            density = materialDensities.get(basement.getType());
+        } else {
+            density = getWorldDensity(basement.getWorld().getName());
+        }
+
+        return density + getDistanceDensity(basement);
     }
 
     /*
@@ -556,11 +572,11 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.ENDERMAN_SPAWN_EGG, new CLT(0.04D))
             .put(Material.ENDERMITE_SPAWN_EGG, new CLT(0.04D))
             .put(Material.GUARDIAN_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.HOGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
+            .put(Material.HOGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(NETHER_NAME))
             .put(Material.HUSK_SPAWN_EGG, new CLT(0.04D))
             .put(Material.MOOSHROOM_SPAWN_EGG, new CLT(0.04D))
-            .put(Material.PIGLIN_BRUTE_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
-            .put(Material.PIGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(WorldName.NETHER))
+            .put(Material.PIGLIN_BRUTE_SPAWN_EGG, new CLT(0.04D).onlyInWorld(NETHER_NAME))
+            .put(Material.PIGLIN_SPAWN_EGG, new CLT(0.04D).onlyInWorld(NETHER_NAME))
             .put(Material.PILLAGER_SPAWN_EGG, new CLT(0.04D))
             .put(Material.SILVERFISH_SPAWN_EGG, new CLT(0.04D))
             .put(Material.SKELETON_SPAWN_EGG, new CLT(0.04D))
@@ -572,10 +588,10 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.ZOMBIE_SPAWN_EGG, new CLT(0.04D))
 
             // 0.16% - good loot mobs
-            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
+            .put(Material.BLAZE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(NETHER_NAME))
             .put(Material.BREEZE_SPAWN_EGG, new CLT(0.02D))
             .put(Material.CREEPER_SPAWN_EGG, new CLT(0.02D))
-            .put(Material.MAGMA_CUBE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(WorldName.NETHER))
+            .put(Material.MAGMA_CUBE_SPAWN_EGG, new CLT(0.02D).onlyInWorld(NETHER_NAME))
             .put(Material.PHANTOM_SPAWN_EGG, new CLT(0.02D))
             .put(Material.RAVAGER_SPAWN_EGG, new CLT(0.02D))
             .put(Material.SLIME_SPAWN_EGG, new CLT(0.02D))
@@ -584,9 +600,9 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             // 0.09% - amazing loot mobs
             .put(Material.ELDER_GUARDIAN_SPAWN_EGG, new CLT(0.015D))
             .put(Material.EVOKER_SPAWN_EGG, new CLT(0.015D))
-            .put(Material.GHAST_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.NETHER))
-            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.END))
-            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.015D).onlyInWorld(WorldName.NETHER))
+            .put(Material.GHAST_SPAWN_EGG, new CLT(0.015D).onlyInWorld(NETHER_NAME))
+            .put(Material.SHULKER_SPAWN_EGG, new CLT(0.015D).onlyInWorld(END_NAME))
+            .put(Material.WITHER_SKELETON_SPAWN_EGG, new CLT(0.015D).onlyInWorld(NETHER_NAME))
             .put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, new CLT(0.015D))
 
             // 0.01% - semi-bosses
@@ -940,7 +956,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     }
 
     private void populateEndShip(final Block block) {
-        if(block.getWorld().getName().equals(WorldName.END)) {
+        if(block.getWorld().getName().equals(END_NAME)) {
             new EndShipBlockBrewingStandHelper(block).defend();
 
             if(customLogger.isDebugMode()) {

@@ -19,3 +19,9 @@ debug: false
 #
 
 distance-density-multiplier: 5_000
+
+# Used for nether-specific generation
+nether-name: world_nether
+
+# Used for end-specific generation
+end-name: world_the_end

@@ -1,8 +1,8 @@
 package com.gmail.uprial.secretrooms.config;
 
 @SuppressWarnings("ExceptionClassNameDoesntEndWithException")
-class InternalConfigurationError extends RuntimeException {
-    InternalConfigurationError(String message) {
+public class InternalConfigurationError extends RuntimeException {
+    public InternalConfigurationError(String message) {
         super(message);
     }
 }

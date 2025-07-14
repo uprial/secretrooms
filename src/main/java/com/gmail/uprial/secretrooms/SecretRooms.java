@@ -1,7 +1,6 @@
 package com.gmail.uprial.secretrooms;
 
 import com.gmail.uprial.secretrooms.common.CustomLogger;
-import com.gmail.uprial.secretrooms.common.WorldName;
 import com.gmail.uprial.secretrooms.config.InvalidConfigException;
 import com.gmail.uprial.secretrooms.listeners.*;
 import com.gmail.uprial.secretrooms.populator.ChunkPopulator;
@@ -35,21 +34,26 @@ public final class SecretRooms extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        for(final String worldName : WorldName.getAll()) {
+        consoleLogger = new CustomLogger(getLogger());
+        final SecretRoomsConfig secretRoomsConfig = loadConfig(getConfig(), consoleLogger);
+
+        for(final String worldName : Arrays.asList(
+                secretRoomsConfig.getNetherName(),
+                secretRoomsConfig.getEndName())) {
             if(getServer().getWorld(worldName) == null) {
                 throw new RuntimeException(String.format("World '%s' not found", worldName));
             }
         }
 
-        consoleLogger = new CustomLogger(getLogger());
-        final SecretRoomsConfig secretRoomsConfig = loadConfig(getConfig(), consoleLogger);
+        MineshaftPopulator.NETHER_NAME = secretRoomsConfig.getNetherName();
+        MineshaftPopulator.END_NAME = secretRoomsConfig.getEndName();
 
         turretCron = new TurretCron(this, consoleLogger);
 
         final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
 
         // Order does matter: RailWay is a top priority.
-        chunkPopulators.add(new EndMansionPopulator(consoleLogger));
+        chunkPopulators.add(new EndMansionPopulator(consoleLogger, secretRoomsConfig.getEndName()));
 
         chunkPopulators.add(new WhirlpoolPopulator(consoleLogger));
         chunkPopulators.add(new DungeonPopulator(consoleLogger));

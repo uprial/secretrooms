@@ -23,7 +23,7 @@ public class EndMansionPopulatorTest {
         final Chunk chunk = mock(Chunk.class);
         when(chunk.getWorld()).thenReturn(world);
 
-        final EndMansionPopulator cp = new EndMansionPopulator(null);
+        final EndMansionPopulator cp = new EndMansionPopulator(null, null);
 
         for(Map.Entry<Integer, ChunkXZ> entry : ImmutableMap.<Integer, ChunkXZ>builder()
                 .put(1, new ChunkXZ(-60, 15))

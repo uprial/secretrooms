@@ -26,8 +26,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
     VirtualChunk vc;
 
-    private final static String WORLD = null;
-
     /*
         ==== Test ====
 
@@ -39,7 +37,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final static int ROOM_SIZE = 5;
 
     public DungeonPopulator(final CustomLogger customLogger) {
-        super(WORLD, PROBABILITY);
+        super(PROBABILITY);
 
         this.customLogger = customLogger;
     }
