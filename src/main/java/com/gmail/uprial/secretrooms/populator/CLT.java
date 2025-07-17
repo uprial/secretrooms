@@ -16,7 +16,7 @@ public class CLT {
 
     private final double probability;
     private final int maxPower;
-    private final List<ItemConfig> itemConfigOptions = new ArrayList<>();
+    private final ItemConfig itemConfig;
     private final Set<String> worldNames = new HashSet<>();
 
     public CLT(final double probability) {
@@ -33,9 +33,7 @@ public class CLT {
 
     public CLT(final double probability, final ItemConfig itemConfig, final int maxPower) {
         this.probability = probability;
-        if(itemConfig != null) {
-            this.itemConfigOptions.add(itemConfig);
-        }
+        this.itemConfig = itemConfig;
         this.maxPower = maxPower;
     }
 
@@ -45,8 +43,8 @@ public class CLT {
     }
 
     public void applyItemConfig(final ContentSeed cs, final ItemStack itemStack) {
-        if (!itemConfigOptions.isEmpty()) {
-            cs.oneOf(itemConfigOptions).apply(cs, itemStack);
+        if (itemConfig != null) {
+            itemConfig.apply(cs, itemStack);
         }
     }
 
@@ -56,11 +54,6 @@ public class CLT {
 
     public int getRandomAmount(final BlockSeed bs) {
         return getRandomAmount(bs, 0, maxPower);
-    }
-
-    public CLT addItemConfigOption(final ItemConfig itemConfig) {
-        this.itemConfigOptions.add(itemConfig);
-        return this;
     }
 
     public CLT onlyInWorld(final String worldName) {
