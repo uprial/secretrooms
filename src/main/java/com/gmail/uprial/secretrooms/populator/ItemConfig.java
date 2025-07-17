@@ -17,6 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
+import static com.gmail.uprial.secretrooms.common.Utils.SERVER_TICKS_IN_SECOND;
+import static com.gmail.uprial.secretrooms.common.Utils.joinStrings;
+
 public class ItemConfig {
     private interface VirtualItemConfig {
         void apply(final ContentSeed cs, final ItemStack itemStack);
@@ -242,5 +245,34 @@ public class ItemConfig {
         for(final VirtualItemConfig config : configs) {
             config.apply(cs, itemStack);
         }
+    }
+
+
+    public static String format(final ItemStack itemStack) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(itemStack.getType());
+
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        if(itemMeta instanceof PotionMeta) {
+            final List<String> contents = new ArrayList<>();
+            for(final PotionEffect potionEffect : ((PotionMeta)itemMeta).getCustomEffects()) {
+                contents.add(String.format("%s-%d:%,d",
+                        potionEffect.getType().getName(),
+                        potionEffect.getAmplifier(),
+                        potionEffect.getDuration() / SERVER_TICKS_IN_SECOND));
+            }
+            sb.append("[").append(joinStrings(",", contents)).append("]");
+        }
+
+        if(!itemStack.getEnchantments().isEmpty()) {
+            final List<String> contents = new ArrayList<>();
+            for (Map.Entry<Enchantment, Integer> entry : itemStack.getEnchantments().entrySet()) {
+                contents.add(String.format("%s-%d",
+                        entry.getKey().getName(), entry.getValue()));
+            }
+            sb.append("[").append(joinStrings(",", contents)).append("]");
+        }
+
+        return sb.toString();
     }
 }

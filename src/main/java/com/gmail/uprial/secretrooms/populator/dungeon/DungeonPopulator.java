@@ -449,7 +449,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                     if (customLogger.isDebugMode()) {
                         // WARNING: ConsistencyReference#1
                         customLogger.debug(String.format("%s item #%d %s set to %d",
-                                format(chest), i, material, amount));
+                                format(chest), i, ItemConfig.format(inventory.getItem(i)), amount));
                     }
 
                     count -= amount;
