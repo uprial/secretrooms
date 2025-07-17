@@ -214,15 +214,10 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         gives...
      */
 
-    // inherits 0 from WORLD_DENSITIES
     private final static int MANSION_DENSITY = 5;
-    // inherits 0 from WORLD_DENSITIES
     private final static int ANCIENT_CITY_DENSITY = 4;
-    // inherits 1 from WORLD_DENSITIES
     private final static int BASTION_DENSITY = 3;
-    // inherits 0 from WORLD_DENSITIES
     private final static int PYRAMID_DENSITY = 2;
-    // inherits 0 from WORLD_DENSITIES
     private final static int WHIRLPOOL_DENSITY = 1;
 
     /*
