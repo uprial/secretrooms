@@ -1,7 +1,6 @@
 package com.gmail.uprial.secretrooms.populator.mineshaft;
 
 import com.gmail.uprial.secretrooms.SecretRooms;
-import com.gmail.uprial.secretrooms.config.InternalConfigurationError;
 import com.gmail.uprial.secretrooms.populator.ChunkQueue;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.common.BlockSeed;
@@ -41,13 +40,6 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     public MineshaftPopulator(final SecretRooms plugin,
                               final CustomLogger customLogger,
                               final int distanceDensityMultiplier) {
-        if(NETHER_NAME == null) {
-            throw new InternalConfigurationError("NETHER_NAME not initialized");
-        }
-        if (END_NAME == null) {
-            throw new InternalConfigurationError("END_NAME not initialized");
-        }
-
         this.plugin = plugin;
         this.customLogger = customLogger;
         this.distanceDensityMultiplier = distanceDensityMultiplier;
