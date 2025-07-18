@@ -7,7 +7,7 @@ import com.gmail.uprial.secretrooms.populator.ChunkPopulator;
 import com.gmail.uprial.secretrooms.populator.Populator;
 import com.gmail.uprial.secretrooms.populator.dungeon.DungeonPopulator;
 import com.gmail.uprial.secretrooms.populator.endmansion.EndMansionPopulator;
-import com.gmail.uprial.secretrooms.populator.mineshaft.MineshaftPopulator;
+import com.gmail.uprial.secretrooms.populator.loot.LootPopulator;
 import com.gmail.uprial.secretrooms.populator.whirlpool.WhirlpoolPopulator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,8 +45,8 @@ public final class SecretRooms extends JavaPlugin {
             }
         }
 
-        MineshaftPopulator.NETHER_NAME = secretRoomsConfig.getNetherName();
-        MineshaftPopulator.END_NAME = secretRoomsConfig.getEndName();
+        LootPopulator.NETHER_NAME = secretRoomsConfig.getNetherName();
+        LootPopulator.END_NAME = secretRoomsConfig.getEndName();
 
         turretCron = new TurretCron(this, consoleLogger);
 
@@ -58,7 +58,7 @@ public final class SecretRooms extends JavaPlugin {
         chunkPopulators.add(new WhirlpoolPopulator(consoleLogger));
         chunkPopulators.add(new DungeonPopulator(consoleLogger));
         // Order does matter: populate chests in RailWay and Whirlpool.
-        chunkPopulators.add(new MineshaftPopulator(this, consoleLogger, secretRoomsConfig.getDistanceDensityMultiplier()));
+        chunkPopulators.add(new LootPopulator(this, consoleLogger, secretRoomsConfig.getDistanceDensityMultiplier()));
 
         populator = new Populator(this, consoleLogger, chunkPopulators);
 
@@ -75,7 +75,7 @@ public final class SecretRooms extends JavaPlugin {
     }
 
     void populatePlayer(final Player player, final int density) {
-        new MineshaftPopulator(this, consoleLogger, 0).populatePlayer(player, density);
+        new LootPopulator(this, consoleLogger, 0).populatePlayer(player, density);
     }
 
     @Override

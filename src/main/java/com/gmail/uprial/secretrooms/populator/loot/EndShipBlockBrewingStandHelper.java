@@ -1,4 +1,4 @@
-package com.gmail.uprial.secretrooms.populator.mineshaft;
+package com.gmail.uprial.secretrooms.populator.loot;
 
 import com.gmail.uprial.secretrooms.populator.SpawnerHelper;
 import org.bukkit.block.Block;

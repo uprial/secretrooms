@@ -1,4 +1,4 @@
-package com.gmail.uprial.secretrooms.populator.mineshaft;
+package com.gmail.uprial.secretrooms.populator.loot;
 
 import com.gmail.uprial.secretrooms.SecretRooms;
 import com.gmail.uprial.secretrooms.populator.ChunkQueue;
@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
 import static com.gmail.uprial.secretrooms.common.Utils.seconds2ticks;
 
-public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
+public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
     private final int distanceDensityMultiplier;
@@ -37,9 +37,9 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     public static String NETHER_NAME = "world_nether";
     public static String END_NAME = "world_the_end";
 
-    public MineshaftPopulator(final SecretRooms plugin,
-                              final CustomLogger customLogger,
-                              final int distanceDensityMultiplier) {
+    public LootPopulator(final SecretRooms plugin,
+                         final CustomLogger customLogger,
+                         final int distanceDensityMultiplier) {
         this.plugin = plugin;
         this.customLogger = customLogger;
         this.distanceDensityMultiplier = distanceDensityMultiplier;

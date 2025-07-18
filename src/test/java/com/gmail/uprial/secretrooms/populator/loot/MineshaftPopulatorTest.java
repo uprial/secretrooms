@@ -1,4 +1,4 @@
-package com.gmail.uprial.secretrooms.populator.mineshaft;
+package com.gmail.uprial.secretrooms.populator.loot;
 
 import com.gmail.uprial.secretrooms.helpers.TestConfigBase;
 import org.bukkit.block.Block;
@@ -50,7 +50,7 @@ public class MineshaftPopulatorTest extends TestConfigBase {
         when(block.getX()).thenReturn(x);
         when(block.getZ()).thenReturn(z);
 
-        return new MineshaftPopulator(null, null, distanceDensityMultiplier)
+        return new LootPopulator(null, null, distanceDensityMultiplier)
                 .getDistanceDensity(block);
     }
 }
