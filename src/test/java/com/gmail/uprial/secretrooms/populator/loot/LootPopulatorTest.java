@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MineshaftPopulatorTest extends TestConfigBase {
+public class LootPopulatorTest extends TestConfigBase {
 
     @Test
     public void testDistanceDensity() {

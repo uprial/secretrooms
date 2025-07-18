@@ -152,7 +152,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                             }
                         }
 
-                        // Will be analyzed in MineshaftPopulator to increase density.
+                        // Will be analyzed in LootPopulator to increase density.
                         vc.set(minX + dx, y - 2, minZ + dz, Material.MAGMA_BLOCK);
                     }
                 }
