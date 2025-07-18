@@ -1,9 +1,11 @@
 package com.gmail.uprial.secretrooms.common;
 
+import com.gmail.uprial.secretrooms.populator.ItemConfig;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 
 public class Formatter {
     public static String format(final Block block) {
@@ -29,5 +31,9 @@ public class Formatter {
     public static String format(final Chunk chunk) {
         return String.format("%s:%d:%d",
                 chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
+    public static String format(final ItemStack itemStack) {
+        return ItemConfig.format(itemStack);
     }
 }

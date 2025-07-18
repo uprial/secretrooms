@@ -656,7 +656,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
 
                         if (customLogger.isDebugMode()) {
                             customLogger.debug(String.format("%s merged: %d %s from item #%d moved to item #%d",
-                                    title, diff, ItemConfig.format(itemStack), i, existingI));
+                                    title, diff, format(itemStack), i, existingI));
                         }
 
                         existingItemStack.setAmount(existingItemStack.getAmount() + diff);
@@ -796,7 +796,7 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         Ideated from: https://minecraft.wiki/w/Smelting
 
         Removed ideas:
-            Player must kill an Elder guardian, not just find a sponge
+            Player must kill an Elder Guardian, not just find a sponge
             .put(Material.SPONGE, 0)
 
         ==== Test ====
@@ -929,15 +929,15 @@ public class MineshaftPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             if(oldAmount == 0) {
                 // WARNING: ConsistencyReference#1
                 customLogger.debug(String.format("%s %s set to %d",
-                        title, ItemConfig.format(itemStack), newAmount));
+                        title, format(itemStack), newAmount));
             } else if(newAmount > oldAmount) {
                 // WARNING: ConsistencyReference#1
                 customLogger.debug(String.format("%s %s updated to %d from %d",
-                        title, ItemConfig.format(itemStack), newAmount, oldAmount));
+                        title, format(itemStack), newAmount, oldAmount));
             } else {
                 // WARNING: ConsistencyReference#1
                 customLogger.warning(String.format("%s %s kept as %d",
-                        title, ItemConfig.format(itemStack), newAmount));
+                        title, format(itemStack), newAmount));
             }
         }
     }

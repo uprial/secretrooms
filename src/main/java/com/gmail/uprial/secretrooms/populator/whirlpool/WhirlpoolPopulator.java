@@ -150,7 +150,7 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
                                 if (customLogger.isDebugMode()) {
                                     customLogger.debug(String.format("%s item #%d %s set to %d",
-                                            format(block), i, ItemConfig.format(inventory.getItem(i)), amount));
+                                            format(block), i, format(inventory.getItem(i)), amount));
                                 }
                                 i++;
                             }

@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-import static com.gmail.uprial.secretrooms.common.Utils.SERVER_TICKS_IN_SECOND;
+import static com.gmail.uprial.secretrooms.common.Utils.getFormattedTicks;
 import static com.gmail.uprial.secretrooms.common.Utils.joinStrings;
 
 public class ItemConfig {
@@ -256,10 +256,10 @@ public class ItemConfig {
         if(itemMeta instanceof PotionMeta) {
             final List<String> contents = new ArrayList<>();
             for(final PotionEffect potionEffect : ((PotionMeta)itemMeta).getCustomEffects()) {
-                contents.add(String.format("%s-%d:%,d",
+                contents.add(String.format("%s-%d:%s",
                         potionEffect.getType().getName(),
                         potionEffect.getAmplifier(),
-                        potionEffect.getDuration() / SERVER_TICKS_IN_SECOND));
+                        getFormattedTicks(potionEffect.getDuration())));
             }
             sb.append("[").append(joinStrings(",", contents)).append("]");
         }

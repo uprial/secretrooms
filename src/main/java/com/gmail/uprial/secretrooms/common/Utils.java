@@ -25,4 +25,16 @@ public final class Utils {
 
         return stringBuilder.toString();
     }
+
+    public static String getFormattedTicks(int ticks) {
+        final int seconds = ticks / SERVER_TICKS_IN_SECOND;
+
+        if(seconds % 3_600 == 0) {
+            return String.format("%,dh", seconds / 3_600);
+        } else if(seconds % 60 == 0) {
+            return String.format("%,dm", seconds / 60);
+        } else {
+            return String.format("%,ds", seconds);
+        }
+    }
 }
