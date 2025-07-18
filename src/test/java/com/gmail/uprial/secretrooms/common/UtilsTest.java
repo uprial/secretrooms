@@ -46,5 +46,12 @@ public class UtilsTest {
     public void testGetFormattedTicks_H() {
         assertEquals("1h", getFormattedTicks(20 * 3_600));
         assertEquals("1,000h", getFormattedTicks(20 * 3_600_000));
+        assertEquals("25h", getFormattedTicks(20 * (86_400 + 3_600)));
+    }
+
+    @Test
+    public void testGetFormattedTicks_D() {
+        assertEquals("1d", getFormattedTicks(20 * 86_400));
+        assertEquals("1,000d", getFormattedTicks(20 * 86_400_000));
     }
 }

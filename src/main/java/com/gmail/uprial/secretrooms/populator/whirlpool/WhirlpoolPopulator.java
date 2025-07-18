@@ -24,13 +24,8 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
 
     VirtualChunk vc;
 
-    /*
-        ==== Test ====
-
-            $ grep "Whirlpool.*\] populated" logs/latest.log | wc -l
-            317
-     */
-    private final static int PROBABILITY = 500;
+    // (500 / 16) ^ 2 = 977
+    private final static int PROBABILITY = 977;
 
     public WhirlpoolPopulator(final CustomLogger customLogger) {
         super(PROBABILITY);
@@ -60,16 +55,17 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
             // 21.3%/2=10.65% for up to 16
             .put(Material.SALMON, new CLT(10.65D, CLT.MAX_POWER - 2))
 
-            // 11.1% for 1-4
-            .put(Material.PUFFERFISH, new CLT(11.1D, 2))
-            // 1.7% for 1-4
-            .put(Material.TROPICAL_FISH, new CLT(1.7D, 2))
+            // 11.1%*2=22.2% for up to 2^2=4
+            .put(Material.PUFFERFISH, new CLT(22.2D, 2))
+            // 1.7%*2=3.4% for up to 4
+            .put(Material.TROPICAL_FISH, new CLT(3.4D, 2))
 
-            // 0.8%*2=1.6% for 1
-            .put(Material.FISHING_ROD, new CLT(1.6D, fishingRodItemConfig))
-            .put(Material.NAME_TAG, new CLT(1.6D))
-            .put(Material.NAUTILUS_SHELL, new CLT(1.6D))
-            .put(Material.SADDLE, new CLT(1.6D))
+            // 0.8%*8=6.4% for 1
+            .put(Material.FISHING_ROD, new CLT(6.4D, fishingRodItemConfig))
+            .put(Material.NAME_TAG, new CLT(6.4D))
+            .put(Material.NAUTILUS_SHELL, new CLT(6.4D))
+            // Since 1.21.6, has a recipe
+            //.put(Material.SADDLE, new CLT(6.4D))
             .build();
 
     @Override

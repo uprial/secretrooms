@@ -26,13 +26,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
     VirtualChunk vc;
 
-    /*
-        ==== Test ====
-
-            $ grep "Dungeon.*\] populated" logs/latest.log | wc -l
-            134
-     */
-    private final static int PROBABILITY = 2_000;
+    // (1,000 / 16) ^ 2 = 3,906
+    private final static int PROBABILITY = 3_906;
 
     private final static int ROOM_SIZE = 5;
 
@@ -243,6 +238,18 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                             .ench(Enchantment.PUNCH, 2, 2)
                             .ench(Enchantment.FLAME)
                             .ench(Enchantment.INFINITY)))
+                    .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.CROSSBOW, 1, new ItemConfig()
+                            /*
+                                Survival maximum level is 1, here it's 3.
+
+                                crossbow[minecraft:enchantments={"minecraft:multishot":3}]
+
+                                A potential UNBREAKING(3), QUICK_CHARGE(3) and MENDING(1)
+                                upgrade would cost 16 levels.
+                             */
+                            .ench(Enchantment.MULTISHOT, 3, 3)))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.DIAMOND_SWORD, 1, new ItemConfig()

@@ -1,6 +1,6 @@
 name: SecretRooms
 main: com.gmail.uprial.secretrooms.SecretRooms
-version: 0.11.0
+version: 0.11.1
 api-version: 1.14
 commands:
   secretrooms:
