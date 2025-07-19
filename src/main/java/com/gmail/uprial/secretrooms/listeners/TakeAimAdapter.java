@@ -33,9 +33,9 @@ public class TakeAimAdapter implements Listener {
             this.callback = callback;
         }
 
-        public void handle(final EntityTargetEvent event) {
-            final Mob mob = (Mob)event.getEntity();
-            final Player player = (Player)event.getTarget();
+        public void handle() {
+            final Mob mob = (Mob)getEntity();
+            final Player player = (Player)getTarget();
 
             mob.setTarget(player);
             callback.call(mob, player);
@@ -46,7 +46,7 @@ public class TakeAimAdapter implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityTarget(EntityTargetEvent event) {
         if(event instanceof TakeAimEntityTargetEvent) {
-            ((TakeAimEntityTargetEvent)event).handle(event);
+            ((TakeAimEntityTargetEvent)event).handle();
         }
     }
 
