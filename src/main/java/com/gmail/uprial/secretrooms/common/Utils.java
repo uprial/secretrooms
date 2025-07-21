@@ -29,7 +29,9 @@ public final class Utils {
     public static String getFormattedTicks(int ticks) {
         final int seconds = ticks / SERVER_TICKS_IN_SECOND;
 
-        if(seconds % 86_400 == 0) {
+        if(seconds == 0) {
+            return "0";
+        } else if(seconds % 86_400 == 0) {
             return String.format("%,dd", seconds / 86_400);
         } else if(seconds % 3_600 == 0) {
             return String.format("%,dh", seconds / 3_600);

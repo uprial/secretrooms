@@ -255,7 +255,8 @@ public class ItemConfig {
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if(itemMeta instanceof PotionMeta) {
             final List<String> contents = new ArrayList<>();
-            for(final PotionEffect potionEffect : ((PotionMeta)itemMeta).getCustomEffects()) {
+            final PotionMeta potionMeta = (PotionMeta)itemMeta;
+            for(final PotionEffect potionEffect : potionMeta.getCustomEffects()) {
                 contents.add(String.format("%s-%d-%s",
                         potionEffect.getType().getName(),
                         potionEffect.getAmplifier(),

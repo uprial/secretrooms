@@ -741,7 +741,6 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                 }
                 inventory.setItem(i, new ItemStack(entry.getKey(), 1));
 
-                // The fresh getItem() is needed to properly update the amount
                 entry.getValue().applyItemConfig(cs, inventory.getItem(i));
 
                 // WARNING: ConsistencyReference#1

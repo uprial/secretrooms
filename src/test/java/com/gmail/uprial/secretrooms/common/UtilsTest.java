@@ -54,4 +54,21 @@ public class UtilsTest {
         assertEquals("1d", getFormattedTicks(20 * 86_400));
         assertEquals("1,000d", getFormattedTicks(20 * 86_400_000));
     }
+
+    @Test
+    public void testGetFormattedTicks_RealCases() {
+        assertEquals("0", getFormattedTicks(0));
+
+        assertEquals("15m", getFormattedTicks(seconds2ticks(60 * 15)));
+        assertEquals("1h", getFormattedTicks(seconds2ticks(3_600)));
+        assertEquals("4h", getFormattedTicks(seconds2ticks(3_600 * 4)));
+        assertEquals("1d", getFormattedTicks(seconds2ticks(3_600 * 24)));
+        assertEquals("7d", getFormattedTicks(seconds2ticks(3_600 * 24 * 7)));
+
+        assertEquals("1m", getFormattedTicks(seconds2ticks(60)));
+        assertEquals("5m", getFormattedTicks(seconds2ticks(60 * 5)));
+        assertEquals("15m", getFormattedTicks(seconds2ticks(60 * 15)));
+        assertEquals("1h", getFormattedTicks(seconds2ticks(3_600)));
+        assertEquals("4h", getFormattedTicks(seconds2ticks(3_600 * 4)));
+    }
 }

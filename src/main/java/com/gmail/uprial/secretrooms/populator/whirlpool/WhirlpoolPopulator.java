@@ -138,15 +138,15 @@ public class WhirlpoolPopulator extends AbstractSeedSpecificPopulator {
                             callId++;
                             if(entry.getValue().pass(callId, bs, density, chunk.getWorld().getName())) {
                                 final int amount = entry.getValue().getRandomAmount(cs);
+                                final ItemStack itemStack = new ItemStack(entry.getKey(), amount);
 
-                                inventory.setItem(i, new ItemStack(entry.getKey(), amount));
+                                entry.getValue().applyItemConfig(cs, itemStack);
 
-                                // The fresh getItem() is needed to properly update the amount
-                                entry.getValue().applyItemConfig(cs, inventory.getItem(i));
+                                inventory.setItem(i, itemStack);
 
                                 if (customLogger.isDebugMode()) {
                                     customLogger.debug(String.format("%s item #%d %s set to %d",
-                                            format(block), i, format(inventory.getItem(i)), amount));
+                                            format(block), i, format(itemStack), amount));
                                 }
                                 i++;
                             }
