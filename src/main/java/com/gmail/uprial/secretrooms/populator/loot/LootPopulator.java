@@ -464,6 +464,12 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.TOTEM_OF_UNDYING, ...) - mansion and raids
             .put(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ...) - bastion
 
+            Removed based on feedback from a server with 14 active players,
+            up to 11 online, with both hardcore and casual profiles,
+            with a reason "conflicts with harder survival".
+
+            .put(Material.SPAWNER, ...)
+
         ==== Test ====
 
             $ grep "DEBUG.* POTION set " logs/latest.log | cut -d' ' -f12 | awk '{s+=$1} END {print s}'
@@ -511,7 +517,6 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             // 1% - bonuses
             .put(Material.ENCHANTED_GOLDEN_APPLE, new CLT(0.45D))
             .put(Material.OMINOUS_BOTTLE, new CLT(0.45D, new ItemConfig().amplify(4)))
-            .put(Material.SPAWNER, new CLT(0.10D))
 
             // 4% - golden cloths
             .put(Material.GOLDEN_HELMET, new CLT(1.00D, goldenClothConfig
