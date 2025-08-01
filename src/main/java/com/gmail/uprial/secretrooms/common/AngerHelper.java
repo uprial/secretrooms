@@ -1,10 +1,12 @@
 package com.gmail.uprial.secretrooms.common;
 
+import org.bukkit.Chunk;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -64,27 +66,40 @@ public class AngerHelper {
         max view-distance and simulation-distance are both 32 chunks.
      */
     public static boolean isSimulated(final Entity entity, final Player player) {
-        return Math.sqrt(
-                Math.pow(player.getLocation().getChunk().getX()
-                        - entity.getLocation().getChunk().getX(), 2.0D)
-                + Math.pow(player.getLocation().getChunk().getZ()
-                        - entity.getLocation().getChunk().getZ(), 2.0D))
-                <= player.getWorld().getSimulationDistance();
+        final Chunk entityChunk = entity.getLocation().getChunk();
+        final Chunk playerChunk = player.getLocation().getChunk();
+        final int simulationDistance = player.getWorld().getSimulationDistance();
+
+        return (
+                    // Fail fast without Math.sqrt() and Math.pow()
+                    playerChunk.getX() - entityChunk.getX()
+                    +
+                    playerChunk.getZ() - entityChunk.getZ()
+                    <=
+                    simulationDistance * 2
+                ) && (
+                    Math.sqrt(
+                        Math.pow(playerChunk.getX() - entityChunk.getX(), 2.0D)
+                        +
+                        Math.pow(playerChunk.getZ() - entityChunk.getZ(), 2.0D)
+                    ) <= simulationDistance
+                );
     }
 
     private static boolean isInvisiblePlayer(final Player player) {
         if (!player.isInvisible()) {
             return false;
         }
-        if (player.getEquipment() == null) {
+        final EntityEquipment equipment = player.getEquipment();
+        if (equipment == null) {
             return true;
         }
-        return (isEmptyMaterial(player.getEquipment().getItemInMainHand())
-                && isEmptyMaterial(player.getEquipment().getItemInOffHand())
-                && isEmptyMaterial(player.getEquipment().getHelmet())
-                && isEmptyMaterial(player.getEquipment().getChestplate())
-                && isEmptyMaterial(player.getEquipment().getLeggings())
-                && isEmptyMaterial(player.getEquipment().getBoots()));
+        return (isEmptyMaterial(equipment.getItemInMainHand())
+                && isEmptyMaterial(equipment.getItemInOffHand())
+                && isEmptyMaterial(equipment.getHelmet())
+                && isEmptyMaterial(equipment.getChestplate())
+                && isEmptyMaterial(equipment.getLeggings())
+                && isEmptyMaterial(equipment.getBoots()));
     }
 
     private static boolean isEmptyMaterial(final ItemStack itemStack) {

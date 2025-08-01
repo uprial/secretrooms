@@ -133,6 +133,16 @@ public class TurretCron extends BukkitRunnable {
 
     @Override
     public void run() {
+        final long start = System.currentTimeMillis();
+        trigger();
+        final long end = System.currentTimeMillis();
+        if(end - start >= 5) {
+            customLogger.warning(String.format("Turret cron took %dms", end - start));
+        }
+    }
+
+    public void trigger() {
+
         final Map<UUID, List<Player>> worldsPlayers = new HashMap<>();
         for(final Player player : plugin.getServer().getOnlinePlayers()) {
             if(AngerHelper.isValidPlayer(player)) {
@@ -196,7 +206,8 @@ public class TurretCron extends BukkitRunnable {
 
     private Player getClosestVisiblePlayer(final EnderCrystal crystal, final Turret turret, final List<Player> players) {
         return AngerHelper.getSmallestItem(players, (final Player player) -> {
-            if(AngerHelper.isValidPlayer(player) && isSeeingPlayer(crystal, turret, player)) {
+            // AngerHelper.isValidPlayer(player) is already checked in run()
+            if(isSeeingPlayer(crystal, turret, player)) {
                 return TakeAimAdapter.getAimPoint(player).distance(crystal.getLocation());
             } else {
                 return null;
