@@ -22,4 +22,9 @@ public class ContentSeed extends BlockSeed {
                 entity.getLocation().getBlockX(),
                 entity.getLocation().getBlockY());
     }
+
+    @Override
+    public String toString() {
+        return String.format("ContentSeed[%d:%d:%d]", seed, x, z);
+    }
 }

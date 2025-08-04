@@ -42,7 +42,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     }
 
     // DungeonChestLootTable
-    private static class D {
+    protected static class D {
         private final List<Material> materials;
         private final Integer count;
         private final ItemConfig itemConfig;
@@ -85,9 +85,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
         The idea is to give items with only enchantments
         unavailable in Survival mode, with potential for extension.
      */
-    private final int STACK = 64;
+    private static final int STACK = 64;
 
-    private final List<List<D>> chestLootTable
+    protected static final List<List<D>> CHEST_LOOT_TABLE
             = ImmutableList.<List<D>>builder()
 
             .add(ImmutableList.<D>builder()
@@ -442,7 +442,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             final ContentSeed cs = ContentSeed.valueOf(chest);
 
             int i = 0;
-            for(D d : bs.oneOf(chestLootTable)) {
+            for(D d : bs.oneOf(CHEST_LOOT_TABLE)) {
                 int count = d.getCount();
                 while(count > 0) {
                     final Material material = d.getMaterial(cs);

@@ -18,9 +18,9 @@ public class BlockSeed {
         }
     }
 
-    final long seed;
-    final long x;
-    final long z;
+    protected final long seed;
+    protected final long x;
+    protected final long z;
 
     protected BlockSeed(final long seed, final long x, final long z) {
         this.seed = seed;

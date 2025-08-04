@@ -55,14 +55,25 @@ public class SecretRoomsConfigTest extends TestConfigBase {
     }
 
     @Test
+    public void testEmptyTurretAimingTimeoutInMs() throws Exception {
+        e.expect(InvalidConfigException.class);
+        e.expectMessage("Empty 'turret-aiming-timeout-in-ms' value");
+        loadConfig(getDebugFearingCustomLogger(), "distance-density-multiplier: 5_000",
+                "nether-name: world_nether",
+                "end-name: world_the_end");
+    }
+
+    @Test
     public void testNormalConfig() throws Exception {
         assertEquals(
                 "distance-density-multiplier: 5,000, " +
-                "nether-name: 'world_nether', " +
-                "end-name: 'world_the_end'",
+                        "nether-name: 'world_nether', " +
+                        "end-name: 'world_the_end', " +
+                        "turret-aiming-timeout-in-ms: 5",
                 loadConfig(getCustomLogger(),
                         "distance-density-multiplier: 5_000",
-                                "nether-name: world_nether",
-                                "end-name: world_the_end").toString());
+                        "nether-name: world_nether",
+                        "end-name: world_the_end",
+                        "turret-aiming-timeout-in-ms: 5").toString());
     }
 }

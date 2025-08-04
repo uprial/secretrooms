@@ -94,11 +94,14 @@ public class TurretCron extends BukkitRunnable {
 
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
+    private final int timeoutInMs;
 
     public TurretCron(final SecretRooms plugin,
-                      final CustomLogger customLogger) {
+                      final CustomLogger customLogger,
+                      final int timeoutInMs) {
         this.plugin = plugin;
         this.customLogger = customLogger;
+        this.timeoutInMs = timeoutInMs;
 
         runTaskTimer(plugin, SHOOT_INTERVAL, SHOOT_INTERVAL);
     }
@@ -136,12 +139,12 @@ public class TurretCron extends BukkitRunnable {
         final long start = System.currentTimeMillis();
         trigger();
         final long end = System.currentTimeMillis();
-        if(end - start >= 5) {
+        if(end - start >= timeoutInMs) {
             customLogger.warning(String.format("Turret cron took %dms", end - start));
         }
     }
 
-    public void trigger() {
+    private void trigger() {
 
         final Map<UUID, List<Player>> worldsPlayers = new HashMap<>();
         for(final Player player : plugin.getServer().getOnlinePlayers()) {

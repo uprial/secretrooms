@@ -48,7 +48,7 @@ public final class SecretRooms extends JavaPlugin {
         LootPopulator.NETHER_NAME = secretRoomsConfig.getNetherName();
         LootPopulator.END_NAME = secretRoomsConfig.getEndName();
 
-        turretCron = new TurretCron(this, consoleLogger);
+        turretCron = new TurretCron(this, consoleLogger, secretRoomsConfig.getTurretAimingTimeoutInMs());
 
         final List<ChunkPopulator> chunkPopulators = new ArrayList<>();
 

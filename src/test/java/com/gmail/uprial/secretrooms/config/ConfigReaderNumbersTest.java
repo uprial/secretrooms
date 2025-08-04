@@ -5,7 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.gmail.uprial.secretrooms.config.ConfigReaderNumbers.*;
+import static com.gmail.uprial.secretrooms.config.ConfigReaderNumbers.getInt;
 import static org.junit.Assert.assertEquals;
 
 public class ConfigReaderNumbersTest extends TestConfigBase {

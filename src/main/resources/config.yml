@@ -15,6 +15,8 @@ debug: false
 #
 # Increase density according to distance from the map center.
 #
+# Possible values: 0 ... 100_000.
+#
 # Use 0 to disable the feature.
 #
 
@@ -25,3 +27,14 @@ nether-name: world_nether
 
 # Used for end-specific generation
 end-name: world_the_end
+
+#
+# Show a warning when periodic turret aiming takes more time than expected.
+#
+# When reporting to the plugin Author with details about
+# the players online, other plugins, previous log records, etc.,
+# you may request an improvement of the plugin for your server.
+#
+# Possible values: 1 ... 3600_000.
+#
+turret-aiming-timeout-in-ms: 5
