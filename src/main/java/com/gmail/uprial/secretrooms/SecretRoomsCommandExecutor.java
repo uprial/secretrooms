@@ -2,6 +2,7 @@ package com.gmail.uprial.secretrooms;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,13 +11,18 @@ import org.bukkit.command.CommandSender;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
+import static com.gmail.uprial.secretrooms.common.Formatter.format;
 
 class SecretRoomsCommandExecutor implements CommandExecutor {
-    public class InvalidIntException extends Exception {
+    public static class InvalidIntException extends Exception {
         public InvalidIntException(final String message) {
+            super(message);
+        }
+    }
+    public static class InvalidMaterialException extends Exception {
+        public InvalidMaterialException(final String message) {
             super(message);
         }
     }
@@ -100,23 +106,32 @@ class SecretRoomsCommandExecutor implements CommandExecutor {
                 } else if ((args.length >= 2) && (args[0].equalsIgnoreCase("loaded-stats"))) {
                     if (sender.hasPermission(COMMAND_NS + ".loaded-stats")) {
 
-                        final Material material;
-                        try {
-                            material = Enum.valueOf(Material.class, args[1].toUpperCase(Locale.getDefault()));
-                        } catch (IllegalArgumentException ignored) {
-                            customLogger.error(String.format("Invalid material '%s'", args[1]));
-                            return false;
-                        }
+                        final Material material = getMaterial(args[1]);
 
                         customLogger.info(String.format("Getting %s stats in loaded terrain...", material));
                         final Map<String,Integer> stats = new SecretRoomsExecutor(plugin).getLoadedStats(material);
                         if(stats.isEmpty()) {
-                            customLogger.error(String.format("Material '%s' not found.", args[1]));
-                            return false;
+                            customLogger.warning(String.format("Material '%s' not found.", args[1]));
+                        } else {
+                            for (final Map.Entry<String, Integer> entry : stats.entrySet()) {
+                                customLogger.info(String.format("%s: %,d", entry.getKey(), entry.getValue()));
+                            }
                         }
+                        return true;
+                    }
+                } else if ((args.length >= 2) && (args[0].equalsIgnoreCase("loaded-locations"))) {
+                    if (sender.hasPermission(COMMAND_NS + ".loaded-locations")) {
 
-                        for (final Map.Entry<String, Integer> entry : stats.entrySet()) {
-                            customLogger.info(String.format("%s: %,d", entry.getKey(), entry.getValue()));
+                        final Material material = getMaterial(args[1]);
+
+                        customLogger.info(String.format("Getting %s locations in loaded terrain...", material));
+                        final List<Location> locations = new SecretRoomsExecutor(plugin).getLoadedLocations(material);
+                        if(locations.isEmpty()) {
+                            customLogger.warning(String.format("Material '%s' not found.", args[1]));
+                        } else {
+                            for (final Location location : locations) {
+                                customLogger.info(format(location));
+                            }
                         }
                         return true;
                     }
@@ -137,12 +152,15 @@ class SecretRoomsCommandExecutor implements CommandExecutor {
                     if (sender.hasPermission(COMMAND_NS + ".loaded-stats")) {
                         helpString += '/' + COMMAND_NS + " loaded-stats <material> - show material stats in loaded terrain\n";
                     }
+                    if (sender.hasPermission(COMMAND_NS + ".loaded-locations")) {
+                        helpString += '/' + COMMAND_NS + " loaded-locations <material> - show material location in loaded terrain\n";
+                    }
 
                     customLogger.info(helpString);
                     return true;
                 }
-            } catch (InvalidIntException e) {
-                customLogger.error(String.format("<%s> should be an integer", args[1]));
+            } catch (InvalidIntException | InvalidMaterialException e) {
+                customLogger.error(e.getMessage());
             }
         }
         return false;
@@ -153,6 +171,14 @@ class SecretRoomsCommandExecutor implements CommandExecutor {
             return Integer.valueOf(string);
         } catch (NumberFormatException ignored) {
             throw new InvalidIntException(String.format("<%s> should be an integer", string));
+        }
+    }
+
+    private Material getMaterial(final String string) throws InvalidMaterialException {
+        try {
+            return Enum.valueOf(Material.class, string.toUpperCase(Locale.getDefault()));
+        } catch (NumberFormatException ignored) {
+            throw new InvalidMaterialException(String.format("Invalid material '%s'", string));
         }
     }
 }

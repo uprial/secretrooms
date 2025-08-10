@@ -1,6 +1,6 @@
 name: SecretRooms
 main: com.gmail.uprial.secretrooms.SecretRooms
-version: 0.11.3
+version: 0.11.4
 api-version: 1.21
 commands:
   secretrooms:
@@ -20,4 +20,7 @@ permissions:
     default: op
   secretrooms.loaded-stats:
     description: Gives access to SecretRooms 'loaded-stats' command
+    default: op
+  secretrooms.loaded-locations:
+    description: Gives access to SecretRooms 'loaded-locations' command
     default: op

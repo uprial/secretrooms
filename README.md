@@ -58,6 +58,8 @@ Build a turret from an End Crystal and a Heavy Core or a Dragon Head above it
 
 `secretrooms loaded-stats <material>` - show material stats in loaded terrain
 
+`secretrooms loaded-locations <material>` - show material locations in loaded terrain
+
 ## Permissions
 
 * Access to 'repopulate-loaded' command:
@@ -68,6 +70,8 @@ Build a turret from an End Crystal and a Heavy Core or a Dragon Head above it
 `secretrooms.break` (default: op)
 * Access to 'loaded-stats' command:
 `secretrooms.loaded-stats` (default: op)
+* Access to 'loaded-locations' command:
+`secretrooms.loaded-locations` (default: op)
 
 ## Configuration
 [Default configuration file](src/main/resources/config.yml)

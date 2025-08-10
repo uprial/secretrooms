@@ -4,16 +4,22 @@ import com.gmail.uprial.secretrooms.populator.ItemConfig;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class Formatter {
     public static String format(final Block block) {
-        return String.format("%s[%s:%d:%d:%d]",
+        return String.format("%s[%s:%d:%d:%d]%s%s",
                 block.getType(),
                 block.getWorld().getName(),
-                block.getX(), block.getY(), block.getZ());
+                block.getX(), block.getY(), block.getZ(),
+                bs2string(block.getState()),
+                bd2string(block.getBlockData()));
     }
 
     public static String format(final Entity entity) {
@@ -46,5 +52,21 @@ public class Formatter {
 
     public static String format(final ItemStack itemStack) {
         return ItemConfig.format(itemStack);
+    }
+
+    private static String bs2string(final BlockState bs) {
+        if(bs instanceof CreatureSpawner) {
+            return String.format("{%s}", ((CreatureSpawner) bs).getSpawnedType());
+        } else {
+            return "";
+        }
+    }
+
+    private static String bd2string(final BlockData bd) {
+        if(bd instanceof Waterlogged) {
+            return "{water-logged}";
+        } else {
+            return "";
+        }
     }
 }
