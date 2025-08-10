@@ -5,11 +5,13 @@ import com.gmail.uprial.secretrooms.common.AngerHelper;
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.populator.VirtualChunk;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,7 +55,7 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private static final Map<Material,Turret> turrets = ImmutableMap.<Material,Turret>builder()
+    private static final Map<Material,Turret> TURRETS = ImmutableMap.<Material,Turret>builder()
             /*
                 According to https://minecraft.wiki/w/Explosion,
 
@@ -190,13 +192,13 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private Turret getTurret(final EnderCrystal crystal) {
+    private static Turret getTurret(final EnderCrystal crystal) {
         final Block heading = getHeading(crystal);
 
-        return turrets.get(heading.getType());
+        return TURRETS.get(heading.getType());
     }
 
-    private Block getHeading(final EnderCrystal crystal) {
+    private static Block getHeading(final EnderCrystal crystal) {
         final Location location = crystal.getLocation().clone().add(0.0D, 1.0D, 0.0D);
 
         // I tested, and getMaxHeight() already can't be set.
@@ -207,7 +209,7 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private Player getClosestVisiblePlayer(final EnderCrystal crystal, final Turret turret, final List<Player> players) {
+    private static Player getClosestVisiblePlayer(final EnderCrystal crystal, final Turret turret, final List<Player> players) {
         return AngerHelper.getSmallestItem(players, (final Player player) -> {
             // AngerHelper.isValidPlayer(player) is already checked in run()
             if(isSeeingPlayer(crystal, turret, player)) {
@@ -218,7 +220,7 @@ public class TurretCron extends BukkitRunnable {
         });
     }
 
-    private boolean isSeeingPlayer(final EnderCrystal crystal, final Turret turret, final Player player) {
+    private static boolean isSeeingPlayer(final EnderCrystal crystal, final Turret turret, final Player player) {
         // Don't shoot across the whole map.
         if(!AngerHelper.isSimulated(crystal, player)) {
             return false;
@@ -230,9 +232,11 @@ public class TurretCron extends BukkitRunnable {
         if(toLocation.distance(getBodyCenter(crystal)) < BODY_SIZE + turret.getExplosionDistance()) {
             return false;
         }
+
+        final Location launchPoint = getLaunchPoint(crystal, player);
         // Check for direct vision
         final RayTraceResult rayTraceResult = AngerHelper.rayTraceBlocks(
-                getLaunchPoint(crystal, player),
+                launchPoint,
                 toLocation,
                 // Fireballs don't care about fluids
                 FluidCollisionMode.NEVER);
@@ -243,10 +247,19 @@ public class TurretCron extends BukkitRunnable {
         }
 
         // Can break a block between
-        return rayTraceResult.getHitBlock().getType().getBlastResistance() <= turret.getMaxBlastResistance();
+        if(!isBreakable(rayTraceResult.getHitBlock(), turret)) {
+            return false;
+        }
+
+        final Block blockBefore = getDirectedBlock(
+                rayTraceResult.getHitBlock(),
+                AngerHelper.getDirection(toLocation, launchPoint));
+
+        // Can break a block before the block between
+        return isBreakable(blockBefore, turret);
     }
 
-    private void launch(final EnderCrystal crystal,
+    private static void launch(final EnderCrystal crystal,
                         final Player player,
                         final TakeAimAdapter.LaunchFireballCallback<Fireball> callback) {
         final Location fromLocation = getLaunchPoint(crystal, player);
@@ -266,7 +279,7 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private Location getBodyCenter(final EnderCrystal crystal) {
+    private static Location getBodyCenter(final EnderCrystal crystal) {
         return new Location(
                 crystal.getLocation().getWorld(),
                 crystal.getLocation().getBlockX() + 0.5D,
@@ -274,7 +287,7 @@ public class TurretCron extends BukkitRunnable {
                 crystal.getLocation().getBlockZ() + 0.5D);
     }
 
-    private Location getLaunchPoint(final EnderCrystal crystal, final Player player) {
+    private static Location getLaunchPoint(final EnderCrystal crystal, final Player player) {
         final Location bodyCenter = getBodyCenter(crystal);
 
         final Vector direction = AngerHelper.getDirection(bodyCenter, TakeAimAdapter.getAimPoint(player));
@@ -282,5 +295,51 @@ public class TurretCron extends BukkitRunnable {
         direction.multiply(DEFENCE_DISTANCE / direction.length());
 
         return bodyCenter.add(direction);
+    }
+
+    private static Block getDirectedBlock(final Block block, final Vector direction) {
+        final double dx = Math.abs(direction.getX());
+        final double dy = Math.abs(direction.getY());
+        final double dz = Math.abs(direction.getZ());
+
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
+
+        if(dx > dy) {
+            if(dx > dz) {
+                x += (int)Math.signum(direction.getX());
+            } else {
+                z += (int)Math.signum(direction.getZ());
+            }
+        } else {
+            if(dy > dz) {
+                y += (int)Math.signum(direction.getY());
+            } else {
+                z += (int)Math.signum(direction.getZ());
+            }
+        }
+
+        return block.getWorld().getBlockAt(x, y, z);
+    }
+
+    // According to https://minecraft.wiki/w/Waterlogging
+    private static final Set<Material> WATER_INHERENT = ImmutableSet.<Material>builder()
+            .add(Material.SEAGRASS)
+            .add(Material.TALL_SEAGRASS)
+            .build();
+
+    private static boolean isBreakable(final Block block, final Turret turret) {
+        if((block.getBlockData() instanceof Waterlogged)
+                || WATER_INHERENT.contains(block.getType())) {
+            /*
+                According to https://minecraft.wiki/w/Explosion
+                the blast resistance of water is 100,
+                which none of the turrets can break.
+             */
+            return false;
+        } else {
+            return block.getType().getBlastResistance() <= turret.getMaxBlastResistance();
+        }
     }
 }
