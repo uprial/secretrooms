@@ -63,7 +63,7 @@ public class Formatter {
     }
 
     private static String bd2string(final BlockData bd) {
-        if(bd instanceof Waterlogged) {
+        if((bd instanceof Waterlogged) && ((Waterlogged)bd).isWaterlogged()) {
             return "{water-logged}";
         } else {
             return "";

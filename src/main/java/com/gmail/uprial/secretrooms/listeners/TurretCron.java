@@ -331,6 +331,7 @@ public class TurretCron extends BukkitRunnable {
 
     private static boolean isBreakable(final Block block, final Turret turret) {
         if((block.getBlockData() instanceof Waterlogged)
+                && (((Waterlogged)block.getBlockData()).isWaterlogged())
                 || WATER_INHERENT.contains(block.getType())) {
             /*
                 According to https://minecraft.wiki/w/Explosion
