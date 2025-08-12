@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 /*
     Make sure you register the listener in JavaPlugin::onEnable, e.g.
 
-    getServer().getPluginManager().registerEvents(new TakeAimAdapter(), this);
+    getServer().getPluginManager().registerEvents(new TakeAimAdapter(this), this);
  */
 public class TakeAimAdapter implements Listener {
 
@@ -40,6 +41,15 @@ public class TakeAimAdapter implements Listener {
             mob.setTarget(player);
             callback.call(mob, player);
         }
+    }
+
+    public TakeAimAdapter(final JavaPlugin plugin) {
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if(!isTakeAimEnabled()) {
+                plugin.getLogger().warning(
+                        "TakeAim plugin isn't found or disabled, a lower quality stub is used");
+            }
+        }, 0);
     }
 
     // MONITOR to let the previous listeners cancel the event
