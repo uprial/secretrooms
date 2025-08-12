@@ -30,16 +30,23 @@ public class TurretCron extends BukkitRunnable {
     }
 
     private static class Turret {
+        /*
+            According to https://minecraft.wiki/w/End_Crystal,
+            the weight and height of the End Crystals are 2.0.
+         */
+        private static final double BODY_SIZE = 2.0D;
+
         private final float explosionPower;
         private final float maxBlastResistance;
-        private final double explosionDistance;
+        private final double safeDistance;
 
         Turret(final float explosionPower,
                final float maxBlastResistance,
-               final double explosionDistance) {
+               final double entityRange,
+               final double blockRange) {
             this.explosionPower = explosionPower;
             this.maxBlastResistance = maxBlastResistance;
-            this.explosionDistance = explosionDistance;
+            this.safeDistance = BODY_SIZE + Math.max(entityRange, blockRange);
         }
 
         float getExplosionPower() {
@@ -50,8 +57,8 @@ public class TurretCron extends BukkitRunnable {
             return maxBlastResistance;
         }
 
-        double getExplosionDistance() {
-            return explosionDistance;
+        double getSafeDistance() {
+            return safeDistance;
         }
     }
 
@@ -60,18 +67,19 @@ public class TurretCron extends BukkitRunnable {
                 According to https://minecraft.wiki/w/Explosion#Causes,
 
                 CAUSE    | POWER | MAX. BLAST RESISTANCE | MAX. RANGE
-                Fireball | 1     | 3                     | 1.5
-                Creeper  | 3     | 9                     | 5.1
+                Fireball | 1     | 3                     | 2.0 - 1.5
+                Creeper  | 3     | 9                     | 6.0 - 5.1
+                Wither   | 8     | 9                     | 16.0 - 13.8
 
                 And the Heavy Core blast resistance is 30.
              */
-            .put(Material.HEAVY_CORE,
-                    new Turret(3.0f, 9.0f, 5.1D))
             .put(Material.DRAGON_HEAD,
-                    new Turret(1.0f, 3.0f, 1.5D))
+                    new Turret(1.0f, 3.0f, 2.0D, 1.5D))
+            .put(Material.HEAVY_CORE,
+                    new Turret(3.0f, 9.0f, 6.0D, 5.1D))
             .build();
 
-    private static final Map<TurretType,Material> turretTypes = ImmutableMap.<TurretType,Material>builder()
+    private static final Map<TurretType,Material> TURRET_TYPES = ImmutableMap.<TurretType,Material>builder()
             .put(TurretType.BIG, Material.HEAVY_CORE)
             .put(TurretType.SMALL, Material.DRAGON_HEAD)
             .build();
@@ -87,12 +95,6 @@ public class TurretCron extends BukkitRunnable {
         might be more than 2.0: (1.5) * 2 ^ 0.5 = 2.12.
      */
     private static final double DEFENCE_DISTANCE = 3.0D;
-
-    /*
-        According to https://minecraft.wiki/w/End_Crystal,
-        the weight and height of the End Crystals are 2.0.
-     */
-    private static final double BODY_SIZE = 2.0D;
 
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
@@ -110,7 +112,7 @@ public class TurretCron extends BukkitRunnable {
 
     public static void spawn(final VirtualChunk vc, final int x, final int y, final int z, final TurretType type) {
         vc.set(x, y - 1, z, Material.OBSIDIAN);
-        vc.set(x, y + 1, z, turretTypes.get(type));
+        vc.set(x, y + 1, z, TURRET_TYPES.get(type));
 
         final Block crystal = vc.get(x, y, z);
 
@@ -187,7 +189,7 @@ public class TurretCron extends BukkitRunnable {
 
     void onDeath(final EnderCrystal crystal) {
         if (getTurret(crystal) != null) {
-            // Break Heavy Core together with its End Crystal
+            // Break Dragon Head or Heavy Core together with its End Crystal
             getHeading(crystal).setType(Material.AIR);
         }
     }
@@ -200,10 +202,9 @@ public class TurretCron extends BukkitRunnable {
 
     private static Block getHeading(final EnderCrystal crystal) {
         final Location location = crystal.getLocation().clone().add(0.0D, 1.0D, 0.0D);
-
         // I tested, and getMaxHeight() already can't be set.
-        if (location.getBlockY() < crystal.getWorld().getMaxHeight()) {
-            return crystal.getWorld().getBlockAt(location);
+        if (location.getBlockY() < location.getWorld().getMaxHeight()) {
+            return location.getWorld().getBlockAt(location);
         } else {
             return null;
         }
@@ -229,7 +230,8 @@ public class TurretCron extends BukkitRunnable {
         final Location toLocation = TakeAimAdapter.getAimPoint(player);
 
         // Make sure the launch point isn't too close to the potential target
-        if(toLocation.distance(getBodyCenter(crystal)) < BODY_SIZE + turret.getExplosionDistance()) {
+        final Location bodyCenter = getBodyCenter(crystal);
+        if(toLocation.distance(bodyCenter) < turret.getSafeDistance()) {
             return false;
         }
 
@@ -242,17 +244,23 @@ public class TurretCron extends BukkitRunnable {
                 FluidCollisionMode.NEVER);
 
         // Has no blocks between
-        if(rayTraceResult == null) {
+        if((rayTraceResult == null) || (rayTraceResult.getHitBlock() == null)) {
             return true;
         }
 
         // Can break a block between
-        if(!isBreakable(rayTraceResult.getHitBlock(), turret)) {
+        final Block hitBlock = rayTraceResult.getHitBlock();
+        if(!isBreakable(hitBlock, turret)) {
+            return false;
+        }
+
+        // Make sure the launch point isn't too close to the potential hit block
+        if(hitBlock.getLocation().distance(bodyCenter) < turret.getSafeDistance()) {
             return false;
         }
 
         final Block blockBefore = getDirectedBlock(
-                rayTraceResult.getHitBlock(),
+                hitBlock,
                 AngerHelper.getDirection(toLocation, launchPoint));
 
         // Can break a block before the block between

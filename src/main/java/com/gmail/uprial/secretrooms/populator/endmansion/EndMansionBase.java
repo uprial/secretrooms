@@ -60,7 +60,7 @@ public class EndMansionBase extends EndMansionChunk {
                 start_t = t;
                 start_d = d;
             } else {
-                System.out.println(String.format("d/s: %.4f", 1000.0D * (d - start_d) / (t - start_t)));
+                System.out.printf("d/s: %.4f%n", 1000.0D * (d - start_d) / (t - start_t));
             }
         }
     }

@@ -10,7 +10,7 @@ Motivate players to explore the map by secret buildings with rare loot undergrou
 
 ## Features
 
-* [TakeAim](https://github.com/uprial/takeaim) is a soft-dependency
+* Softly depend on [TakeAim](https://github.com/uprial/takeaim)
 * Uncommon, rare, and epic loot in chests with higher probability in pyramids, ancient cities, mansions and bastions
 * Fuel and ingots in furnaces
 * Whirlpools in water with loot chests under magma blocks
