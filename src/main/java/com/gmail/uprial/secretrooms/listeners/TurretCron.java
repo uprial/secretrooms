@@ -57,7 +57,7 @@ public class TurretCron extends BukkitRunnable {
 
     private static final Map<Material,Turret> TURRETS = ImmutableMap.<Material,Turret>builder()
             /*
-                According to https://minecraft.wiki/w/Explosion,
+                According to https://minecraft.wiki/w/Explosion#Causes,
 
                 CAUSE    | POWER | MAX. BLAST RESISTANCE | MAX. RANGE
                 Fireball | 1     | 3                     | 1.5
