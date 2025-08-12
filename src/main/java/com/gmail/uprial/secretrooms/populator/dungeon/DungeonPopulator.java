@@ -221,23 +221,8 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                             .ench(Enchantment.LOYALTY, 5, 5)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    .add(new D(Material.CROSSBOW, 1, new ItemConfig()
-                            /*
-                                Survival maximum levels are ZERO.
-
-                                crossbow[minecraft:enchantments={"minecraft:power":10,"minecraft:infinity":1,"minecraft:flame":1,"minecraft:punch":2}]
-
-                                A potential UNBREAKING(3), QUICK_CHARGE(3) and MENDING(1)
-                                upgrade would cost 15 levels.
-
-                                With PIERCING(4) - 19.
-
-                                With MULTISHOT(1) - 19.
-                             */
-                            .ench(Enchantment.POWER, 10, 10)
-                            .ench(Enchantment.PUNCH, 2, 2)
-                            .ench(Enchantment.FLAME)
-                            .ench(Enchantment.INFINITY)))
+                    // A simple tool to recover clothes with mending
+                    .add(new D(Material.EXPERIENCE_BOTTLE, STACK * 27))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.CROSSBOW, 1, new ItemConfig()

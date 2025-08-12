@@ -37,6 +37,33 @@ public class EndMansionBase extends EndMansionChunk {
                     /*
                         A potential UNBREAKING(3), PROTECTION(4), and MENDING(1)
                         upgrade would cost 14 levels.
+
+                        According to https://minecraft.wiki/w/Unbreaking,
+                        Elytra is a tool, and Chestplate is an armor.
+
+                        Durability per gliding second for Elytra and Chestplate.
+
+                                    No unbreaking | Unbreaking III
+                        Elytra             0.9885 | 0.3121
+                        Chestplate         0.9989 | 0.5796
+
+                        ==== Test code ====
+    private long start_t;
+    private int start_d;
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onEntityToggleGlide(EntityToggleGlideEvent event) {
+        if(!event.isCancelled()) {
+            final long t = System.currentTimeMillis();
+            final int d = ((Damageable)((LivingEntity)event.getEntity()).getEquipment().getChestplate().getItemMeta()).getDamage();
+
+            if(event.isGliding()) {
+                start_t = t;
+                start_d = d;
+            } else {
+                System.out.println(String.format("d/s: %.4f", 1000.0D * (d - start_d) / (t - start_t)));
+            }
+        }
+    }
                      */
                     .rarity(ItemRarity.EPIC)
                     .lore(List.of("Lets you fly like an Elytra"))
