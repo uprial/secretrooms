@@ -19,6 +19,7 @@ Motivate players to explore the map by secret buildings with rare loot undergrou
 * Underground dungeons with spawners, building blocks, and items enchanted impossibly for survival
 * Loot density increases according to distance from the map center
 * The End has hardened mansions with epic loot
+* Enchantment limit of loot: pickaxes - Fortune-5 and Efficiency-10, tridents - Loyalty-5, bows - Power-10, cloths - Protection-5, swords - Sharpness-10, fishing rods - Luck-of-the-sea-5, Lure-5, Unbreaking-5.
 
 That plugin combines all the fun I had with my friends that I didn't find in other plugins and didn't manage to split into other my plugins. If you like any changes - please request them specifically, and I'll create a separate configurable plugin.
 
