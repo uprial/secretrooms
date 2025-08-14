@@ -1,7 +1,6 @@
 package com.gmail.uprial.secretrooms;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -61,8 +60,8 @@ public class SecretRoomsExecutor {
         return stats;
     }
 
-    List<Location> getLoadedLocations(final Material material) {
-        final List<Location> locations = new ArrayList<>();
+    List<Block> getLoadedBlocks(final Material material) {
+        final List<Block> blocks = new ArrayList<>();
         for(final World world : plugin.getServer().getWorlds()) {
             for (final Chunk chunk : world.getLoadedChunks()) {
                 final int minY = chunk.getWorld().getMinHeight();
@@ -72,7 +71,7 @@ public class SecretRoomsExecutor {
                         for(int z = 0; z < 16; z++) {
                             final Block block = chunk.getBlock(x, y, z);
                             if(block.getType().equals(material)) {
-                                locations.add(block.getLocation());
+                                blocks.add(block);
                             }
                         }
                     }
@@ -80,6 +79,6 @@ public class SecretRoomsExecutor {
             }
         }
 
-        return locations;
+        return blocks;
     }
 }

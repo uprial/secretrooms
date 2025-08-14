@@ -2,8 +2,8 @@ package com.gmail.uprial.secretrooms;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -125,12 +125,12 @@ class SecretRoomsCommandExecutor implements CommandExecutor {
                         final Material material = getMaterial(args[1]);
 
                         customLogger.info(String.format("Getting %s locations in loaded terrain...", material));
-                        final List<Location> locations = new SecretRoomsExecutor(plugin).getLoadedLocations(material);
-                        if(locations.isEmpty()) {
+                        final List<Block> blocks = new SecretRoomsExecutor(plugin).getLoadedBlocks(material);
+                        if(blocks.isEmpty()) {
                             customLogger.warning(String.format("Material '%s' not found.", args[1]));
                         } else {
-                            for (final Location location : locations) {
-                                customLogger.info(format(location));
+                            for (final Block block : blocks) {
+                                customLogger.info(format(block));
                             }
                         }
                         return true;
