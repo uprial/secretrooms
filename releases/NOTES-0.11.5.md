@@ -1,2 +1,3 @@
 # Improvements
 * Fixed the loaded-locations command format
+* Removed a fixture to clean up inventory after removing SPAWNER in 0.11.3

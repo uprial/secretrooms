@@ -16,6 +16,7 @@ import java.util.Set;
 
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
 
+// Used to fix mistakes when gifting items not supposed to be gifted.
 public class InventoryCleanupListener implements Listener {
     private final CustomLogger customLogger;
 
