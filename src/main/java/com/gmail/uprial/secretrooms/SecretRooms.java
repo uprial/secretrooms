@@ -64,7 +64,7 @@ public final class SecretRooms extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new TakeAimAdapter(this), this);
         getServer().getPluginManager().registerEvents(new ChunkListener(populator), this);
-        getServer().getPluginManager().registerEvents(new TurretListener(turretCron), this);
+        getServer().getPluginManager().registerEvents(new TurretListener(), this);
         //getServer().getPluginManager().registerEvents(new InventoryCleanupListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new EntityCleanupListener(consoleLogger), this);
 

@@ -191,11 +191,16 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    void onDeath(final EnderCrystal crystal) {
-        if (getTurret(crystal) != null) {
+    static void onDeath(final EnderCrystal crystal) {
+        // Though it is checked in the caller, I keep the check for safety
+        if (isTurret(crystal)) {
             // Break Dragon Head or Heavy Core together with its End Crystal
             getHeading(crystal).setType(Material.AIR);
         }
+    }
+
+    static boolean isTurret(final EnderCrystal crystal) {
+        return getTurret(crystal) != null;
     }
 
     private static Turret getTurret(final EnderCrystal crystal) {
