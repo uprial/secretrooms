@@ -1,0 +1,55 @@
+package com.gmail.uprial.secretrooms.listeners;
+
+import com.gmail.uprial.secretrooms.common.CustomLogger;
+import com.gmail.uprial.secretrooms.populator.Populator;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Hoglin;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import static com.gmail.uprial.secretrooms.common.Formatter.format;
+
+// Used to fix mistakes when gifting entities not supposed to be gifted.
+public class EntityCleanupListener implements Listener {
+    private final CustomLogger customLogger;
+
+    public EntityCleanupListener(final CustomLogger customLogger) {
+        this.customLogger = customLogger;
+    }
+
+    private int total = 0;
+
+    // Our plugin has the last word on the world population.
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        int fixed = 0;
+        for(final Entity entity : event.getChunk().getEntities()) {
+            if(entity instanceof Hoglin) {
+                final Hoglin hoglin = (Hoglin)entity;
+                boolean broken = false;
+                if(!hoglin.getRemoveWhenFarAway()) {
+                    broken = true;
+                    hoglin.setRemoveWhenFarAway(true);
+                }
+                for(final PotionEffect effect : hoglin.getActivePotionEffects()) {
+                    if(effect.getType().equals(PotionEffectType.FIRE_RESISTANCE)) {
+                        broken = true;
+                        hoglin.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+                    }
+                }
+                if(broken) {
+                    fixed ++;
+                }
+            }
+        }
+        if(fixed > 0) {
+            total += fixed;
+            customLogger.info(String.format("Fixed %d Hoglins in %s, %d in total",
+                    fixed, format(event.getChunk()), total));
+        }
+    }
+}

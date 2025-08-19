@@ -10,6 +10,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.*;
@@ -29,12 +30,13 @@ public class TurretCron extends BukkitRunnable {
         BIG
     }
 
+    /*
+        According to https://minecraft.wiki/w/End_Crystal,
+        the weight and height of the End Crystals are 2.0.
+     */
+    private static final double TURRET_BODY_SIZE = 2.0D;
+
     private static class Turret {
-        /*
-            According to https://minecraft.wiki/w/End_Crystal,
-            the weight and height of the End Crystals are 2.0.
-         */
-        private static final double BODY_SIZE = 2.0D;
 
         private final float explosionPower;
         private final float maxBlastResistance;
@@ -46,7 +48,7 @@ public class TurretCron extends BukkitRunnable {
                final double blockRange) {
             this.explosionPower = explosionPower;
             this.maxBlastResistance = maxBlastResistance;
-            this.safeDistance = BODY_SIZE + Math.max(entityRange, blockRange);
+            this.safeDistance = TURRET_BODY_SIZE + Math.max(entityRange, blockRange);
         }
 
         float getExplosionPower() {
@@ -90,9 +92,11 @@ public class TurretCron extends BukkitRunnable {
         Don't shoot from the inside of the crystal, give a space for the defence buildings.
 
         The End Crystals move vertically, taking two blocks.
-        If the top block is bordered with 4 defence blocks in X and Z coordinates,
-        the distance between the End Crystal position and these 4 defence blocks
-        might be more than 2.0: (1.5) * 2 ^ 0.5 = 2.12.
+
+        If the blocks are bordered with 4 defence blocks in X and Z coordinates,
+        one border below and one border above,
+        the distance between getEnderCrystalCenter() and these 4*2+2=10 defence blocks
+        might be up to: (2.0 ^ 2 + 0.5 ^ 2 * 2) ^ 0.5 = 2.12.
      */
     private static final double DEFENCE_DISTANCE = 3.0D;
 
@@ -230,8 +234,8 @@ public class TurretCron extends BukkitRunnable {
         final Location toLocation = TakeAimAdapter.getAimPoint(player);
 
         // Make sure the launch point isn't too close to the potential target
-        final Location bodyCenter = getBodyCenter(crystal);
-        if(toLocation.distance(bodyCenter) < turret.getSafeDistance()) {
+        final Location center = getEnderCrystalCenter(crystal);
+        if(toLocation.distance(center) < turret.getSafeDistance()) {
             return false;
         }
 
@@ -255,7 +259,7 @@ public class TurretCron extends BukkitRunnable {
         }
 
         // Make sure the launch point isn't too close to the potential hit block
-        if(hitBlock.getLocation().distance(bodyCenter) < turret.getSafeDistance()) {
+        if(hitBlock.getLocation().distance(center) < turret.getSafeDistance()) {
             return false;
         }
 
@@ -270,13 +274,32 @@ public class TurretCron extends BukkitRunnable {
     private static void launch(final EnderCrystal crystal,
                         final Player player,
                         final TakeAimAdapter.LaunchFireballCallback<Fireball> callback) {
+
         final Location fromLocation = getLaunchPoint(crystal, player);
+        /*
+            According to https://minecraft.wiki/w/Bat,
+            Height: 0.9 blocks
+            Width: 0.5 blocks
+
+            Based on logs, the Bat location differs from the launched projectile location
+            for 72.04-71.59=0.45 in Y-position:
+
+                Bat: world_the_end:-11.05:71.59:-144.54
+                Fireball: world_the_end:-11.05:72.04:-144.54
+         */
+        fromLocation.subtract(0.0D, 0.45, 0.0D);
 
         /*
             According to https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Ambient.html,
             Bat is the only ambient mob.
          */
         final Mob mob = (Mob)crystal.getWorld().spawnEntity(fromLocation, EntityType.BAT);
+
+        /*
+            To avoid any collision,
+            even considering the mob will be immediately removed in finally().
+         */
+        mob.getAttribute(Attribute.SCALE).setBaseValue(0.01D);
 
         try {
             TakeAimAdapter.launchFireball(mob, player,
@@ -287,22 +310,19 @@ public class TurretCron extends BukkitRunnable {
         }
     }
 
-    private static Location getBodyCenter(final EnderCrystal crystal) {
-        return new Location(
-                crystal.getLocation().getWorld(),
-                crystal.getLocation().getBlockX() + 0.5D,
-                crystal.getLocation().getBlockY() + 0.5D,
-                crystal.getLocation().getBlockZ() + 0.5D);
+    private static Location getEnderCrystalCenter(final EnderCrystal crystal) {
+        return crystal.getLocation().clone()
+                .add(0.5D, TURRET_BODY_SIZE / 2.0D, 0.5D);
     }
 
     private static Location getLaunchPoint(final EnderCrystal crystal, final Player player) {
-        final Location bodyCenter = getBodyCenter(crystal);
+        final Location center = getEnderCrystalCenter(crystal);
 
-        final Vector direction = AngerHelper.getDirection(bodyCenter, TakeAimAdapter.getAimPoint(player));
+        final Vector direction = AngerHelper.getDirection(center, TakeAimAdapter.getAimPoint(player));
         // Avoid shooting at enemies located too close, as this may cause the turret itself to explode.
         direction.multiply(DEFENCE_DISTANCE / direction.length());
 
-        return bodyCenter.add(direction);
+        return center.add(direction);
     }
 
     private static Block getDirectedBlock(final Block block, final Vector direction) {
