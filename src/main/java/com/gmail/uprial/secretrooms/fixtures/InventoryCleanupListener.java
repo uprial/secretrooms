@@ -1,4 +1,4 @@
-package com.gmail.uprial.secretrooms.listeners;
+package com.gmail.uprial.secretrooms.fixtures;
 
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.google.common.collect.ImmutableSet;

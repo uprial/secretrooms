@@ -2,6 +2,7 @@ package com.gmail.uprial.secretrooms;
 
 import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.config.InvalidConfigException;
+import com.gmail.uprial.secretrooms.fixtures.*;
 import com.gmail.uprial.secretrooms.listeners.*;
 import com.gmail.uprial.secretrooms.populator.ChunkPopulator;
 import com.gmail.uprial.secretrooms.populator.Populator;

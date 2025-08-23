@@ -1,7 +1,6 @@
-package com.gmail.uprial.secretrooms.listeners;
+package com.gmail.uprial.secretrooms.fixtures;
 
 import com.gmail.uprial.secretrooms.common.CustomLogger;
-import com.gmail.uprial.secretrooms.populator.Populator;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hoglin;
 import org.bukkit.event.EventHandler;
