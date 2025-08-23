@@ -3,3 +3,4 @@
 * Fixed the loaded-locations command format
 * Fixed Turret fireball start location
 * Fixed one turret to destroy another
+* Fixed spawners in Dungeons consider distance-density-multiplier

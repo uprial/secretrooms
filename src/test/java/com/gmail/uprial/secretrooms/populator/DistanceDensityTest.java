@@ -1,17 +1,18 @@
-package com.gmail.uprial.secretrooms.populator.loot;
+package com.gmail.uprial.secretrooms.populator;
 
 import com.gmail.uprial.secretrooms.helpers.TestConfigBase;
+import com.gmail.uprial.secretrooms.populator.loot.LootPopulator;
 import org.bukkit.block.Block;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class LootPopulatorTest extends TestConfigBase {
+public class DistanceDensityTest extends TestConfigBase {
 
     @Test
-    public void testDistanceDensity() {
+    public void testGet() {
         assertEquals(0, getDD(0, 0, 0));
         assertEquals(0, getDD(0, 0, 5_000));
 
@@ -23,7 +24,7 @@ public class LootPopulatorTest extends TestConfigBase {
     }
 
     @Test
-    public void testDistanceDensityDistribution() {
+    public void testDistribution() {
         final int r = 4_000;
 
         int chests = 0;
@@ -44,13 +45,12 @@ public class LootPopulatorTest extends TestConfigBase {
         assertEquals(0.035D, 1.0D * dynamicDensity / chests, 0.01D);
     }
 
-    private int getDD(final int x, final int z, final int distanceDensityMultiplier) {
+    private int getDD(final int x, final int z, final int multiplier) {
         final Block block = mock(Block.class);
 
         when(block.getX()).thenReturn(x);
         when(block.getZ()).thenReturn(z);
 
-        return new LootPopulator(null, null, distanceDensityMultiplier)
-                .getDistanceDensity(block);
+        return new DistanceDensity(multiplier).get(block);
     }
 }

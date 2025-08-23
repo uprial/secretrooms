@@ -56,9 +56,9 @@ public final class SecretRooms extends JavaPlugin {
         chunkPopulators.add(new EndMansionPopulator(consoleLogger, secretRoomsConfig.getEndName()));
 
         chunkPopulators.add(new WhirlpoolPopulator(consoleLogger));
-        chunkPopulators.add(new DungeonPopulator(consoleLogger));
+        chunkPopulators.add(new DungeonPopulator(consoleLogger, secretRoomsConfig.getDistanceDensity()));
         // Order does matter: populate chests in RailWay and Whirlpool.
-        chunkPopulators.add(new LootPopulator(this, consoleLogger, secretRoomsConfig.getDistanceDensityMultiplier()));
+        chunkPopulators.add(new LootPopulator(this, consoleLogger, secretRoomsConfig.getDistanceDensity()));
 
         populator = new Populator(this, consoleLogger, chunkPopulators);
 
@@ -77,7 +77,7 @@ public final class SecretRooms extends JavaPlugin {
     }
 
     void populatePlayer(final Player player, final int density) {
-        new LootPopulator(this, consoleLogger, 0).populatePlayer(player, density);
+        new LootPopulator(this, consoleLogger, null).populatePlayer(player, density);
     }
 
     @Override

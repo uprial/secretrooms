@@ -6,27 +6,29 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
 public class SpawnerHelper {
-    private boolean isQuick = false;
+    private DistanceDensity distanceDensity = null;
 
     public SpawnerHelper() {
     }
 
     // Spawn entities quicker
-    public SpawnerHelper setQuick() {
-        isQuick = true;
+    public SpawnerHelper setQuick(final DistanceDensity distanceDensity) {
+        this.distanceDensity = distanceDensity;
         return this;
     }
 
     public void set(final Block block, final EntityType entityType) {
-
         block.setType(Material.SPAWNER, false);
 
         final CreatureSpawner spawner = (CreatureSpawner) block.getState();
 
-        if(isQuick) {
-            spawner.setMinSpawnDelay(20); // Default: 200
-            spawner.setMaxSpawnDelay(80); // Default: 800
+        if(distanceDensity != null) {
+            final int delimiter = Math.min(20, distanceDensity.get(block) + 1);
+
+            spawner.setMinSpawnDelay(20 / delimiter); // Default: 200
+            spawner.setMaxSpawnDelay(80 / delimiter); // Default: 800
         }
+
         // Spawn fewer entities
         spawner.setMaxNearbyEntities(8); // Default: 16
         spawner.setSpawnCount(8); // Default: 4

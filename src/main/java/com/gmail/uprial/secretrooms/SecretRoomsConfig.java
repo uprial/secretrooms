@@ -4,6 +4,7 @@ import com.gmail.uprial.secretrooms.common.CustomLogger;
 import com.gmail.uprial.secretrooms.config.ConfigReaderNumbers;
 import com.gmail.uprial.secretrooms.config.ConfigReaderSimple;
 import com.gmail.uprial.secretrooms.config.InvalidConfigException;
+import com.gmail.uprial.secretrooms.populator.DistanceDensity;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class SecretRoomsConfig {
@@ -26,8 +27,8 @@ public final class SecretRoomsConfig {
         return ConfigReaderSimple.getBoolean(config, customLogger, "debug", "'debug' flag", false);
     }
 
-    public int getDistanceDensityMultiplier() {
-        return distanceDensityMultiplier;
+    public DistanceDensity getDistanceDensity() {
+        return new DistanceDensity(distanceDensityMultiplier);
     }
 
     public String getNetherName() {

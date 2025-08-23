@@ -23,6 +23,7 @@ import static com.gmail.uprial.secretrooms.common.Utils.seconds2ticks;
 
 public class DungeonPopulator extends AbstractSeedSpecificPopulator {
     private final CustomLogger customLogger;
+    private final DistanceDensity distanceDensity;
 
     VirtualChunk vc;
 
@@ -31,10 +32,12 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
 
     private final static int ROOM_SIZE = 5;
 
-    public DungeonPopulator(final CustomLogger customLogger) {
+    public DungeonPopulator(final CustomLogger customLogger,
+                            final DistanceDensity distanceDensity) {
         super(PROBABILITY);
 
         this.customLogger = customLogger;
+        this.distanceDensity = distanceDensity;
     }
 
     public String getName() {
@@ -402,7 +405,7 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
             // Hide the creeper spawner from the top
             vc.set(sx, sy + 1, sz, Material.BLACK_CARPET);
 
-            new SpawnerHelper().setQuick().set(vc.get(sx, sy, sz), EntityType.CREEPER);
+            new SpawnerHelper().setQuick(distanceDensity).set(vc.get(sx, sy, sz), EntityType.CREEPER);
         }
 
         {

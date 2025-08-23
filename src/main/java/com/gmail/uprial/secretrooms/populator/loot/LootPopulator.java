@@ -32,17 +32,17 @@ import static com.gmail.uprial.secretrooms.common.Utils.seconds2ticks;
 public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final SecretRooms plugin;
     private final CustomLogger customLogger;
-    private final int distanceDensityMultiplier;
+    private final DistanceDensity distanceDensity;
 
     public static String NETHER_NAME = "world_nether";
     public static String END_NAME = "world_the_end";
 
     public LootPopulator(final SecretRooms plugin,
                          final CustomLogger customLogger,
-                         final int distanceDensityMultiplier) {
+                         final DistanceDensity distanceDensity) {
         this.plugin = plugin;
         this.customLogger = customLogger;
-        this.distanceDensityMultiplier = distanceDensityMultiplier;
+        this.distanceDensity = distanceDensity;
     }
 
     @Override
@@ -193,17 +193,6 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
         return worldDensities.getOrDefault(worldName, 0);
     }
 
-    int getDistanceDensity(final Block block) {
-        if(distanceDensityMultiplier > 0) {
-            return (int) Math.floor(
-                    Math.sqrt(Math.pow(block.getX(), 2.0D) + Math.pow(block.getZ(), 2.0D))
-                            / distanceDensityMultiplier
-            );
-        } else {
-            return 0;
-        }
-    }
-
     /*
         Increase density above some blocks.
 
@@ -314,7 +303,7 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             density = getWorldDensity(basement.getWorld().getName());
         }
 
-        return density + getDistanceDensity(basement);
+        return density + distanceDensity.get(basement);
     }
 
     /*
