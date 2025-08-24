@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 public class DistanceDensityTest extends TestConfigBase {
 
     @Test
-    public void testGet() {
+    public void testBase() {
         assertEquals(0, getDD(0, 0, 0));
         assertEquals(0, getDD(0, 0, 5_000));
 
@@ -55,9 +55,21 @@ public class DistanceDensityTest extends TestConfigBase {
     }
 
     @Test
-    public void testGetMax() {
-        assertEquals(1, getDD(5_000, 5_000, 5_000));
-        assertEquals(9, getDD(500_000, 500_000, 5_000));
+    public void testRealMax() {
+        // SpawnerHelper
+        assertEquals(63, 315_000 / 5_000);
+        assertEquals(19, getDD(315_000, 315_000, 5_000));
+        assertEquals(20, getDD(320_000, 320_000, 5_000));
+        // LootPopulator
+        assertEquals(110, 550_000 / 5_000);
+        assertEquals(28, getDD(550_000, 550_000, 5_000));
+        assertEquals(29, getDD(555_000, 555_000, 5_000));
+    }
+
+    @Test
+    public void testMax() {
+        assertEquals(1, getDD(5, 5, 5));
+        assertEquals(99, getDD(500_000, 500_000, 5));
     }
 
     @Test
@@ -88,6 +100,6 @@ public class DistanceDensityTest extends TestConfigBase {
         when(block.getX()).thenReturn(x);
         when(block.getZ()).thenReturn(z);
 
-        return new DistanceDensity(multiplier).get(block, 9);
+        return new DistanceDensity(multiplier).get(block, 99);
     }
 }
