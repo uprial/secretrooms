@@ -56,7 +56,8 @@ public class Formatter {
 
     private static String bs2string(final BlockState bs) {
         if(bs instanceof CreatureSpawner) {
-            return String.format("{%s}", ((CreatureSpawner) bs).getSpawnedType());
+            final CreatureSpawner cs = (CreatureSpawner)bs;
+            return String.format("{%s:%d-%d}", cs.getSpawnedType(), cs.getMinSpawnDelay(), cs.getMaxSpawnDelay());
         } else {
             return "";
         }

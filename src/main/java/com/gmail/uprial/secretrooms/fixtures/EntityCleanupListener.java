@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
 
-// Used to fix mistakes when gifting entities not supposed to be gifted.
+// Used to fix mistakes when entities have wrong params.
 public class EntityCleanupListener implements Listener {
     private final CustomLogger customLogger;
 
@@ -22,7 +22,6 @@ public class EntityCleanupListener implements Listener {
 
     private int total = 0;
 
-    // Our plugin has the last word on the world population.
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
         int fixed = 0;

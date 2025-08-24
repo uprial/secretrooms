@@ -28,7 +28,6 @@ public class InventoryCleanupListener implements Listener {
             .add(Material.SPAWNER)
             .build();
 
-    // Our plugin has the last word on the world population.
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
