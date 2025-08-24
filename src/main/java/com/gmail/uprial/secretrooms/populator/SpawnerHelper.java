@@ -23,7 +23,7 @@ public class SpawnerHelper {
         final CreatureSpawner spawner = (CreatureSpawner) block.getState();
 
         if(distanceDensity != null) {
-            final int delimiter = Math.min(20, distanceDensity.get(block) + 1);
+            final int delimiter = distanceDensity.get(block, 19) + 1;
 
             spawner.setMinSpawnDelay(20 / delimiter); // Default: 200
             spawner.setMaxSpawnDelay(80 / delimiter); // Default: 800

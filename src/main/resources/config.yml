@@ -19,6 +19,8 @@ debug: false
 #
 # Use 0 to disable the feature.
 #
+# Stronger than linear: less loot in longer distances.
+#
 
 distance-density-multiplier: 5_000
 

@@ -4,3 +4,5 @@
 * Fixed Turret fireball start location
 * Fixed one turret to destroy another
 * Fixed spawners in Dungeons consider distance-density-multiplier
+* Made distance-density-multiplier stronger than linear: less loot in longer distances 
+

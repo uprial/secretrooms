@@ -303,7 +303,12 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             density = getWorldDensity(basement.getWorld().getName());
         }
 
-        return density + distanceDensity.get(basement);
+        /*
+            Max chest loot probability is 3% for TNT, which gives 100% / 3% = 33.
+
+            Max density based on material or world is MANSION_DENSITY.
+         */
+        return density + distanceDensity.get(basement, 33 - MANSION_DENSITY);
     }
 
     /*
