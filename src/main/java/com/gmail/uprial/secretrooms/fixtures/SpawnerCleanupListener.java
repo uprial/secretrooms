@@ -33,7 +33,16 @@ public class SpawnerCleanupListener implements Listener {
             .add(EntityType.BLAZE)
             .add(EntityType.SPIDER)
             .add(EntityType.MAGMA_CUBE)
+
+            // DungeonPopulator
             .add(EntityType.CREEPER)
+
+            // EndShipBlockBrewingStandHelper
+            .add(EntityType.SHULKER)
+
+            // EndMansionCorner
+            .add(EntityType.WITCH)
+            .add(EntityType.BREEZE)
             .build();
 
     private final Set<ChunkXZ> chunks = new HashSet<>();
