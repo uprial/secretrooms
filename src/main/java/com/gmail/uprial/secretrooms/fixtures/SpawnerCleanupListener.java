@@ -10,7 +10,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.gmail.uprial.secretrooms.common.Formatter.format;
@@ -45,7 +47,7 @@ public class SpawnerCleanupListener implements Listener {
             .add(EntityType.BREEZE)
             .build();
 
-    private final Set<ChunkXZ> chunks = new HashSet<>();
+    private final Map<ChunkXZ,Set<EntityType>> chunksEntityTypes = new HashMap<>();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
@@ -55,9 +57,13 @@ public class SpawnerCleanupListener implements Listener {
 
             final Chunk chunk = event.getEntity().getLocation().getChunk();
             final ChunkXZ chunkXZ = new ChunkXZ(chunk.getX(), chunk.getZ());
-            if(!chunks.contains(chunkXZ)) {
+
+            final Set<EntityType> entityTypes
+                    = chunksEntityTypes.computeIfAbsent(chunkXZ, (k) -> new HashSet<>());
+
+            if(!entityTypes.contains(event.getEntityType())) {
                 customLogger.info(String.format("Suspicious spawn: %s", format(event.getEntity())));
-                chunks.add(chunkXZ);
+                entityTypes.add(event.getEntityType());
             }
         }
     }
