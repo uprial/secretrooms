@@ -254,6 +254,11 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                              */
                             .ench(Enchantment.LOOTING, 5, 5)))
                     .build())
+            .add(ImmutableList.<D>builder()
+                    .add(new D(Material.WOLF_ARMOR, 3, new ItemConfig()
+                            // Survival maximum level is 0, here it's 3.
+                            .ench(Enchantment.UNBREAKING, 3, 3)))
+                    .build())
             .build();
 
     @Override

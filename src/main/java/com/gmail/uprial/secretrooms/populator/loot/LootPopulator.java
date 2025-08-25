@@ -344,6 +344,10 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .ench(Enchantment.SHARPNESS, 0, 5)
             .ench(Enchantment.VANISHING_CURSE);
 
+    private final ItemConfig wolfArmorConfig =  new ItemConfig()
+            // Survival maximum level is 0, here it's 2.
+            .ench(Enchantment.UNBREAKING, 1, 2);
+
     private final ItemConfig goldenSwordConfig =  new ItemConfig()
             // Survival maximum level is 5, here it's 10
             .ench(Enchantment.SHARPNESS, 5, 10)
@@ -491,7 +495,7 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
     private final Map<Material, CLT> chestLootTable = ImmutableMap.<Material, CLT>builder()
             //.put(chestIdempotencyMarker, new CLT(MAX_PERCENT))
 
-            // 16.12% - total
+            // 17.12% - total
 
             /*
                 5% - boring resources
@@ -522,6 +526,9 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
             .put(Material.GOLDEN_BOOTS, new CLT(1.00D, goldenClothConfig
                     .ench(Enchantment.FEATHER_FALLING, 0, 4)
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
+
+            // 1% - wolf armor
+            .put(Material.WOLF_ARMOR, new CLT(50.00D, wolfArmorConfig))
 
             // 1% - golden tools
             .put(Material.GOLDEN_PICKAXE, new CLT(0.50D, goldenToolConfig))

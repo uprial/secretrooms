@@ -47,7 +47,8 @@ public class DungeonPopulatorTest extends TestConfigBase {
         final BlockSeed bs = BlockSeed.valueOf(block);
         final ContentSeed cs = ContentSeed.valueOf(block);
 
-        assertEquals(Material.LIGHT_GRAY_DYE, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
+        // before WOLF_ARMOR was added: LIGHT_GRAY_DYE
+        assertEquals(Material.GOLD_BLOCK, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
     }
 
     @Test
@@ -59,7 +60,8 @@ public class DungeonPopulatorTest extends TestConfigBase {
         final BlockSeed bs = BlockSeed.valueOf(block);
         final ContentSeed cs = ContentSeed.valueOf(block);
 
-        assertEquals(Material.PURPLE_DYE, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
+        // before WOLF_ARMOR was added: PURPLE_DYE
+        assertEquals(Material.DIAMOND_SWORD, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
     }
 
     @Test
@@ -71,6 +73,7 @@ public class DungeonPopulatorTest extends TestConfigBase {
         final BlockSeed bs = BlockSeed.valueOf(block);
         final ContentSeed cs = ContentSeed.valueOf(block);
 
-        assertEquals(Material.RED_DYE, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
+        // before WOLF_ARMOR was added: RED_DYE
+        assertEquals(Material.OAK_LOG, bs.oneOf(DungeonPopulator.CHEST_LOOT_TABLE).get(0).getMaterial(cs));
     }
 }
