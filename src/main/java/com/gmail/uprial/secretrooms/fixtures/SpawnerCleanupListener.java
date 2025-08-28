@@ -36,6 +36,12 @@ public class SpawnerCleanupListener implements Listener {
             .add(EntityType.SPIDER)
             .add(EntityType.MAGMA_CUBE)
 
+            // A variant of zombie that spawns in deserts, specifically in Pyraminds
+            .add(EntityType.HUSK)
+            //.add(EntityType.DROWNED)
+            //.add(EntityType.STRAY)
+            //.add(EntityType.BOGGED)
+
             // DungeonPopulator
             .add(EntityType.CREEPER)
 
