@@ -528,7 +528,7 @@ public class LootPopulator implements ChunkPopulator, Tested_On_1_21_5 {
                     .ench(Enchantment.DEPTH_STRIDER, 0, 3)))
 
             // 1% - wolf armor
-            .put(Material.WOLF_ARMOR, new CLT(50.00D, wolfArmorConfig))
+            .put(Material.WOLF_ARMOR, new CLT(1.00D, wolfArmorConfig))
 
             // 1% - golden tools
             .put(Material.GOLDEN_PICKAXE, new CLT(0.50D, goldenToolConfig))
