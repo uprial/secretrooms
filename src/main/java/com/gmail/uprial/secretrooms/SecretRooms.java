@@ -69,7 +69,7 @@ public final class SecretRooms extends JavaPlugin {
         //getServer().getPluginManager().registerEvents(new InventoryCleanupListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new EntityCleanupListener(consoleLogger), this);
         getServer().getPluginManager().registerEvents(new SpawnerCleanupListener(consoleLogger), this);
-        getServer().getPluginManager().registerEvents(new RaidDebugListener(this), this);
+        getServer().getPluginManager().registerEvents(new RaidDebugListener(this, consoleLogger), this);
 
         getCommand(COMMAND_NS).setExecutor(new SecretRoomsCommandExecutor(this));
         consoleLogger.info("Plugin enabled");

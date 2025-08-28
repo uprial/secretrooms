@@ -232,7 +232,7 @@ public class TurretCron extends BukkitRunnable {
 
     private static boolean isSeeingPlayer(final EnderCrystal crystal, final Turret turret, final Player player) {
         // Don't shoot across the whole map.
-        if(!AngerHelper.isSimulated(crystal, player)) {
+        if(!AngerHelper.isSimulated(crystal.getLocation(), player)) {
             return false;
         }
 
