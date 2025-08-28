@@ -224,8 +224,9 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                             .ench(Enchantment.LOYALTY, 5, 5)))
                     .build())
             .add(ImmutableList.<D>builder()
-                    // A simple tool to recover clothes with mending
-                    .add(new D(Material.EXPERIENCE_BOTTLE, STACK * 27))
+                    .add(new D(Material.WOLF_ARMOR, 2, new ItemConfig()
+                            // Survival maximum level is 0, here it's 3.
+                            .ench(Enchantment.UNBREAKING, 3, 3)))
                     .build())
             .add(ImmutableList.<D>builder()
                     .add(new D(Material.CROSSBOW, 1, new ItemConfig()
@@ -253,11 +254,6 @@ public class DungeonPopulator extends AbstractSeedSpecificPopulator {
                                 and isn't a potential upgrade.
                              */
                             .ench(Enchantment.LOOTING, 5, 5)))
-                    .build())
-            .add(ImmutableList.<D>builder()
-                    .add(new D(Material.WOLF_ARMOR, 3, new ItemConfig()
-                            // Survival maximum level is 0, here it's 3.
-                            .ench(Enchantment.UNBREAKING, 3, 3)))
                     .build())
             .build();
 
