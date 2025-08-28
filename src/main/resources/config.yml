@@ -39,4 +39,4 @@ end-name: world_the_end
 #
 # Possible values: 1 ... 3600_000.
 #
-turret-aiming-timeout-in-ms: 5
+turret-aiming-timeout-in-ms: 10
